@@ -89,7 +89,7 @@ export default {
     getCollection() {
       this.$Axios({
         method: 'get',
-        url: '/docCollectionService/getCollection',
+        url: '/collectionService/getCollection',
       }).then((response) => {
         this.collectedNum = 0;
         this.myCollection = response.data.msg.collection;
@@ -119,7 +119,7 @@ export default {
       }
       this.$Axios({
         method: 'post',
-        url: '/docCollectionService/changeCollectionItem',
+        url: '/collectionService/changeCollectionItem',
         data: qs.stringify({
           changedList: JSON.stringify(changedCollection),
           fileID: this.fileInfo.fileID,

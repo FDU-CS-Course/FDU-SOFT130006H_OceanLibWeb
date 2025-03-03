@@ -18,41 +18,52 @@
       </template>
     </van-nav-bar>
     <div class="collectionlist full">
-      <van-pull-refresh v-model="refreshing" @refresh="getCollection()" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getCollection()">
-          <div v-for="(item,index) in myCollection" :key="index">
-            <van-swipe-cell>
-              <van-cell class="collectionlist__box" :label="(item.files.length+' 个内容 · ')+(item.isPublic?'公开收藏夹':'私密收藏夹')"
-                @click="showItem(item.collectionID,item.name,item.desc,item.isPublic)">
-                <template #title>
-                  <span class="collectionlist__box__title">{{item.name}}</span>
-                  <v-icon size="20" color="primary" v-if="!item.isPublic">mdi-eye-remove-outline</v-icon>
-                </template>
-              </van-cell>
-              <template #right>
-                <van-button square text="修改" type="danger" style="height: 100%" @click="toChangeCollection(item.collectionID,item.name,item.desc,item.isPublic)" />
+      <van-tabs v-model="active">
+        <van-tab v-for="(item, index) in collections" :key="index" :title="item.title">
+          <van-pull-refresh v-model="refreshing" @refresh="getCollection(item.mainType)" class="full">
+            <van-list v-model="loading" :finished="finished" @load="getCollection(item.mainType)">
+              <div v-for="(item, index) in myCollection" :key="index">
+                <van-swipe-cell>
+                  <van-cell
+                    class="collectionlist__box"
+                    :label="item.files.length + ' 个内容 · ' + (item.isPublic ? '公开收藏夹' : '私密收藏夹')"
+                    @click="showItem(item.collectionID, item.name, item.desc, item.isPublic)"
+                  >
+                    <template #title>
+                      <span class="collectionlist__box__title">{{ item.name }}</span>
+                      <v-icon size="20" color="primary" v-if="!item.isPublic">mdi-eye-remove-outline</v-icon>
+                    </template>
+                  </van-cell>
+                  <template #right>
+                    <van-button
+                      square
+                      text="修改"
+                      type="danger"
+                      style="height: 100%"
+                      @click="toChangeCollection(item.collectionID, item.name, item.desc, item.isPublic)"
+                    />
+                  </template>
+                </van-swipe-cell>
+              </div>
+              <template #finished>
+                <!--若无收藏夹则显示空提示-->
+                <van-empty description="您尚未建立收藏夹" v-if="myCollection.length == 0">
+                  <template slot="image">
+                    <img src="@/images/empty-picture/no_data.svg" />
+                  </template>
+                  <template>
+                    <v-btn color="primary" small @click="$router.push('/newCollection')">
+                      新增收藏夹
+                      <v-icon right dark> mdi-star-plus </v-icon>
+                    </v-btn>
+                  </template>
+                </van-empty>
+                <div v-else class="notice-nomore__text">没有更多的收藏了</div>
               </template>
-            </van-swipe-cell>
-          </div>
-          <template #finished>
-            <!--若无收藏夹则显示空提示-->
-            <van-empty description="您尚未建立收藏夹" v-if="myCollection.length==0">
-              <template slot="image">
-                <img src="@/images/empty-picture/no_data.svg" />
-              </template>
-              <template>
-                <v-btn color="primary" small @click="$router.push('/newCollection')">
-                  新增收藏夹
-                  <v-icon right dark>
-                    mdi-star-plus
-                  </v-icon>
-                </v-btn>
-              </template>
-            </van-empty>
-            <div v-else class="notice-nomore__text">没有更多的收藏了</div>
-          </template>
-        </van-list>
-      </van-pull-refresh>
+            </van-list>
+          </van-pull-refresh>
+        </van-tab>
+      </van-tabs>
     </div>
   </div>
 </template>
@@ -65,6 +76,10 @@ export default {
       refreshing: false,
       loading: false,
       finished: false,
+      collections:[{
+        "title":"文档",
+        "mainType":"DOCUMENT"
+      }]
     };
   },
   mounted() {},
@@ -72,10 +87,13 @@ export default {
     back() {
       this.$router.go(-1); //返回上一层
     },
-    getCollection() {
+    getCollection(mainType) {
       this.$Axios({
         method: 'get',
-        url: '/docCollectionService/getCollection',
+        url: '/collectionService/getCollection',
+        params: {
+          "mainType": mainType
+        }
       }).then((response) => {
         this.myCollection = response.data.msg.collection;
         this.loading = false;

@@ -82,7 +82,7 @@ export default {
     addCollection() {
       this.$Axios({
         method: 'post',
-        url: '/docCollectionService/addCollection',
+        url: '/collectionService/addCollection',
         data: qs.stringify({
           newName: this.collectionName,
           isPublic: this.isPublic,
@@ -107,7 +107,7 @@ export default {
     changeCollection() {
       this.$Axios({
         method: 'post',
-        url: '/docCollectionService/changeCollectionInfo',
+        url: '/collectionService/changeCollectionInfo',
         data: qs.stringify({
           collectionID: this.collectionID,
           newName: this.collectionName,
@@ -133,7 +133,7 @@ export default {
     deleteCollection() {
       this.$Axios({
         method: 'get',
-        url: '/docCollectionService/deleteCollection',
+        url: '/collectionService/deleteCollection',
         params: {
           collectionID: this.collectionID,
         },

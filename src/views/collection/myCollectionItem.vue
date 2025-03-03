@@ -86,7 +86,7 @@ export default {
       this.loading = true;
       this.$Axios({
         method: 'get',
-        url: '/docCollectionService/getCollectionFileList',
+        url: '/collectionService/getCollectionFileList',
         params: {
           collectionID: this.$route.query.collectionID,
         },
@@ -100,7 +100,7 @@ export default {
     deleteCollectionItem(index, fileID) {
       this.$Axios({
         method: 'get',
-        url: '/docCollectionService/deleteCollectionItem',
+        url: '/collectionService/deleteCollectionItem',
         params: {
           collectionID: this.$route.query.collectionID,
           fileID: fileID,
