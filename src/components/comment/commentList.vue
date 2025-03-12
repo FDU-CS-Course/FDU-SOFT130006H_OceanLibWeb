@@ -67,7 +67,7 @@
             <v-commentBox class="comments__commentBox" :isIndex="isIndex" :bindID="bindID" :mainType="mainType" :comment="item" :isComment="true" @doReply="doReply"
               @showReplyList="showReplyList" @needLoginNotice="$emit('needLoginNotice')"></v-commentBox>
           </div>
-          <template slot="finished" style="line-height:unset">
+          <template v-slot:finished style="line-height:unset">
             <div class="comments__more" v-if="this.isIndex" @click="()=>$emit('showAllComment')">查看全部评论 ></div>
             <div class="notice-nomore__text" v-if="!this.isIndex && isEnd">没有更多的评论了</div>
           </template>

@@ -26,7 +26,7 @@
           <template #finished>
             <!--若无收藏夹则显示空提示-->
             <van-empty description="没有最近7天的阅读记录呢" v-if="fileList.length==0">
-              <template slot="image">
+              <template v-slot:image>
                 <img src="@/images/empty-picture/no_record.svg" />
               </template>
             </van-empty>

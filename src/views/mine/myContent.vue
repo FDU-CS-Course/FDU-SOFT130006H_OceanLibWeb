@@ -14,13 +14,13 @@
 }
 </style>
 <style lang="less" scoped>
-/deep/ .v-data-table > .v-data-table__wrapper > table {
+:deep(.v-data-table > .v-data-table__wrapper > table) {
   width: 550px !important;
 }
-/deep/ .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+:deep(.v-data-table > .v-data-table__wrapper > table > tbody > tr > td) {
   font-size: 12px;
 }
-/deep/ .van-tabs__content {
+:deep(.van-tabs__content) {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -92,7 +92,7 @@
             <template #finished>
               <!--若无文件则显示空提示-->
               <van-empty description="您还没有已经发布的文档呢" v-if="myFileList.length==0">
-                <template slot="image">
+                <template v-slot:image>
                   <img src="@/images/empty-picture/no_record.svg" />
                 </template>
                 <template>
@@ -117,7 +117,7 @@
       </van-tab>
       <van-tab title="专栏" name="1">
         <van-empty description="程序猿们正在努力开发中">
-          <template slot="image">
+          <template v-slot:image>
             <img src="@/images/empty-picture/no_internet.svg" />
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们
@@ -127,7 +127,7 @@
       </van-tab>
       <van-tab title="帮帮帖" name="2">
         <van-empty description="程序猿们正在努力开发中">
-          <template slot="image">
+          <template v-slot:image>
             <img src="@/images/empty-picture/no_internet.svg" />
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们

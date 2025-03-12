@@ -66,7 +66,7 @@
                   @doReply="(args)=> $refs['sendBox'].showSendBox(args)" @needLoginNotice="$emit('needLoginNotice')">
                 </v-commentBox>
               </div>
-              <template slot="finished" style="line-height:unset">
+              <template v-slot:finished style="line-height:unset">
                 <div class="notice-nomore__text" v-if="!this.isIndex && isEnd">没有更多的回复了</div>
               </template>
             </van-list>

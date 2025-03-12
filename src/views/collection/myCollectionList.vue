@@ -48,7 +48,7 @@
               <template #finished>
                 <!--若无收藏夹则显示空提示-->
                 <van-empty description="您尚未建立收藏夹" v-if="myCollection.length == 0">
-                  <template slot="image">
+                  <template v-slot:image>
                     <img src="@/images/empty-picture/no_data.svg" />
                   </template>
                   <template>

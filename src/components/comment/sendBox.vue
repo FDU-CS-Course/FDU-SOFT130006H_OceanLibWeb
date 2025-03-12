@@ -29,7 +29,7 @@
 </style>
 
 <style scoped lang="less">
-/deep/ .v-textarea textarea {
+:deep(.v-textarea textarea) {
   line-height: 1.2rem;
   margin-top: 35px !important;
   font-size: 14px;

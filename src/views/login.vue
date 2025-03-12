@@ -64,7 +64,7 @@
 </style>
 
 <style lang="scss" scoped>
-@import '~vuetify/src/components/VMessages/_variables.scss';
+@import '~vuetify/lib/components/VMessages/_variables.scss';
 $messages-line-height: unset;
 </style>
 

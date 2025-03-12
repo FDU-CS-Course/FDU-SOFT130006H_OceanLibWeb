@@ -99,7 +99,7 @@
     }
   }
 }
-/deep/ .highlight {
+:deep(.highlight) {
   color: @orange;
 }
 </style>

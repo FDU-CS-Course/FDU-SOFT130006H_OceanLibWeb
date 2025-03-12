@@ -46,7 +46,7 @@ body {
 </style>
 
 <style lang="less">
-@import '~vant/lib/index.less';
+@import '~vant/lib/index.css';
 @import './vant-variables.less';
 .van-tabs__line {
   background-color: var(--v-primary-base) !important;

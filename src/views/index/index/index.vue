@@ -101,7 +101,7 @@
         <!--一重循环，把各个Top的Group循环显示出来-->
         <van-grid-item :text="item.groupName" v-for="item in topItemList" :key="item.groupID"
           @click="toIndexResult(item.groupName,item.includeIndex,item.includeType,item.includeTag)">
-          <template slot="icon">
+          <template v-slot:icon>
             <v-icon style="color:var(--v-primary-base)">mdi-{{item.icon}}</v-icon>
           </template>
         </van-grid-item>
@@ -138,7 +138,7 @@
             <div v-if="!type.isload">
               <!--若无合适的文件则显示空提示-->
               <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].size==0">
-                <template slot="image">
+                <template v-slot:image>
                   <img src="@/images/empty-picture/no_data.svg" />
                 </template>
               </van-empty>
@@ -238,7 +238,7 @@ export default {
         for (let index in typeList) {
           typeList[index].isload = true;
         }
-        Vue.set(this.typeList, groupID, typeList);
+        this.typeList[groupID] = typeList;
         this.getFileListByTypeIDAndTagIDAndIndexString(groupID + '/' + indexString + '/' + typeList[0].typeID + '/' + tagString);
       });
     },
@@ -259,10 +259,10 @@ export default {
         },
       }).then((response) => {
         let fileList = response.data.msg;
-        Vue.set(this.fileList, typeID, fileList);
+        this.fileList[typeID] = fileList;
         for (let index in this.typeList[groupID]) {
           if (this.typeList[groupID][index].typeID == typeID) {
-            Vue.set(this.typeList[groupID][index], 'isload', false);
+            this.typeList[groupID][index].isload = false;
           }
         }
       });

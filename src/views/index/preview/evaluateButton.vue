@@ -109,9 +109,11 @@ export default {
               this.isLike = !this.isLike;
               if (this.isLike) {
                 Notify({ type: 'success', message: '已赞同' });
+                // eslint-disable-next-line vue/no-mutating-props
                 this.fileInfo.fileExtraEntity.likeNum += 1;
               } else {
                 Notify({ type: 'success', message: '已取消赞同' });
+                // eslint-disable-next-line vue/no-mutating-props
                 this.fileInfo.fileExtraEntity.likeNum -= 1;
               }
               if (this.isLike) {
@@ -126,6 +128,7 @@ export default {
               }
               if (this.isDisLike && this.isLike) {
                 this.isLike = false;
+                // eslint-disable-next-line vue/no-mutating-props
                 this.fileInfo.fileExtraEntity.likeNum -= 1;
               }
             }

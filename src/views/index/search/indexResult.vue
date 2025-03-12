@@ -39,7 +39,7 @@
     }
   }
 }
-/deep/ .van-tabs__content {
+:deep(.van-tabs__content) {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -74,7 +74,7 @@
               <template #finished>
                 <!--若无合适的文件则显示空提示-->
                 <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].length==0">
-                  <template slot="image">
+                  <template v-slot:image>
                     <img src="@/images/empty-picture/no_data.svg" />
                   </template>
                 </van-empty>
@@ -163,14 +163,14 @@ export default {
         },
       }).then((response) => {
         if (!this.fileList[typeID] || isNew) {
-          Vue.set(this.fileList, typeID, []);
+          this.fileList[typeID] = [];
         }
         this.fileList[typeID].push.apply(this.fileList[typeID], response.data.msg.list);
 
-        Vue.set(this.typeList[this.activeTag], 'loading', false);
-        Vue.set(this.typeList[this.activeTag], 'refreshing', false);
-        Vue.set(this.typeList[this.activeTag], 'nextPage', this.typeList[this.activeTag].nextPage + 1);
-        Vue.set(this.typeList[this.activeTag], 'finished', response.data.msg.isLastPage);
+        this.typeList[this.activeTag].loading = false;
+        this.typeList[this.activeTag].refreshing = false;
+        this.typeList[this.activeTag].nextPage = this.typeList[this.activeTag].nextPage + 1;
+        this.typeList[this.activeTag].finished = response.data.msg.isLastPage;
       });
     },
     changeIndex() {

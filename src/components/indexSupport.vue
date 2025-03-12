@@ -5,7 +5,7 @@
       <van-button round type="info" size="small" icon="success" @click="finish">使用当前索引</van-button>
       <p style="font-size: 14px;margin: 10px 0;">当前索引：{{indexStringName}} ( 索引号{{indexString}} ) </p>
     </div>
-    <van-tree-select :items="itemList" height="100%" :active-id.sync="activeId" :main-active-index.sync="activeIndex" @click-item="onChooseItem" @click-nav="onChooseNav">
+    <van-tree-select :items="itemList" height="100%" v-model:active-id="activeId" v-model:main-active-index="activeIndex" @click-item="onChooseItem" @click-nav="onChooseNav">
     </van-tree-select>
   </div>
 </template>

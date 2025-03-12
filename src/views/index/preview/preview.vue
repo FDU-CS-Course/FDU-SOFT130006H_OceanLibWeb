@@ -145,7 +145,7 @@
     <div ref="contentFileList" v-show="isFolder" class="preview__folder">
       <!--若无合适的文件则显示空提示-->
       <van-empty description="专栏中尚未添加文档" v-if="folderFileList.length==0">
-        <template slot="image">
+        <template v-slot:image>
           <img src="@/images/empty-picture/no_data.svg" />
         </template>
       </van-empty>

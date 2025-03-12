@@ -39,7 +39,7 @@
 }
 </style>
 <style lang="less" scoped>
-/deep/ .v-toolbar__content {
+:deep(.v-toolbar__content) {
   padding: 0px 20px;
 }
 </style>
@@ -106,7 +106,7 @@
       <v-searchHistory class="search__history" ref="searchHistory" @onHistoryTagClick="searchKeywords">
       </v-searchHistory>
       <van-empty description="输入关键字开始检索">
-        <template slot="image">
+        <template v-slot:image>
           <img src="@/images/empty-picture/no_search.svg" />
         </template>
       </van-empty>

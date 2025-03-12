@@ -22,7 +22,7 @@
           <template #finished>
             <!--若无合适的文件则显示空提示-->
             <van-empty description="没有账单记录" v-if="recordList.length===0">
-              <template slot="image">
+              <template v-slot:image>
                 <img src="@/images/empty-picture/no_record.svg" />
               </template>
             </van-empty>

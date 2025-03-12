@@ -14,13 +14,13 @@
 }
 </style>
 <style lang="less" scoped>
-/deep/ .v-data-table > .v-data-table__wrapper > table {
+:deep(.v-data-table > .v-data-table__wrapper > table) {
   width: 550px !important;
 }
-/deep/ .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+:deep(.v-data-table > .v-data-table__wrapper > table > tbody > tr > td) {
   font-size: 12px;
 }
-/deep/ .van-tabs__content {
+:deep(.van-tabs__content) {
   flex: 1;
   display: flex;
   flex-direction: column;

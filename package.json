@@ -12,7 +12,9 @@
     "babel-plugin-import": "^1.13.8",
     "compression-webpack-plugin": "^11.1.0",
     "core-js": "^3.41.0",
-    "postcss-px-to-viewport": "^1.1.1",
+    "postcss": "^8.3.8",
+    "postcss-loader": "^6.1.1",
+    "postcss-px-to-viewport-8-plugin": "^1.2.5",
     "react-scripts": "^5.0.1",
     "vant": "^4.9.17",
     "vue": "^3.5.13",
@@ -23,7 +25,8 @@
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
-    "babel-eslint": "^10.1.0",
+    "@vue/eslint-config-standard": "^4.0.0",
+    "@babel/eslint-parser": "^7.22.15",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^10.0.0",
     "less": "^4.2.2",
@@ -44,9 +47,17 @@
       "plugin:vue/essential"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser",
+      "requireConfigFile": false,
+      "babelOptions": {
+        "presets": ["@babel/preset-env"]
+      }
     },
-    "rules": {}
+    "rules": {
+      "vue/multi-word-component-names": "off",
+      "vue/no-useless-template-attributes": "off",
+      "vue/no-reserved-component-names": "off"
+    }
   },
   "browserslist": [
     "> 1%",
