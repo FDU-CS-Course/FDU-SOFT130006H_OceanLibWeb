@@ -1,24 +1,18 @@
-import ConstantRouters from "./constantRouter";
+import constantRouterMap from "./constantRouter";
 import asyncRouters from "./asyncRouter";
-import VueRouter from 'vue-router';
-import Vue from 'vue';
 import axios from 'axios'
 import {
     baseURL
 } from '@/config.js'
+import {createRouter, createWebHistory} from "vue-router";
 
 //import ViewUI from 'view-design';
 //Vue.use(ViewUI);
 
-Vue.use(VueRouter);
-
-const RouterConfig = {
-    mode: 'history',
-    routes: ConstantRouters,
-    base: '/platform/',
-};
-
-const router = NewRouter();
+const router = createRouter({
+    history: createWebHistory("/platform/"),
+    routes: constantRouterMap,
+});
 
 //路由转发拦截器
 router.beforeEach((to, from, next) => {

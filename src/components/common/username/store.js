@@ -1,7 +1,7 @@
-import Vue from 'vue';
+import app from "@/App.vue";
 
 
-export const state = Vue.observable({
+export const state = app.observable({
     userInfoArray: [],
 })
 

@@ -99,9 +99,7 @@ Axios.interceptors.response.use(res => {
 });
 
 export default {
-    install(Vue) {
-        Object.defineProperty(Vue.prototype, '$Axios', {
-            value: Axios
-        })
+    install: (app) => {
+        app.config.globalProperties.$Axios = axios;
     }
 }
