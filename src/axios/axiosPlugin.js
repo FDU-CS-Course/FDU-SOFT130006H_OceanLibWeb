@@ -100,6 +100,6 @@ Axios.interceptors.response.use(res => {
 
 export default {
     install: (app) => {
-        app.config.globalProperties.$Axios = axios;
+        app.config.globalProperties.$Axios = Axios;
     }
 }
