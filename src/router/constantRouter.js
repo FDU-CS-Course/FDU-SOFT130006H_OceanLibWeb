@@ -10,6 +10,8 @@ const vip = () => import("../views/function/vip.vue");
 const freePrint = () => import("../views/function/freePrint.vue");
 const uploadFileStatement = () => import("../views/statement/uploadFileStatement.vue");
 
+const errorPage = () => import("../views/errorPage.vue");
+
 const constantRouterMap = [{
         path: '/login',
         meta: {
@@ -84,6 +86,13 @@ const constantRouterMap = [{
             title: '文件上传须知',
         },
         component: uploadFileStatement
+    },
+    {
+        path: '/errorPage',
+        meta: {
+            title: '布豪！',
+        },
+        component: errorPage
     }
 ];
 export default constantRouterMap;

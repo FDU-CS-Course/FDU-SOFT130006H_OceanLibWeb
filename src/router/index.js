@@ -19,17 +19,19 @@ router.beforeEach((to, from, next) => {
 
     //ViewUI.LoadingBar.start();
     window.document.title = "Ocean文库-" + to.meta.title;
-
+    
     if (sessionStorage.getItem("role") == null && localStorage.getItem("token") != null) {
         getUserInfo(() => {
             next(to);
         });
-    } else {
-        next();
+        return;
     }
+
     if (to.matched.length === 0) { //to.matched（路由匹配到的所有路由记录）的匹配会在beforeEach前进行，若更新了路由，则需要重新匹配，否则将导致进入空白页
-        next();
+        next("/errorPage");
+        return;
     }
+    next();
 });
 
 router.afterEach((to, from) => {

@@ -23,7 +23,7 @@
             return{
                 state:"404",
                 msg:"Not Found",
-                describe:"您访问的页面"+this.$route.query.url+"不存在",
+                describe:"布豪！您访问的页面"+this.$route.query.url+"不存在",
                 url:this.$route.query.url
             }
         },
