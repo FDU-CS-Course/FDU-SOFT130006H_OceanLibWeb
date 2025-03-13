@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@vant/compat": "^1.0.1",
     "axios": "^1.8.2",
     "babel-plugin-import": "^1.13.8",
     "compression-webpack-plugin": "^11.1.0",
@@ -22,11 +23,11 @@
     "vuetify": "^3.7.16"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.22.15",
     "@vue/cli-plugin-babel": "~5.0.8",
     "@vue/cli-plugin-eslint": "~5.0.8",
     "@vue/cli-service": "~5.0.8",
     "@vue/eslint-config-standard": "^4.0.0",
-    "@babel/eslint-parser": "^7.22.15",
     "eslint": "^8.57.1",
     "eslint-plugin-vue": "^10.0.0",
     "less": "^4.2.2",
@@ -50,7 +51,9 @@
       "parser": "@babel/eslint-parser",
       "requireConfigFile": false,
       "babelOptions": {
-        "presets": ["@babel/preset-env"]
+        "presets": [
+          "@babel/preset-env"
+        ]
       }
     },
     "rules": {
