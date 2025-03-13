@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-    <RouterView :key = "key"></RouterView>
-  </div>
+  <v-app id="app">
+    <RouterView :key="key"></RouterView>
+  </v-app>
 </template>
 
 <script>
