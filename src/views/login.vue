@@ -113,9 +113,9 @@ $messages-line-height: unset;
   </div>
 </template>
 <script>
-import * as axios from 'axios';
+import axios from 'axios';
 import qs from 'qs';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 import loading from '@/components/loading';
 import bitLogin from '@/components/univlogin/bit/bitLogin.vue';
 
@@ -123,6 +123,7 @@ export default {
   components: {
     'v-loading': loading,
     'v-bitLogin': bitLogin,
+    [Notify.name]: Notify,
   },
   data() {
     return {
