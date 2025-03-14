@@ -32,7 +32,7 @@
     <van-tabs sticky class="full" :offset-top="tabsOffset">
       <van-tab title="文档" name="0" class="full">
         <van-pull-refresh class="pullRefresh full" v-model="content.fileList.refreshing" @refresh="getMyFileList(true)">
-          <van-list v-model="content.fileList.loading" :finished="content.fileList.finished" @load="getMyFileList()" class="full">
+          <van-list v-model:loading="content.fileList.loading" :finished="content.fileList.finished" @load="getMyFileList()" class="full">
             <div v-for="fileInfo in myFileList" :key="fileInfo.fileID">
               <v-card class="myUpload" outlined>
                 <v-fileBox class="myUpload__fileBox" :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
@@ -40,13 +40,13 @@
                   :ratersNum="fileInfo.fileExtraEntity.ratersNum" :paymentMethod="fileInfo.paymentMethod" :paymentAmount="fileInfo.paymentAmount"
                   :isVipIncome="fileInfo.fileExtraEntity.isVipIncome" :fileTagList="fileInfo.tagNames"></v-fileBox>
                 <v-card-actions>
-                  <v-btn fab dark x-small color="primary" @click="changeFileInfo(fileInfo.fileID)">
+                  <v-btn fab theme="dark" x-small color="primary" @click="changeFileInfo(fileInfo.fileID)">
                     <v-icon>mdi-note-edit</v-icon>
                   </v-btn>
-                  <v-btn fab dark x-small color="primary">
+                  <v-btn fab theme="dark" x-small color="primary">
                     <v-icon>mdi-share-variant</v-icon>
                   </v-btn>
-                  <v-btn fab dark x-small color="warning">
+                  <v-btn fab theme="dark" x-small color="warning">
                     <v-icon>mdi-file-cancel</v-icon>
                   </v-btn>
                   <v-spacer></v-spacer>

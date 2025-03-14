@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <van-list class="search__result" v-model="loading" :finished="finished" :immediate-check="true" @load="search(true)" v-if="showResult && !showSuggest">
+    <van-list class="search__result" v-model:loading="loading" :finished="finished" :immediate-check="true" @load="search(true)" v-if="showResult && !showSuggest">
       <v-skeleton-loader type="article,article,article,article,article" v-if="initLoading"></v-skeleton-loader>
       <div class="search__result__box" v-for="fileInfo in fileList" :key="fileInfo.fileID">
         <v-fileBox :fileID="fileInfo.fileID" :searchResultContent="fileInfo.content" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title"

@@ -24,13 +24,13 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: var(--v-theme-primary);
     font-weight: bold;
   }
 }
 </style>
 <template>
-  <van-popup class="ccprotocal" v-model="showCCprotocalModel" round position="bottom" closeable>
+  <van-popup class="ccprotocal" v-model:show="showCCprotocalModel" round position="bottom" closeable>
     <p class="ccprotocal__title">请选择版权协议</p>
     <v-card class="ccprotocal__box">
       <div class="ccprotocal__checkbox">

@@ -16,7 +16,7 @@
 
     <div class="full">
       <van-pull-refresh v-model="refreshing" @refresh="getDownloadList()" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getDownloadList()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getDownloadList()">
           <div v-for="fileInfo in fileList" :key="fileInfo.fileID" class="fileBox">
             <v-fileBox :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
               :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.fileExtraEntity.readNum" :score="fileInfo.fileExtraEntity.score"

@@ -15,13 +15,13 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: var(--v-theme-primary);
     font-weight: bold;
   }
 }
 </style>
 <template>
-  <van-popup class="payment" v-model="showPaymentMethodModel" round position="bottom" closeable>
+  <van-popup class="payment" v-model:show="showPaymentMethodModel" round position="bottom" closeable>
     <p class="payment__title">请设置收益类型</p>
     <v-card class="payment__box">
 
@@ -31,7 +31,7 @@
       </v-alert>
 
       <van-field readonly clickable :value="revenueTypeName" label="收益类型" placeholder="点击选择收益类型" @click="showRevenueTypePicker = true" />
-      <van-popup v-model="showRevenueTypePicker" position="bottom">
+      <van-popup v-model:show="showRevenueTypePicker" position="bottom">
         <van-picker show-toolbar :columns="revenueTypeList" @confirm="onRevenueTypeConfirm" @cancel="showRevenueTypePicker = false" />
       </van-popup>
 

@@ -17,7 +17,7 @@
       text-align: center;
     }
     &--warning {
-      color: var(--v-primary-base);
+      color: var(--v-theme-primary);
       font-size: 12px;
       text-align: center;
     }
@@ -57,7 +57,7 @@
       但必需在产品首页声明产品原始名称及<a>主要作者</a>
     </p>
 
-    <van-popup v-model="showSponsor" closeable position="right" round style="width:90%;height:100%">
+    <van-popup v-model:show="showSponsor" closeable position="right" round style="width:90%;height:100%">
       <div class="sponsor">
         <v-card class="my-2" style="width:90%">
           <v-img src="@/images/main-picture/sponsor_code.jpg"></v-img>

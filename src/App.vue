@@ -1,6 +1,6 @@
 <template>
   <v-app id="app">
-    <RouterView :key="key"></RouterView>
+      <RouterView :key="key"></RouterView>
   </v-app>
 </template>
 
@@ -47,6 +47,6 @@ body {
 @import '~vant/lib/index.css';
 @import './vant-variables.less';
 .van-tabs__line {
-  background-color: var(--v-primary-base) !important;
+  background-color: var(--v-theme-primary) !important;
 }
 </style>

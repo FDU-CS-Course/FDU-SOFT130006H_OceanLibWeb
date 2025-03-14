@@ -14,7 +14,7 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: var(--v-theme-primary);
     font-weight: bold;
   }
 }

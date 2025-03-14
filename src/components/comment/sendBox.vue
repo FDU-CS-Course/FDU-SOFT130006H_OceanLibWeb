@@ -43,7 +43,7 @@
       <div class="comments-input-mask-2__button">发布</div>
     </div>
 
-    <van-popup class="inputbox" v-model="inputModel" round position="bottom" closeable>
+    <van-popup class="inputbox" v-model:show="inputModel" round position="bottom" closeable>
       <v-textarea v-model="commentContent" class="inputbox__textarea" background-color="white" :loader-height="1" filled no-resize :label="notice" hide-details="auto" rows="6"
         shaped></v-textarea>
       <div class="comments-input-mask-2">

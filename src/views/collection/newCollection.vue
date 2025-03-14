@@ -30,7 +30,7 @@
         </template>
       </v-switch>
       <v-alert border="right" colored-border type="info" elevation="2">
-        收藏夹一旦设置为公开，<span style="color: var(--v-primary-base)">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
+        收藏夹一旦设置为公开，<span style="color: var(--v-theme-primary)">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
       </v-alert>
 
       <v-btn color="primary" @click="addOrChangeCollection">

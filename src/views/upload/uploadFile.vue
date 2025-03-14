@@ -142,14 +142,14 @@
         </v-card-text>
       </v-card>
 
-      <van-popup class="upload__notice" v-model="showNotice" closeable position="bottom" round>
+      <van-popup class="upload__notice" v-model:show="showNotice" closeable position="bottom" round>
         <v-uploadFileStatement class="upload__notice__statement"></v-uploadFileStatement>
         <v-btn color="primary" @click="doUpload()">
           同意上述协议并继续
         </v-btn>
       </van-popup>
 
-      <v-dialog v-model="uploading" persistent width="300">
+      <v-dialog v-model:show="uploading" persistent width="300">
         <v-card color="primary" dark>
           <v-card-text>
             文档已上传{{uploadProgress}}%...

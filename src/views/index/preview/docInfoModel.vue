@@ -26,7 +26,7 @@
 }
 </style>
 <template>
-  <van-popup v-model="infoModel" position="bottom" style="height: 540px" closeable>
+  <van-popup v-model:show="infoModel" position="bottom" style="height: 540px" closeable>
     <div class="fileinfo">
       <img :src="require('@/images/main-picture/logo.png')" width="120" />
 

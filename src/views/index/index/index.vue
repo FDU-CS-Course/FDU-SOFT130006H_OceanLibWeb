@@ -102,15 +102,15 @@
         <van-grid-item :text="item.groupName" v-for="item in topItemList" :key="item.groupID"
           @click="toIndexResult(item.groupName,item.includeIndex,item.includeType,item.includeTag)">
           <template v-slot:icon>
-            <v-icon style="color:var(--v-primary-base)">mdi-{{item.icon}}</v-icon>
+            <v-icon style="color:var(--v-theme-primary)">mdi-{{item.icon}}</v-icon>
           </template>
         </van-grid-item>
       </van-grid>
       <van-swipe class="index__top__adSwipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item style="background-color: var(--v-primary-base);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: var(--v-theme-primary);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图1</div>
         </van-swipe-item>
-        <van-swipe-item style="background-color: var(--v-primary-base);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: var(--v-theme-primary);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图2</div>
         </van-swipe-item>
       </van-swipe>
@@ -129,7 +129,7 @@
         </a>
       </div>
 
-      <van-tabs v-model="item.activeTag" class="index__artical__group__tabs" :ellipsis="false" sticky @change="getFileListByTypeIDAndTagIDAndIndexString">
+      <van-tabs v-model:active="item.activeTag" class="index__artical__group__tabs" :ellipsis="false" sticky @change="getFileListByTypeIDAndTagIDAndIndexString">
         <!--二重循环，把各个Type循环出来-->
         <van-tab :title="type.typeName" class="index__artical__group__tabs__tab" :name="item.groupID+'/'+item.includeIndex+'/'+type.typeID+'/'+item.includeTag"
           v-for="type in typeList[item.groupID]" :key="type.typeID">

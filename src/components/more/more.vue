@@ -5,7 +5,7 @@
 }
 </style>
 <template>
-  <van-popup v-model="moreModel" position="bottom">
+  <van-popup v-model:show="moreModel" position="bottom">
     <div class="more">
       <slot></slot>
     </div>

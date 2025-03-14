@@ -10,7 +10,7 @@
     </van-nav-bar>
     <div class="full">
       <van-pull-refresh v-model="loading" @refresh="getWalletChangeRecord(true)" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getWalletChangeRecord()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getWalletChangeRecord()">
           <div v-for="(record,index) in recordList" :key="index">
             <van-cell :value="record.time" size="large" :label="record.reason">
               <template #title>

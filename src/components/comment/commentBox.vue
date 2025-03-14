@@ -168,7 +168,7 @@
           </v-btn>
           <v-btn small text rounded class="comment__bottom__likeButton" @click="doEvaluateComment('like',comment)">
             <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-secondary-lighten4)" v-if="!comment.isLike">mdi-thumb-up-outline</v-icon>
-            <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-primary-base)" v-else>mdi-thumb-up</v-icon>
+            <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-theme-primary)" v-else>mdi-thumb-up</v-icon>
             <div class="comment__bottom__likeNum">
               {{ comment.likeNumber == 0 ? "":comment.likeNumber}}
             </div>

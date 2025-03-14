@@ -12,7 +12,7 @@
 }
 </style>
 <template>
-  <van-popup :style="{'height':viewareaHeight}" v-model="commentModel" round position="bottom" closeable>
+  <van-popup :style="{'height':viewareaHeight}" v-model:show="commentModel" round position="bottom" closeable>
     <div class="commentBox">
       <div class="commentBox__title">全部评论</div>
 

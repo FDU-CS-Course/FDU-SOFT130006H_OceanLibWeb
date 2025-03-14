@@ -33,7 +33,7 @@
       <p class="collection__desc" v-if="$route.query.collectionDesc!=null">{{$route.query.collectionDesc}}</p>
 
       <van-pull-refresh v-model="refreshing" @refresh="getCollectionFileList()" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getCollectionFileList()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getCollectionFileList()">
           <div v-for="(fileInfo,index) in fileList" :key="fileInfo.fileID">
             <van-swipe-cell>
               <v-fileBox :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"

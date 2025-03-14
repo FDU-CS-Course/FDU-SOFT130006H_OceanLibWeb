@@ -62,7 +62,7 @@
     </div>
     <div style="flex:1;overflow:auto">
       <van-skeleton title avatar :row="3" :loading="initLoading" style="width:100%">
-        <van-list v-model="pageLoading" :finished="this.isIndex || this.isEnd" @load="getComment()">
+        <van-list v-model:loading="pageLoading" :finished="this.isIndex || this.isEnd" @load="getComment()">
           <div v-for="(item,index) in this.comments" :key="index">
             <v-commentBox class="comments__commentBox" :isIndex="isIndex" :bindID="bindID" :mainType="mainType" :comment="item" :isComment="true" @doReply="doReply"
               @showReplyList="showReplyList" @needLoginNotice="$emit('needLoginNotice')"></v-commentBox>

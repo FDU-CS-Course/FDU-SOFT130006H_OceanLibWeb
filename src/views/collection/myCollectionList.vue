@@ -18,10 +18,10 @@
       </template>
     </van-nav-bar>
     <div class="collectionlist full">
-      <van-tabs v-model="active">
+      <van-tabs v-model:active="active">
         <van-tab v-for="(item, index) in collections" :key="index" :title="item.title">
           <van-pull-refresh v-model="refreshing" @refresh="getCollection(item.mainType)" class="full">
-            <van-list v-model="loading" :finished="finished" @load="getCollection(item.mainType)">
+            <van-list v-model:loading="loading" :finished="finished" @load="getCollection(item.mainType)">
               <div v-for="(item, index) in myCollection" :key="index">
                 <van-swipe-cell>
                   <van-cell

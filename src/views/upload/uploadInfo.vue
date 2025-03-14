@@ -48,7 +48,7 @@
     <van-nav-bar id="toolbar" title="文档信息编辑" left-text="返回" left-arrow @click-left="back">
       <template #right>
         <div v-if="uploadID!=null">
-          <van-loading color="var(--v-primary-base)" v-if="previewLoading" size="24" />
+          <van-loading color="var(--v-theme-primary)" v-if="previewLoading" size="24" />
           <a v-else @click="previewDrawerShow = true">文档预览</a>
         </div>
       </template>
@@ -70,7 +70,7 @@
     </div>
     <div class="upload--list">
       <van-field readonly clickable :value="folderName" label="专栏组" placeholder="点击加入一个专栏" @click="showFolderList" />
-      <van-popup v-model="showFolderPicker" position="bottom">
+      <van-popup v-model:show="showFolderPicker" position="bottom">
         <van-picker show-toolbar :columns="folderNameList" @confirm="onFolderConfirm" @cancel="showFolderPicker = false" />
       </van-popup>
 
@@ -99,7 +99,7 @@
 
       <van-field v-if="fileInfo.fileExtraEntity.isOriginal">
         <template #input>
-          <van-checkbox v-model="isOriginalConfirm" shape="square">
+          <van-checkbox modelValue="isOriginalConfirm" shape="square">
             我郑重确认所提交的文档系本人独立创作，内容不涉及他人权利，本人依法享有和承担由此作品而产生的权利和全部法律责任。
             <span style="color:var(--v-error-base)">转载禁止声明原创，平台一经发现确认将零容忍封禁账号。</span>
           </van-checkbox>
@@ -108,17 +108,17 @@
 
       <van-field v-if="!fileInfo.fileExtraEntity.isOriginal">
         <template #input>
-          <van-checkbox v-model="isNonOriginalConfirm" shape="square">
+          <van-checkbox modelValue="isNonOriginalConfirm" shape="square">
             我郑重确认所提交的文档已被授权转载，且已标明文档来源和作者信息。本人依法承担由转载此文档而产生的全部法律责任。
           </van-checkbox>
         </template>
       </van-field>
 
-      <van-button class="upload__button" :loading="saveLoading" type="info" loading-text="正在保存" @click="submitDocumentInfo">保存
+      <van-button class="upload__button" :loading="saveLoading" type="primary" loading-text="正在保存" @click="submitDocumentInfo">保存
       </van-button>
     </div>
 
-    <van-popup v-model="previewDrawerShow" position="right" class="upload__preview" @opened="changePreviewSize">
+    <van-popup v-model:show="previewDrawerShow" position="right" class="upload__preview" @opened="changePreviewSize">
       <van-nav-bar ref="previewToolbar" title="文件预览" left-text="返回" left-arrow @click-left="previewDrawerShow = false" fixed :placeholder="true">
       </van-nav-bar>
       <iframe ref="previewContent" fullscreen="yes" :src="url" style="width: 100%;display: block;"></iframe>

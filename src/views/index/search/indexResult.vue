@@ -61,10 +61,10 @@
           <van-icon name="arrow" />
         </a>
       </div>
-      <van-tabs class="index__artical full" v-model="activeTag" :ellipsis="false" sticky>
+      <van-tabs class="index__artical full" v-model:active="activeTag" :ellipsis="false" sticky>
         <van-tab :title="type.typeName" :name="index" v-for="(type,index) in typeList" :key="type.typeID" class="full">
           <van-pull-refresh v-model="type.refreshing" @refresh="getFileListByTypeIDAndTagIDAndIndexString(type.typeID,true)" class="full">
-            <van-list v-model="type.loading" :finished="type.finished" @load="getFileListByTypeIDAndTagIDAndIndexString(type.typeID)">
+            <van-list v-model:loading="type.loading" :finished="type.finished" @load="getFileListByTypeIDAndTagIDAndIndexString(type.typeID)">
               <div v-for="fileInfo in fileList[type.typeID]" :key="fileInfo.fileID">
                 <v-fileBox class="index__artical__fileBox" :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title"
                   :fileType="fileInfo.fileType" :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.fileExtraEntity.readNum"
@@ -85,7 +85,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <van-popup class="indexBox" v-model="indexDrawerShow" position="right" :style="{ height:'100%',width: '90%' }" closeable round>
+    <van-popup class="indexBox" v-model:show="indexDrawerShow" position="right" :style="{ height:'100%',width: '90%' }" closeable round>
       <p class="indexBox__title">索引列表</p>
       <v-indexSupport class="indexBox__indexSupport" :rootString="$route.query.indexString" @setIndexString="setIndexString"></v-indexSupport>
     </van-popup>
