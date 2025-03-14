@@ -78,30 +78,30 @@ $messages-line-height: unset;
     </div>
     <div class="login__body">
       <v-tabs v-model="tab">
-        <v-tab href="#userlogin">
-          <v-icon class="login__tab__icon">mdi-account-box</v-icon>
+        <v-tab value="userlogin">
+          <v-icon icon="mdi-account-box" class="login__tab__icon"></v-icon>
         </v-tab>
-        <v-tab href="#univlogin">
-          <v-icon class="login__tab__icon">mdi-school</v-icon>
+        <v-tab value="univlogin">
+          <v-icon icon="mdi-school" class="login__tab__icon"></v-icon>
         </v-tab>
-        <v-tabs-slider></v-tabs-slider>
       </v-tabs>
-      <v-tabs-items v-model="tab" class="login__tab">
-        <v-tab-item value="userlogin">
-          <v-text-field v-model="username" type="text" name="username" label="用户名" placeholder="请输入用户名"></v-text-field>
-          <v-text-field v-model="password" hide-details="auto" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRules.required, passwordRules.min]"
-            :type="showPassword ? 'text' : 'password'" name="password" label="密码" placeholder="请输入账号密码" hint="密码至少为6位" counter @click:append="showPassword = !showPassword">
-          </v-text-field>
-          <v-btn class="login__button" depressed color="primary" @click="login">
+
+      <v-window v-model="tab" class="login__tab">
+        <v-window-item value="userlogin">
+          <v-text-field v-model="username" type="text" label="用户名" placeholder="请输入用户名"></v-text-field>
+          <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRules.required, passwordRules.min]"
+                        :type="showPassword ? 'text' : 'password'" label="密码" placeholder="请输入账号密码" hint="密码至少为6位" counter
+                        @click:append-inner="showPassword = !showPassword"></v-text-field>
+          <v-btn class="login__button" variant="flat" color="primary" @click="login">
             登录
           </v-btn>
           <v-checkbox v-model="isAutoLogin" label="记住账号和密码"></v-checkbox>
-        </v-tab-item>
-        <v-tab-item value="univlogin">
-          <v-select v-model="univ" :items="univList" item-text="key" item-value="value" label="选择你的所在高校"></v-select>
+        </v-window-item>
+        <v-window-item value="univlogin">
+          <v-select v-model="univ" :items="univList" item-title="key" item-value="value" label="选择你的所在高校"></v-select>
           <v-bitLogin v-if="univ=='BIT'" @onLogin="(data)=>{doLogin(data)}"></v-bitLogin>
-        </v-tab-item>
-      </v-tabs-items>
+        </v-window-item>
+      </v-window>
     </div>
 
     <div class="login__bottom">
