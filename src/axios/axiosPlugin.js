@@ -48,7 +48,6 @@ function testIntranetSites(url) {
 
 //请求拦截器
 Axios.interceptors.request.use((config) => {
-    console.log(config.url);
     //若存在这样的token，则从本地存储取出
     if (localStorage.token) {
         config.headers.Authorization = localStorage.getItem("token")

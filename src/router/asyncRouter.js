@@ -1,10 +1,25 @@
+const mine = () => import("../views/mine/mine.vue");
+const newCollection = () => import("../views/collection/newCollection.vue");
+const uploadFile = () => import("../views/upload/uploadFile.vue");
+const uploadInfo = () => import("../views/upload/uploadInfo.vue");
+const myCollectionList = () => import("../views/collection/myCollectionList.vue");
+const myCollectionItem = () => import("../views/collection/myCollectionItem.vue");
+const myContent = () => import("../views/mine/myContent.vue");
+const indexResult = () => import("../views/index/search/indexResult.vue");
+const search = () => import("../views/index/search/search.vue");
+const myRecentlyReadList = () => import("../views/mine/myRecentlyReadList.vue");
+const myDownloadList = () => import("../views/mine/myDownloadList.vue");
+const walletChangeRecordList = () => import("../views/mine/walletChangeRecordList.vue");
+const notify = () => import("../views/notify/notify.vue");
+const notifyLikeList = () => import("../views/notify/notifyLikeList.vue");
+
 const asyncRouterMap = [{
         path: '/newCollection',
         meta: {
             title: '新建收藏夹',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/collection/newCollection.vue'], resolve)
+        component: newCollection
     },
     {
         path: '/mine',
@@ -12,7 +27,7 @@ const asyncRouterMap = [{
             title: '我的',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/mine/mine.vue'], resolve)
+        component: mine
     },
     {
         path: '/uploadFile',
@@ -20,7 +35,7 @@ const asyncRouterMap = [{
             title: '文件上传 - 选择文件',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/upload/uploadFile.vue'], resolve)
+        component: uploadFile
     },
     {
         path: '/uploadInfo',
@@ -28,7 +43,7 @@ const asyncRouterMap = [{
             title: '文件上传 - 补全信息',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/upload/uploadInfo.vue'], resolve)
+        component: uploadInfo
     },
     {
         path: '/myCollectionList',
@@ -36,7 +51,7 @@ const asyncRouterMap = [{
             title: '我的收藏',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/collection/myCollectionList.vue'], resolve)
+        component: myCollectionList
     },
     {
         path: '/myCollectionItem',
@@ -44,7 +59,7 @@ const asyncRouterMap = [{
             title: '我的收藏',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/collection/myCollectionItem.vue'], resolve)
+        component: myCollectionItem
     },
     {
         path: '/myUpload',
@@ -52,7 +67,7 @@ const asyncRouterMap = [{
             title: '我的贡献',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/mine/myContent.vue'], resolve)
+        component: myContent
     },
     {
         path: '/indexResult',
@@ -60,7 +75,7 @@ const asyncRouterMap = [{
             title: '索引结果',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/index/search/indexResult.vue'], resolve)
+        component: indexResult
     },
     {
         path: '/search',
@@ -68,7 +83,7 @@ const asyncRouterMap = [{
             title: '搜索结果',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/index/search/search.vue'], resolve)
+        component: search
     },
     {
         path: '/myRecentlyReadList',
@@ -76,7 +91,7 @@ const asyncRouterMap = [{
             title: '最近浏览',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/mine/myRecentlyReadList.vue'], resolve)
+        component: myRecentlyReadList
     },
     {
         path: '/myDownloadList',
@@ -84,7 +99,7 @@ const asyncRouterMap = [{
             title: '最近下载',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/mine/myDownloadList.vue'], resolve)
+        component: myDownloadList
     },
     {
         path: '/walletChangeRecordList',
@@ -92,7 +107,7 @@ const asyncRouterMap = [{
             title: '钱包变动',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/mine/walletChangeRecordList.vue'], resolve)
+        component: walletChangeRecordList
     },
     {
         path: '/notify',
@@ -100,7 +115,7 @@ const asyncRouterMap = [{
             title: '消息',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/notify/notify.vue'], resolve)
+        component: notify
     },
     {
         path: '/notifyLikeList',
@@ -108,7 +123,7 @@ const asyncRouterMap = [{
             title: '赞同',
             permission: ["USER", "ADMIN"]
         },
-        component: (resolve) => require(['../views/notify/notifyLikeList.vue'], resolve)
+        component: notifyLikeList
     },
 ];
 export default asyncRouterMap;

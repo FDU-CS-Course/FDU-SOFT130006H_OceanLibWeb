@@ -6,13 +6,12 @@ import {
 } from '@/config.js'
 import {createRouter, createWebHistory} from "vue-router";
 
+const errorPage = () => import("../views/errorPage.vue");
+
 //import ViewUI from 'view-design';
 //Vue.use(ViewUI);
 
-const router = createRouter({
-    history: createWebHistory("/platform/"),
-    routes: constantRouterMap,
-});
+const router = NewRouter();
 
 //路由转发拦截器
 router.beforeEach((to, from, next) => {
@@ -43,7 +42,10 @@ router.afterEach((to, from) => {
 
 //生成新路由（token有效时将包含动态权限路由，token无效将跳转登录页）
 function NewRouter() {
-    let router = new VueRouter(RouterConfig);
+    let router = createRouter({
+        history: createWebHistory("/platform/"),
+        routes: constantRouterMap,
+    });
     if (sessionStorage.getItem("role")) {
         //若存在sessionStorage保存的ROLE值（说明单次会话未结束），则直接生成动态权限路由表
         // router.addRoutes(routerMatch(sessionStorage.getItem("role")));
@@ -114,7 +116,7 @@ function routerMatch(role) {
         meta: {
             title: '访问受限',
         },
-        component: (resolve) => require(['../views/errorPage.vue'], resolve)
+        component: errorPage
     });
     return routers;
 }

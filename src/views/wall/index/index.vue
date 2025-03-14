@@ -74,18 +74,18 @@
 
           <v-card-actions>
             <v-list-item class="grow">
-              <v-list-item-avatar color="grey darken-3" size="28" v-if="!item.isAnonymous">
+              <v-avatar color="grey darken-3" size="28" v-if="!item.isAnonymous">
                 <v-img class="elevation-6" :src="item.buildUserEntity.avatar" alt="Avatar" v-if="item.buildUserEntity.avatar != null" />
                 <span v-else>{{ item.buildUserEntity.nickname.substring(0, 1) }}</span>
-              </v-list-item-avatar>
-              <v-list-item-avatar color="grey darken-3" size="28" v-else>
+              </v-avatar>
+              <v-avatar color="grey darken-3" size="28" v-else>
                 <v-img class="elevation-6"
                   src="https://avataaars.io/?avatarStyle=Transparent&topType=Hat&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Serious&skinColor=Light"
                   alt="Avatar" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <div class="text-body-2">{{item.isAnonymous?"匿名纸条":item.buildUserEntity.nickname}}</div>
-              </v-list-item-content>
+              </v-avatar>
+<!--              <v-list-item-content>-->
+              <div class="text-body-2">{{item.isAnonymous?"匿名纸条":item.buildUserEntity.nickname}}</div>
+<!--              </v-list-item-content>-->
               <v-row align="center" justify="end">
                 <v-icon class="mr-1">
                   mdi-comment-eye
