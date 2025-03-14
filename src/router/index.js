@@ -110,7 +110,7 @@ function routerMatch(role) {
         }
     }
     routers.push({
-        path: '*',
+        path: '/:catchAll(.*)',
         meta: {
             title: '访问受限',
         },
