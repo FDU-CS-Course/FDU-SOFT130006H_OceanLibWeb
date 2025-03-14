@@ -3,7 +3,7 @@
         <van-nav-bar id="toolbar" title="慧墨云免费打印" left-text="返回" left-arrow @click-left="back">
         </van-nav-bar>
         <div style="display: flex;flex-direction: column">
-            <v-img id="title" src="../../images/main-picture/motaPrint.jpg" style="height: 150px;object-fit: cover;"></v-img>
+            <img id="title" :src="require('../../images/main-picture/motaPrint.jpg')" style="height: 150px;object-fit: cover;" />
             <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
                 慧墨云自助免费打印 与 Lib4Univ文库 均为Oriole团队旗下项目，您可以通过自助打印设备免费打印文件，也无需为文库相应文件付费，点墨已经代为支付了相关费用！
             </van-notice-bar>

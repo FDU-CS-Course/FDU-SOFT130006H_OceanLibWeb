@@ -49,7 +49,7 @@
             <!--若无收藏夹则显示空提示-->
             <van-empty description="本收藏夹下还没有收藏文档" v-if="fileList.length==0">
               <template v-slot:image>
-                <v-img src="@/images/empty-picture/no_data.svg" ></v-img>
+                <img :src="require('@/images/empty-picture/no_data.svg')" />
               </template>
             </van-empty>
             <div v-else class="notice-nomore__text">没有更多文档了</div>

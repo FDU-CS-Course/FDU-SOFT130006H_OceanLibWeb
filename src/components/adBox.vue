@@ -21,7 +21,7 @@
   <div>
     <div class="adBox">
       <div class="adBox__title">这是测试广告标题 -A201 -计费测试用例</div>
-      <v-img src="../images/ad.png" width="100%"></v-img>
+      <img :src="require('../images/ad.png')" width="100%" />
       <div class="adBox__content">原神 的广告</div>
     </div>
   </div>

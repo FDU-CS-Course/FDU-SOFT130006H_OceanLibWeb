@@ -27,7 +27,7 @@
             <!--若无收藏夹则显示空提示-->
             <van-empty description="没有下载文件的记录" v-if="fileList.length==0">
               <template v-slot:image>
-                <v-img src="@/images/empty-picture/no_record.svg"></v-img>
+                <img :src="require('@/images/empty-picture/no_record.svg')" />
               </template>
             </van-empty>
             <div v-else class="notice-nomore__text">没有更多的下载记录了</div>

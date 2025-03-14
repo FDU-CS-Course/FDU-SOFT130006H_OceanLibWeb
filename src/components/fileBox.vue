@@ -106,20 +106,20 @@
 <template>
   <div class="file-card" @click="toPreview()">
     <div class="file-card__preview">
-      <v-img v-if="previewPictureObjectName!=null" class="file-card__preview__img" :src="previewPictureUrl" ></v-img>
-      <v-img v-else class="file-card__preview__img" src="@/images/main-picture/no_preview.png"></v-img>
+      <img v-if="previewPictureObjectName!=null" class="file-card__preview__img" :src="previewPictureUrl" />
+      <img v-else class="file-card__preview__img" :src="require('@/images/main-picture/no_preview.png')" />
       <div class="file-card__vip-flag" v-if="isVipIncome==1">
-        <van-tag class="file-card__tag--vip" round> <v-img class="file-card__vip-flag__img" src="../images/main-icon/icon_VIP.svg"></v-img>优享</van-tag>
+        <van-tag class="file-card__tag--vip" round> <img class="file-card__vip-flag__img" :src="require('../images/main-icon/icon_VIP.svg')" />优享</van-tag>
       </div>
       <div class="file-card__type">
-        <v-img class="file-card__type__img" src="../images/type-icon/word-48.png" v-if="fileType=='doc'||fileType=='docx'"></v-img>
-        <v-img class="file-card__type__img" src="../images/type-icon/xls-48.png" v-if="fileType=='xls'||fileType=='xlsx'"></v-img>
-        <v-img class="file-card__type__img" src="../images/type-icon/ppt-48.png" v-if="fileType=='ppt'||fileType=='pptx'"></v-img>
-        <v-img class="file-card__type__img" src="../images/type-icon/pdf-48.png" v-if="fileType=='pdf'"></v-img>
+        <img class="file-card__type__img" :src="require('../images/type-icon/word-48.png')" v-if="fileType=='doc'||fileType=='docx'" />
+        <img class="file-card__type__img" :src="require('../images/type-icon/xls-48.png')" v-if="fileType=='xls'||fileType=='xlsx'" />
+        <img class="file-card__type__img" :src="require('../images/type-icon/ppt-48.png')" v-if="fileType=='ppt'||fileType=='pptx'" />
+        <img class="file-card__type__img" :src="require('../images/type-icon/pdf-48.png')" v-if="fileType=='pdf'" />
 
       </div>
       <div class="file-card__type--folder">
-        <v-img class="file-card__type__img" src="../images/type-icon/folder-48.png" v-if="fileType=='folder'" ></v-img>
+        <img class="file-card__type__img" :src="require('../images/type-icon/folder-48.png')" v-if="fileType=='folder'" />
       </div>
     </div>
     <div class="file-card__detail">
@@ -147,7 +147,7 @@
           </span>
           <span v-else>
             <van-tag class="file-card__tag--pay" plain round type="warning" v-if="paymentMethod!='1'">
-              {{paymentAmount}}<v-img src="../images/main-icon/coin.svg" width="16" v-if="paymentMethod=='2'" ></v-img><v-img src="../images/main-icon/coupon.svg" width="16" v-else ></v-img>
+              {{paymentAmount}}<img :src="require('../images/main-icon/coin.svg')" width="16" v-if="paymentMethod=='2'" /><img :src="require('../images/main-icon/coupon.svg')" width="16" v-else />
             </van-tag>
             <van-tag class="file-card__tag--pay" plain round type="success" v-else>
               免费

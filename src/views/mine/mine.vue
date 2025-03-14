@@ -90,7 +90,7 @@
           <div>{{userInfo.level}}</div>
         </template>
         <v-avatar color="primary" size="80" class="mine__userinfo-box__avatar">
-          <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar != ''" />
+          <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar !== ''" />
           <span class="white--text" v-else>{{userInfo.nickname.substring(0, 1)}}</span>
         </v-avatar>
       </v-badge>
@@ -119,7 +119,7 @@
         <div>
           <div class="mine__userinfo__nickname">
             {{ userInfo.nickname }}
-            <v-img class="mine__userinfo__nickname__icon" src="../../images/main-icon/icon_VIP.svg" v-if="userInfo.wallet.isVip == 1" width="20" ></v-img>
+            <img class="mine__userinfo__nickname__icon" :src="require('../../images/main-icon/icon_VIP.svg')" v-if="userInfo.wallet.isVip === 1" width="20" />
 
             <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
               v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
@@ -133,7 +133,9 @@
 
           </div>
           <div class="mine__userinfo__personalsign" v-if="userInfo.userExtraEntity!=null">
-            {{ (userInfo.userExtraEntity.personalSignature==null || userInfo.userExtraEntity.personalSignature=="")? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature }}
+            {{
+              (userInfo.userExtraEntity.personalSignature == null || userInfo.userExtraEntity.personalSignature === "") ? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature
+            }}
           </div>
         </div>
       </div>
@@ -141,32 +143,32 @@
     <van-grid style="margin-bottom: 10px">
       <van-grid-item text="我的收藏" to="/myCollectionList">
         <template #icon>
-          <v-img src="../../images/module-icon/icon_collection.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/module-icon/icon_collection.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="我的下载" to="/myDownloadList">
         <template #icon>
-          <v-img src="../../images/module-icon/icon_download.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/module-icon/icon_download.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="最近浏览" to="/myRecentlyReadList">
         <template #icon>
-          <v-img src="../../images/module-icon/icon_look.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/module-icon/icon_look.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="我的贡献" to="/myUpload">
         <template #icon>
-          <v-img src="../../images/module-icon/icon_contribution.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/module-icon/icon_contribution.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="上传文档" to="/uploadFile">
         <template #icon>
-          <v-img src="../../images/module-icon/icon_upload.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/module-icon/icon_upload.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="申请VIP" to="/vip">
         <template #icon>
-          <v-img src="../../images/main-icon/icon_VIP.svg" width="30" style="margin-bottom: 5px" ></v-img>
+          <img :src="require('../../images/main-icon/icon_VIP.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
     </van-grid>

@@ -80,7 +80,7 @@
         <!--若无合适的文件则显示空提示-->
         <van-empty :description="'抱歉没有找到与「'+keywords+'」相关的文档'" v-if="fileList.length==0">
           <template #image>
-            <v-img src="@/images/empty-picture/no_search.svg" ></v-img>
+            <img :src="require('@/images/empty-picture/no_search.svg')" />
           </template>
           <template>
             <v-btn color="primary" small>
@@ -107,7 +107,7 @@
       </v-searchHistory>
       <van-empty description="输入关键字开始检索">
         <template v-slot:image>
-          <v-img src="@/images/empty-picture/no_search.svg" ></v-img>
+          <img :src="require('@/images/empty-picture/no_search.svg')" />
         </template>
       </van-empty>
     </div>

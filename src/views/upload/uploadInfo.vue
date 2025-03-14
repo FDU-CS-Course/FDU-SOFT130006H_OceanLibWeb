@@ -57,10 +57,10 @@
       <p class="upload__title">{{uploadID!=null?'完善上传文档信息':'修改文档信息'}}</p>
       <div class="upload__baseinfo">
         <div class="upload__baseinfo__filetype">
-          <v-img src="../../images/type-icon/doc.svg" width="36" height="36" v-if="fileInfo.fileType=='doc'||fileInfo.fileType=='docx'" ></v-img>
-          <v-img src="../../images/type-icon/xls.svg" width="36" height="36" v-if="fileInfo.fileType=='xls'||fileInfo.fileType=='xlsx'" ></v-img>
-          <v-img src="../../images/type-icon/ppt.svg" width="36" height="36" v-if="fileInfo.fileType=='ppt'||fileInfo.fileType=='pptx'" ></v-img>
-          <v-img src="../../images/type-icon/pdf.svg" width="36" height="36" v-if="fileInfo.fileType=='pdf'" ></v-img>
+          <img :src="require('../../images/type-icon/doc.svg')" width="36" height="36" v-if="fileInfo.fileType=='doc'||fileInfo.fileType=='docx'" />
+          <img :src="require('../../images/type-icon/xls.svg')" width="36" height="36" v-if="fileInfo.fileType=='xls'||fileInfo.fileType=='xlsx'" />
+          <img :src="require('../../images/type-icon/ppt.svg')" width="36" height="36" v-if="fileInfo.fileType=='ppt'||fileInfo.fileType=='pptx'" />
+          <img :src="require('../../images/type-icon/pdf.svg')" width="36" height="36" v-if="fileInfo.fileType=='pdf'" />
         </div>
         <v-text-field v-model="fileInfo.title" placeholder="请输入文档标题" :rules="[titleRule.required]" outlined dense hide-details="auto">
         </v-text-field>

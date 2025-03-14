@@ -72,7 +72,7 @@ $messages-line-height: unset;
   <div class="login container md-body-1">
     <v-loading ref="loading" />
     <div class="login__title">
-      <v-img class="login__logo" src="@/images/main-picture/logo.png"></v-img>
+      <img class="login__logo" :src="require('@/images/main-picture/logo.png')" />
       <br />
       <span class="text-h5" style="color:rgba(0,0,0,0.7)"><strong>登录到Ocean</strong></span>
     </div>
