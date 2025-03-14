@@ -75,7 +75,7 @@
                 <!--若无合适的文件则显示空提示-->
                 <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].length==0">
                   <template v-slot:image>
-                    <img src="@/images/empty-picture/no_data.svg" />
+                    <v-img src="@/images/empty-picture/no_data.svg" ></v-img>
                   </template>
                 </van-empty>
                 <div class="notice-nomore__text" v-else>没有更多的文档了</div>

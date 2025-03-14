@@ -72,7 +72,7 @@
       :type="showPassword ? 'text' : 'password'" label="统一认证密码" placeholder="请输入门户/统一认证密码" hint="默认密码为身份证后6位" counter @click:append="showPassword = !showPassword"></v-text-field>
     <div class="login__captcha" v-if="csuCaptchaBoxShow">
       <v-text-field class="login__cpatcha__input" v-model="csuCaptcha" type="text" name="csuCaptcha" label="验证码" placeholder="请输入右侧验证码"></v-text-field>
-      <img class="login__cpatcha__img" :src="csuCaptchaImg" @click="getCSULoginCaptchaCode" />
+      <v-img class="login__cpatcha__img" :src="csuCaptchaImg" @click="getCSULoginCaptchaCode" ></v-img>
     </div>
     <v-btn class="login__button" depressed color="primary" @click="login">
       登录

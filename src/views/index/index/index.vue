@@ -89,7 +89,7 @@
       您当前处于校园局域网内，已为您切换校内服务器提供服务。当您离开校园局域网时首次加载可能会有短暂延迟，望您见谅。
     </van-notice-bar>
     <div class="index__top">
-      <img class="index__top__logo" src="@/images/main-picture/logo.png" />
+      <v-img class="index__top__logo" src="@/images/main-picture/logo.png" ></v-img>
       <div class="index__top__searchBox" @click="toSearch">
         <v-text-field outlined readonly dense hide-details="auto" prepend-inner-icon="mdi-file-find">
           <template v-slot:label>
@@ -139,7 +139,7 @@
               <!--若无合适的文件则显示空提示-->
               <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].size==0">
                 <template v-slot:image>
-                  <img src="@/images/empty-picture/no_data.svg" />
+                  <v-img src="@/images/empty-picture/no_data.svg" ></v-img>
                 </template>
               </van-empty>
               <!--三重循环，把Type对应的文件列表循环出来-->

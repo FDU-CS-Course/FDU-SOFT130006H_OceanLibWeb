@@ -73,7 +73,7 @@
     </v-text-field>
     <div class="login__captcha" v-if="bitCaptchaBoxShow">
       <v-text-field class="login__captcha__input" v-model="bitCaptcha" type="text" name="bitCaptcha" label="验证码" placeholder="请输入右侧验证码"></v-text-field>
-      <img class="login__captcha__img" :src="bitCaptchaImg" @click="getBITLoginCaptchaCode" />
+      <v-img class="login__captcha__img" :src="bitCaptchaImg" @click="getBITLoginCaptchaCode" ></v-img>
     </div>
     <v-btn class="login__button" depressed color="primary" @click="login">
       登录

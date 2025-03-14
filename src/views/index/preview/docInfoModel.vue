@@ -28,7 +28,7 @@
 <template>
   <van-popup v-model="infoModel" position="bottom" style="height: 540px" closeable>
     <div class="fileinfo">
-      <img src="@/images/main-picture/logo.png" width="120" />
+      <v-img src="@/images/main-picture/logo.png" width="120"></v-img>
 
       <van-divider content-position="right">文档详情</van-divider>
       <div class="fileinfo__detail__item">

@@ -43,7 +43,7 @@
       <div class="download__content__payment" v-else>
         价值 • {{this.fileInfo.paymentAmount}}{{ this.fileInfo.paymentMethod == 2 ? "金币" : "下载券" }}
         <span v-if="this.fileInfo.isAllowVipfree==1">
-          • <img class="mine__userinfo__nickname__icon" src="@/images/main-icon/icon_VIP.svg" width="20" /> VIP免费下</span>
+          • <v-img class="mine__userinfo__nickname__icon" src="@/images/main-icon/icon_VIP.svg" width="20" ></v-img> VIP免费下</span>
       </div>
       <v-alert dense type="info">
         该文档格式为

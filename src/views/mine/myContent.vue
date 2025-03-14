@@ -93,7 +93,7 @@
               <!--若无文件则显示空提示-->
               <van-empty description="您还没有已经发布的文档呢" v-if="myFileList.length==0">
                 <template v-slot:image>
-                  <img src="@/images/empty-picture/no_record.svg" />
+                  <v-img src="@/images/empty-picture/no_record.svg"></v-img>
                 </template>
                 <template>
                   <v-btn color="primary" small class="mr-2" to="/uploadFile">上传更多文档
@@ -118,7 +118,7 @@
       <van-tab title="专栏" name="1">
         <van-empty description="程序猿们正在努力开发中">
           <template v-slot:image>
-            <img src="@/images/empty-picture/no_internet.svg" />
+            <v-img src="@/images/empty-picture/no_internet.svg" ></v-img>
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们
             <v-icon right dark>mdi-account-cog</v-icon>
@@ -128,7 +128,7 @@
       <van-tab title="帮帮帖" name="2">
         <van-empty description="程序猿们正在努力开发中">
           <template v-slot:image>
-            <img src="@/images/empty-picture/no_internet.svg" />
+            <v-img src="@/images/empty-picture/no_internet.svg" ></v-img>
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们
             <v-icon right dark>mdi-account-cog</v-icon>

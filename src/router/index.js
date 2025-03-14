@@ -16,7 +16,6 @@ const router = createRouter({
 
 //路由转发拦截器
 router.beforeEach((to, from, next) => {
-
     //ViewUI.LoadingBar.start();
     window.document.title = "Ocean文库-" + to.meta.title;
     

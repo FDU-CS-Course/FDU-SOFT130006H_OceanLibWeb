@@ -45,7 +45,7 @@
 <template>
   <div class="reg container md-body-1">
     <div class="reg__title">
-      <img class="reg__logo" src="../images/main-picture/logo.png" />
+      <v-img class="reg__logo" src="../images/main-picture/logo.png"></v-img>
       <br />
       <span class="text-h5" style="color:rgba(0,0,0,0.7)"><strong>用户注册</strong></span>
     </div>

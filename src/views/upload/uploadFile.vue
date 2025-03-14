@@ -110,13 +110,13 @@
         <!-- </v-img> -->
         <v-card-text>
           <div class="upload__typebox">
-            <span>支持格式：</span><img src="../../images/type-icon/doc.svg" width="28" />
+            <span>支持格式：</span><v-img src="../../images/type-icon/doc.svg" width="28" ></v-img>
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/xls.svg" class="upload__typebox__icon" />
+            <v-img src="../../images/type-icon/xls.svg" class="upload__typebox__icon" ></v-img>
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/ppt.svg" class="upload__typebox__icon" />
+            <v-img src="../../images/type-icon/ppt.svg" class="upload__typebox__icon" ></v-img>
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/pdf.svg" class="upload__typebox__icon" />
+            <v-img src="../../images/type-icon/pdf.svg" class="upload__typebox__icon" ></v-img>
           </div>
           <input type="file" hidden ref="docFileUploader" name="docFileUploader" @change="onFileChange">
         </v-card-text>
@@ -131,9 +131,9 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text class="upload__note">
           <div class="upload__typebox">
-            支持格式：<img src="../../images/type-icon/jpg.svg" class="upload__typebox__icon" />
+            支持格式：<v-img src="../../images/type-icon/jpg.svg" class="upload__typebox__icon" ></v-img>
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/png.svg" class="upload__typebox__icon" />
+            <v-img src="../../images/type-icon/png.svg" class="upload__typebox__icon" ></v-img>
           </div>
           <van-uploader v-model="picFileList" multiple accept=".png,.jpg" name="uploadFile" />
           <v-btn color="primary" @click="upload('pic')" small>

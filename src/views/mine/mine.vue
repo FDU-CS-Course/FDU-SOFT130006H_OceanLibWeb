@@ -119,7 +119,7 @@
         <div>
           <div class="mine__userinfo__nickname">
             {{ userInfo.nickname }}
-            <img class="mine__userinfo__nickname__icon" src="../../images/main-icon/icon_VIP.svg" v-if="userInfo.wallet.isVip == 1" width="20" />
+            <v-img class="mine__userinfo__nickname__icon" src="../../images/main-icon/icon_VIP.svg" v-if="userInfo.wallet.isVip == 1" width="20" ></v-img>
 
             <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
               v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
@@ -141,32 +141,32 @@
     <van-grid style="margin-bottom: 10px">
       <van-grid-item text="我的收藏" to="/myCollectionList">
         <template #icon>
-          <img src="../../images/module-icon/icon_collection.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/module-icon/icon_collection.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
       <van-grid-item text="我的下载" to="/myDownloadList">
         <template #icon>
-          <img src="../../images/module-icon/icon_download.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/module-icon/icon_download.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
       <van-grid-item text="最近浏览" to="/myRecentlyReadList">
         <template #icon>
-          <img src="../../images/module-icon/icon_look.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/module-icon/icon_look.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
       <van-grid-item text="我的贡献" to="/myUpload">
         <template #icon>
-          <img src="../../images/module-icon/icon_contribution.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/module-icon/icon_contribution.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
       <van-grid-item text="上传文档" to="/uploadFile">
         <template #icon>
-          <img src="../../images/module-icon/icon_upload.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/module-icon/icon_upload.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
       <van-grid-item text="申请VIP" to="/vip">
         <template #icon>
-          <img src="../../images/main-icon/icon_VIP.svg" width="30" style="margin-bottom: 5px" />
+          <v-img src="../../images/main-icon/icon_VIP.svg" width="30" style="margin-bottom: 5px" ></v-img>
         </template>
       </van-grid-item>
     </van-grid>

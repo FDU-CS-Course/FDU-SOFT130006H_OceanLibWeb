@@ -72,7 +72,7 @@ $messages-line-height: unset;
   <div class="login container md-body-1">
     <v-loading ref="loading" />
     <div class="login__title">
-      <img class="login__logo" src="../images/main-picture/logo.png" />
+      <v-img class="login__logo" src="@/images/main-picture/logo.png"></v-img>
       <br />
       <span class="text-h5" style="color:rgba(0,0,0,0.7)"><strong>登录到Ocean</strong></span>
     </div>
@@ -202,7 +202,7 @@ export default {
           if (response.data.state == 'SUCCESS') {
             if (response.data.code == '1') {
               sessionStorage.clear();
-              localStorage.setItem('token', response.data.msg);
+              localStorage.setItem("token", response.data.msg);
               Notify({ type: 'success', message: '登录成功' });
               this.$router.push('/index');
             }

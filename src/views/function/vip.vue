@@ -3,7 +3,7 @@
         <van-nav-bar id="toolbar" title="VIP申请" left-text="返回" left-arrow @click-left="back">
         </van-nav-bar>
         <div style="display: flex;flex-direction: column">
-            <img id="title" src="../../images/main-picture/background_vip.png" style="width: 100%" @load="changeIframe"/>
+            <v-img id="title" src="../../images/main-picture/background_vip.png" style="width: 100%" @load="changeIframe"></v-img>
             <iframe id="iframe" src='https://www.wjx.top/jq/82526447,i,t.aspx?width=760&source=iframe'
                     width="100%" frameborder='0' style='overflow:auto'></iframe>
         </div>

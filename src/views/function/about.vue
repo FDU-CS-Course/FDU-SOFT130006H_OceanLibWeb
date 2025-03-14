@@ -44,7 +44,7 @@
   <div class="about">
     <van-nav-bar id="toolbar" title="关于Ocean" left-text="返回" left-arrow @click-left="back" fixed placeholder>
     </van-nav-bar>
-    <img src="../../images/main-picture/about_top.png" style="width: 100%" />
+    <v-img src="../../images/main-picture/about_top.png" style="width: 100%" ></v-img>
     <div class="about__content">
       <p class="about__content--primary">内部版本3.1.12 (20220221Build)内测版本</p>
       <p class="about__content--warning">本项目为中南大学、北京理工大学大学生创新创业项目支持的非盈利性公益项目</p>
