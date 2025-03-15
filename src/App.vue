@@ -1,6 +1,8 @@
 <template>
-  <v-app id="app">
-      <RouterView :key="key"></RouterView>
+  <v-app>
+    <v-main>
+      <router-view :key="key" />
+    </v-main>
   </v-app>
 </template>
 

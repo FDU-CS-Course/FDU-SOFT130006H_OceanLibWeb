@@ -3,6 +3,7 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify'
 import router from './router'
 import './plugins/vant.js'
+import 'vuetify/dist/vuetify.min.css';
 
 // 定义特性标志
 window.__VUE_PROD_DEVTOOLS__ = false;
