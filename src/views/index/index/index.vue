@@ -223,6 +223,15 @@ export default {
           this.getTypesByTypeString(groupList[index].includeIndex, groupList[index].includeType, groupList[index].includeTag, groupList[index].groupID);
         }
       }
+    })
+    .catch((error) => {
+      if (error.status && error.status === 401 &&
+          error.statusText && error.statusText === 'Unauthorized') {
+        console.log('unauthorized access');
+      } else {
+        console.error('unexpected error:', error);
+        throw error;
+      }
     });
   },
   methods: {
