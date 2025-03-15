@@ -29,9 +29,11 @@ router.beforeEach((to, from, next) => {
         if(isAuthenticated) {
             // if authenticated user visits login, redirect to '/index'.
             next('/index');
+            return;
         } else {
             // if unauthenticated user visits login, accept.
             next();
+            return;
         }
     } else {
         if(isAuthenticated) {
@@ -45,14 +47,14 @@ router.beforeEach((to, from, next) => {
             } else {
                 // if have session, directly move to page.
                 next();
+                return;
             }
         } else {
             // if unauthenticated user visits other pages, redirect to '/login'.
             next("/login");
+            return;
         }
     }
-
-    next();
 });
 
 router.afterEach((to, from) => {
