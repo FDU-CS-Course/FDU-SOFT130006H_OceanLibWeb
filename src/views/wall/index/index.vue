@@ -37,11 +37,11 @@
 </style>
 <template>
   <div class="wall">
-    <div class="text-h5" style="margin:20px 0px">互助集市 <v-icon color="var(--v-theme-primary)">mdi-sticker</v-icon>
+    <div class="text-h5" style="margin:20px 0px">互助集市 <v-icon color="rgb(var(--v-theme-primary))">mdi-sticker</v-icon>
     </div>
     <van-sticky :offset-top="0">
       <div class="wall__search">
-        <v-toolbar theme="dark" color="var(--v-theme-primary)">
+        <v-toolbar theme="dark" color="rgb(var(--v-theme-primary))">
           <v-text-field hide-details prepend-icon="mdi-magnify" single-line></v-text-field>
           <v-btn icon>
             <v-icon>mdi-filter</v-icon>

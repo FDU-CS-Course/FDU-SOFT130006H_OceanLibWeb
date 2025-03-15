@@ -14,12 +14,12 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-theme-primary);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
   &--important {
     font-size: 14px;
-    color: var(--v-error-base);
+    color: rgb(var(--v-error-base));
     font-weight: bold;
   }
 }

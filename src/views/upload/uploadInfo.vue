@@ -48,7 +48,7 @@
     <van-nav-bar id="toolbar" title="文档信息编辑" left-text="返回" left-arrow @click-left="back">
       <template #right>
         <div v-if="uploadID!=null">
-          <van-loading color="var(--v-theme-primary)" v-if="previewLoading" size="24" />
+          <van-loading color="rgb(var(--v-theme-primary))" v-if="previewLoading" size="24" />
           <a v-else @click="previewDrawerShow = true">文档预览</a>
         </div>
       </template>
@@ -101,7 +101,7 @@
         <template #input>
           <van-checkbox modelValue="isOriginalConfirm" shape="square">
             我郑重确认所提交的文档系本人独立创作，内容不涉及他人权利，本人依法享有和承担由此作品而产生的权利和全部法律责任。
-            <span style="color:var(--v-error-base)">转载禁止声明原创，平台一经发现确认将零容忍封禁账号。</span>
+            <span style="color:rgb(var(--v-error-base))">转载禁止声明原创，平台一经发现确认将零容忍封禁账号。</span>
           </van-checkbox>
         </template>
       </van-field>

@@ -17,7 +17,7 @@
       text-align: center;
     }
     &--warning {
-      color: var(--v-theme-primary);
+      color: rgb(var(--v-theme-primary));
       font-size: 12px;
       text-align: center;
     }

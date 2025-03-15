@@ -34,7 +34,7 @@
         <v-btn text @click="freePrintModel = false">
           稍后再说
         </v-btn>
-        <v-btn color="var(--v-theme-primary)" text @click="$router.push('/freePrint')">
+        <v-btn color="rgb(var(--v-theme-primary))" text @click="$router.push('/freePrint')">
           立刻前往
         </v-btn>
       </v-card-actions>

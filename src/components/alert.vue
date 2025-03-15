@@ -1,6 +1,6 @@
 <style scoped>
     .note-block.tip {
-        border-left-color: var(--md-theme-default-primary);
+        border-left-color: rgb(var(--md-theme-default-primary));
     }
 
     .note-block {

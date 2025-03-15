@@ -9,12 +9,12 @@
     font-size: 12px;
   }
   &--important {
-    color: var(--v-error-darken1);
+    color: rgb(var(--v-error-darken1));
     font-weight: bold;
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-theme-primary);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
   &--label {

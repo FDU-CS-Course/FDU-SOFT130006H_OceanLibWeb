@@ -107,7 +107,7 @@
     padding-top: 5px;
     &__more {
       padding-left: 10px;
-      color: var(--v-secondary-darken1);
+      color: rgb(var(--v-secondary-darken1));
       background-color: @gray-1;
       margin: 0px 0px 20px 30px;
     }
@@ -143,7 +143,7 @@
             :username="comment.replyToCommentReplier"></v-username>
         </div>
         <v-btn small text rounded class=" comment__bottom__moreButton" @click="$refs['moreModel'].open()" v-if="comment.commentStatus=='NORMAL'">
-          <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-secondary-lighten4)">
+          <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))">
             mdi-dots-horizontal</v-icon>
         </v-btn>
       </div>
@@ -163,12 +163,12 @@
         </div>
         <div v-if="comment.commentStatus=='NORMAL'">
           <v-btn small text rounded class=" comment__bottom__replyButton" @click="doReply()">
-            <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-secondary-lighten4)">
+            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))">
               mdi-comment-text-multiple-outline</v-icon>
           </v-btn>
           <v-btn small text rounded class="comment__bottom__likeButton" @click="doEvaluateComment('like',comment)">
-            <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-secondary-lighten4)" v-if="!comment.isLike">mdi-thumb-up-outline</v-icon>
-            <v-icon class="comment__bottom__buttonIcon" style="color:var(--v-theme-primary)" v-else>mdi-thumb-up</v-icon>
+            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))" v-if="!comment.isLike">mdi-thumb-up-outline</v-icon>
+            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-theme-primary))" v-else>mdi-thumb-up</v-icon>
             <div class="comment__bottom__likeNum">
               {{ comment.likeNumber == 0 ? "":comment.likeNumber}}
             </div>
