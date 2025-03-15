@@ -175,6 +175,7 @@
     <van-cell title="我的订单" is-link />
     <van-cell title="我的钱包变动" is-link to="/walletChangeRecordList" />
     <van-cell title="关于Lib4Univ文库" is-link style="margin-top: 5px" to="/about" />
+    <van-cell title="退出登录" style="color: var(--van-danger-color);" is-link @click="handleLogout" />
     <div style="position: fixed;bottom: 0;left: 0;right: 0;">
       <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
         <v-btn link to="/index">
@@ -227,6 +228,10 @@ export default {
       }).then((response) => {
         this.userInfo = response.data.msg;
       });
+    },
+    handleLogout() {
+      localStorage.removeItem("token");
+      this.$router.push("/login");
     },
   },
 };
