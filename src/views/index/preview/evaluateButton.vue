@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 export default {
   name: 'evaluateButton',

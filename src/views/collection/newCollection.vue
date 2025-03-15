@@ -48,7 +48,7 @@
 <script>
 import moreItem from '@/components/more/moreItem';
 import more from '@/components/more/more';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 import qs from 'qs';
 
 export default {

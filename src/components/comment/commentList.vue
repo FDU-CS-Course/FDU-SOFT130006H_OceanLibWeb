@@ -88,7 +88,7 @@ import commentBox from './commentBox';
 import replyList from './replyList';
 import sendBox from './sendBox';
 
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 import userBehaviorStore from '@/components/common/userBehavior/userBehaviorStore.js';
 

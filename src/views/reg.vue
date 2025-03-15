@@ -1,5 +1,6 @@
 <style scoped lang="less">
 @import '~@/vant-variables.less';
+
 .reg {
   display: flex;
   flex-direction: column;
@@ -83,7 +84,7 @@
 import * as axios from 'axios';
 import qs from 'qs';
 import bitRegNotice from '@/components/univlogin/bit/bitRegNotice.vue';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 export default {
   data() {

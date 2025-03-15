@@ -8,7 +8,7 @@
 </template>
 <script>
 import dialog from '@/components/dialog/dialog.vue';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 export default {
   components: {

@@ -199,7 +199,7 @@
 
 <script>
 import Username from '@/components/common/username/username';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 import userBehaviorStore from '@/components/common/userBehavior/userBehaviorStore.js';
 import moreItem from '@/components/more/moreItem';
