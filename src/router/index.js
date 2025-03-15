@@ -17,18 +17,41 @@ const router = NewRouter();
 router.beforeEach((to, from, next) => {
     //ViewUI.LoadingBar.start();
     window.document.title = "Ocean文库-" + to.meta.title;
-    
-    if (sessionStorage.getItem("role") == null && localStorage.getItem("token") != null) {
-        getUserInfo(() => {
-            next(to);
-        });
-        return;
-    }
 
     if (to.matched.length === 0) { //to.matched（路由匹配到的所有路由记录）的匹配会在beforeEach前进行，若更新了路由，则需要重新匹配，否则将导致进入空白页
         next("/errorPage");
         return;
     }
+
+    const isAuthenticated = localStorage.getItem('token') !== null;
+    
+    if (to.path === "/login") {
+        if(isAuthenticated) {
+            // if authenticated user visits login, redirect to '/index'.
+            next('/index');
+        } else {
+            // if unauthenticated user visits login, accept.
+            next();
+        }
+    } else {
+        if(isAuthenticated) {
+            // if authenticated user visits other pages, accept.
+            if (sessionStorage.getItem("role") == null) {
+                // if lost session, fetch it from server.
+                getUserInfo(() => {
+                    next(to);
+                });
+                return;
+            } else {
+                // if have session, directly move to page.
+                next();
+            }
+        } else {
+            // if unauthenticated user visits other pages, redirect to '/login'.
+            next("/login");
+        }
+    }
+
     next();
 });
 
