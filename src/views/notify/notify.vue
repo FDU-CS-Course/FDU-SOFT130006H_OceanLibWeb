@@ -4,7 +4,7 @@
     <van-grid style="margin-bottom: 10px">
       <van-grid-item text="帮帮求助" to="/">
         <template #icon>
-          <img :src="rqeuire('@/images/module-icon/icon_notify_help.svg')" width="30" style="margin-bottom: 5px" />
+          <img :src="require('@/images/module-icon/icon_notify_help.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="赞同" to="/notifyLikeList">
