@@ -57,7 +57,7 @@
                 <v-expand-transition>
                   <div v-show="fileInfo.show">
                     <v-divider></v-divider>
-                    <v-simple-table dense style="width:500px">
+                    <v-simple-table density="compact" style="width:500px">
                       <template v-slot:default>
                         <thead>
                           <tr>

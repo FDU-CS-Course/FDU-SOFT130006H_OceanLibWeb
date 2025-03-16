@@ -62,11 +62,11 @@
           <img :src="require('../../images/type-icon/ppt.svg')" width="36" height="36" v-if="fileInfo.fileType=='ppt'||fileInfo.fileType=='pptx'" />
           <img :src="require('../../images/type-icon/pdf.svg')" width="36" height="36" v-if="fileInfo.fileType=='pdf'" />
         </div>
-        <v-text-field v-model="fileInfo.title" placeholder="请输入文档标题" :rules="[titleRule.required]" outlined dense hide-details="auto">
+        <v-text-field v-model="fileInfo.title" placeholder="请输入文档标题" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
         </v-text-field>
       </div>
       <van-divider></van-divider>
-      <v-textarea v-model="fileInfo.abstractContent" placeholder="简要介绍文档内容等" outlined dense hide-details="auto" hint="准确的文档内容简介更容易被他人检索"></v-textarea>
+      <v-textarea v-model="fileInfo.abstractContent" placeholder="简要介绍文档内容等" outlined density="compact" hide-details="auto" hint="准确的文档内容简介更容易被他人检索"></v-textarea>
     </div>
     <div class="upload--list">
       <van-field readonly clickable :value="folderName" label="专栏组" placeholder="点击加入一个专栏" @click="showFolderList" />

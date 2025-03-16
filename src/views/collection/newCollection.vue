@@ -21,9 +21,9 @@
       </template>
     </van-nav-bar>
     <div class="newcollection">
-      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined dense hide-details="auto">
+      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
       </v-text-field>
-      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined dense hide-details></v-textarea>
+      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined density="compact" hide-details></v-textarea>
       <v-switch class="newcollection__input" v-model="isPublic" hide-details>
         <template v-slot:label>
           <div class="newcollection__input__label">设为公开</div>

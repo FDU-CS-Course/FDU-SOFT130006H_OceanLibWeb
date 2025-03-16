@@ -49,8 +49,8 @@
     </van-nav-bar>
 
     <van-sticky :offset-top="0">
-      <v-toolbar class="search__input" color="#fff">
-        <v-text-field v-model="keywords" prepend-inner-icon="mdi-file-search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @input="suggest"
+      <v-toolbar class="search__input" color="surface">
+        <v-text-field v-model="keywords" :prepend-inner-icon="mdiFileSearch" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
           @click:clear="restartSearch" hide-details="auto"></v-text-field>
       </v-toolbar>
     </van-sticky>

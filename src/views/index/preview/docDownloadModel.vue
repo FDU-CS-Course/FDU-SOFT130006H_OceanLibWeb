@@ -45,7 +45,7 @@
         <span v-if="this.fileInfo.isAllowVipfree==1">
           • <img class="mine__userinfo__nickname__icon" :src="require('@/images/main-icon/icon_VIP.svg')" width="20" /> VIP免费下</span>
       </div>
-      <v-alert dense type="info">
+      <v-alert density="compact" type="info">
         该文档格式为
         <strong>{{this.fileInfo.fileType}}</strong>
       </v-alert>

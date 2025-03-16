@@ -91,7 +91,14 @@
     <div class="index__top">
       <img class="index__top__logo" :src="require('@/images/main-picture/logo.png')" />
       <div class="index__top__searchBox" @click="toSearch">
-        <v-text-field outlined readonly dense hide-details="auto" prepend-inner-icon="mdi-file-find">
+        <v-text-field
+            variant="outlined"
+            density="compact"
+            readonly
+            :hide-details="'auto'"
+            prepend-inner-icon="mdi-file-find"
+            @click:prepend-inner="toSearch"
+        >
           <template v-slot:label>
             <div class="text-body-2 text--secondary">搜索你想查找的资料名称</div>
           </template>
