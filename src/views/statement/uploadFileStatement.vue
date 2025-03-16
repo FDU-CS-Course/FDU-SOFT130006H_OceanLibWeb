@@ -9,12 +9,12 @@
     font-size: 12px;
   }
   &--important {
-    color: var(--v-error-darken1);
+    color: rgb(var(--v-error-darken1));
     font-weight: bold;
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
   &--label {
@@ -58,7 +58,9 @@
         </p>
         <p>8. 不得发表盗版内容，非法转载以及侵权内容。Lib4Univ文库对他人在平台上实施的此类侵权行为不承担法律责任，侵权的法律责任概由本人承担。
         </p>
-        <p>9.除上述外，用户不得违反下列限制或禁止：</p>
+        <p>
+          9.除上述外，用户不得违反下列限制或禁止：
+        </p>
         <p>（1）不得冒充任何人或机构，或以虚假不实的方式谎称或使人误认为与任何人或任何机构有关。<br />
           （2）不得伪造标题或以其他方式操控识别资料，使人误认为该内容为本平台所传送。<br />
           （3）不得将无权传送的内容（例如内部资料、机密资料）进行上载、张贴、发送电子邮件或以其他方式传送。<br />

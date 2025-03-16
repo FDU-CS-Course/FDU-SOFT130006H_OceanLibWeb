@@ -34,7 +34,7 @@
       {{ parseFloat(scoreAvg).toFixed(1) }} 分
     </div>
 
-    <van-popup v-model="setScoreModel" round position="bottom" style="height: 200px" closeable>
+    <van-popup v-model:show="setScoreModel" round position="bottom" style="height: 200px" closeable>
       <div class="score__model">
         <div class="score__model__title">请为该文档进行评分</div>
         <van-rate v-model="myScore" allow-half :size="35" color="#ffd21e" void-icon="star" void-color="#eee" />

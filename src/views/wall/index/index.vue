@@ -37,11 +37,11 @@
 </style>
 <template>
   <div class="wall">
-    <div class="text-h5" style="margin:20px 0px">互助集市 <v-icon color="var(--v-primary-base)">mdi-sticker</v-icon>
+    <div class="text-h5" style="margin:20px 0px">互助集市 <v-icon color="rgb(var(--v-theme-primary))">mdi-sticker</v-icon>
     </div>
     <van-sticky :offset-top="0">
       <div class="wall__search">
-        <v-toolbar dark color="var(--v-primary-base)">
+        <v-toolbar theme="dark" color="rgb(var(--v-theme-primary))">
           <v-text-field hide-details prepend-icon="mdi-magnify" single-line></v-text-field>
           <v-btn icon>
             <v-icon>mdi-filter</v-icon>
@@ -56,11 +56,11 @@
     <div>
       <div v-for="(item,index) in wallInfo" :key="index">
 
-        <v-card class="mx-auto mb-4" v-if="item.isAD" dark max-width="400">
+        <v-card class="mx-auto mb-4" v-if="item.isAD" theme="dark" max-width="400">
           <v-parallax height="150" src="@/images/ad-2.png"></v-parallax>
         </v-card>
 
-        <v-card class="mx-auto mb-4" :color="item.backgroundColor" dark max-width="400" v-else>
+        <v-card class="mx-auto mb-4" :color="item.backgroundColor" theme="dark" max-width="400" v-else>
           <v-card-title>
             <v-icon left>
               {{item.noticeIcon?item.noticeIcon:getIcon(item.noticeType)}}
@@ -74,18 +74,18 @@
 
           <v-card-actions>
             <v-list-item class="grow">
-              <v-list-item-avatar color="grey darken-3" size="28" v-if="!item.isAnonymous">
+              <v-avatar color="grey darken-3" size="28" v-if="!item.isAnonymous">
                 <v-img class="elevation-6" :src="item.buildUserEntity.avatar" alt="Avatar" v-if="item.buildUserEntity.avatar != null" />
                 <span v-else>{{ item.buildUserEntity.nickname.substring(0, 1) }}</span>
-              </v-list-item-avatar>
-              <v-list-item-avatar color="grey darken-3" size="28" v-else>
+              </v-avatar>
+              <v-avatar color="grey darken-3" size="28" v-else>
                 <v-img class="elevation-6"
                   src="https://avataaars.io/?avatarStyle=Transparent&topType=Hat&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Serious&skinColor=Light"
                   alt="Avatar" />
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <div class="text-body-2">{{item.isAnonymous?"匿名纸条":item.buildUserEntity.nickname}}</div>
-              </v-list-item-content>
+              </v-avatar>
+<!--              <v-list-item-content>-->
+              <div class="text-body-2">{{item.isAnonymous?"匿名纸条":item.buildUserEntity.nickname}}</div>
+<!--              </v-list-item-content>-->
               <v-row align="center" justify="end">
                 <v-icon class="mr-1">
                   mdi-comment-eye
@@ -121,7 +121,7 @@
     <div style="position: fixed;bottom: 60px;right: 10px;">
       <v-speed-dial v-model="fab" bottom right direction="top" transition="slide-y-reverse-transition">
         <template v-slot:activator>
-          <v-btn v-model="fab" color="blue darken-2" dark fab>
+          <v-btn v-model="fab" color="blue darken-2" theme="dark" fab>
             <v-icon v-if="fab">
               mdi-close
             </v-icon>
@@ -130,10 +130,10 @@
             </v-icon>
           </v-btn>
         </template>
-        <v-btn fab dark small color="green">
+        <v-btn fab theme="dark" small color="green">
           <v-icon>mdi-pencil</v-icon>
         </v-btn>
-        <v-btn fab dark small color="red">
+        <v-btn fab theme="dark" small color="red">
           <v-icon>mdi-delete</v-icon>
         </v-btn>
       </v-speed-dial>

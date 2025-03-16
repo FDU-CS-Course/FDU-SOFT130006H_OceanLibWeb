@@ -21,16 +21,16 @@
       </template>
     </van-nav-bar>
     <div class="newcollection">
-      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined dense hide-details="auto">
+      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
       </v-text-field>
-      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined dense hide-details></v-textarea>
+      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined density="compact" hide-details></v-textarea>
       <v-switch class="newcollection__input" v-model="isPublic" hide-details>
-        <template slot="label">
+        <template v-slot:label>
           <div class="newcollection__input__label">设为公开</div>
         </template>
       </v-switch>
       <v-alert border="right" colored-border type="info" elevation="2">
-        收藏夹一旦设置为公开，<span style="color: var(--v-primary-base)">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
+        收藏夹一旦设置为公开，<span style="color: rgb(var(--v-theme-primary))">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
       </v-alert>
 
       <v-btn color="primary" @click="addOrChangeCollection">
@@ -48,7 +48,7 @@
 <script>
 import moreItem from '@/components/more/moreItem';
 import more from '@/components/more/more';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 import qs from 'qs';
 
 export default {

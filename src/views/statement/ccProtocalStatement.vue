@@ -14,14 +14,14 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
 }
 </style>
 <template style="overflow-y:hidden">
   <div class="ccprotocal">
-    <img class="ccprotocal__logo" src="@/images/main-picture/cc.png" />
+    <img class="ccprotocal__logo" :src="require('@/images/main-picture/cc.png')" />
     <p class="ccprotocal__title">CC版权协议</p>
     <div class="ccprotocal__content">
       <p>知识共享许可协议（Creative Commons license），又叫CC协议，是一种允许他人分发作品的公共版权许可。</p>

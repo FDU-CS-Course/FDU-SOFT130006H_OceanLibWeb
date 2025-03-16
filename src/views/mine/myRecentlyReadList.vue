@@ -16,7 +16,7 @@
 
     <div class="full">
       <van-pull-refresh v-model="refreshing" @refresh="getRecentlyReadList()" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getRecentlyReadList()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getRecentlyReadList()">
           <div v-for="fileInfo in fileList" :key="fileInfo.fileID" class="fileBox">
             <v-fileBox :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
               :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.fileExtraEntity.readNum" :score="fileInfo.fileExtraEntity.score"
@@ -26,8 +26,8 @@
           <template #finished>
             <!--若无收藏夹则显示空提示-->
             <van-empty description="没有最近7天的阅读记录呢" v-if="fileList.length==0">
-              <template slot="image">
-                <img src="@/images/empty-picture/no_record.svg" />
+              <template v-slot:image>
+                <img :src="require('@/images/empty-picture/no_record.svg')" />
               </template>
             </van-empty>
             <div v-else class="notice-nomore__text">没有更多阅读记录了</div>

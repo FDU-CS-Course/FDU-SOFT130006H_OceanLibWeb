@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios from "axios";
 import {
     baseURL
 } from '@/config.js';
 import router from "../router";
+import {create} from "axios";
 
 export const Axios = axios.create({
     timeout: 10 * 1000,
@@ -46,7 +47,7 @@ function testIntranetSites(url) {
 }
 
 //请求拦截器
-Axios.interceptors.request.use(config => {
+Axios.interceptors.request.use((config) => {
     //若存在这样的token，则从本地存储取出
     if (localStorage.token) {
         config.headers.Authorization = localStorage.getItem("token")
@@ -66,6 +67,7 @@ Axios.interceptors.request.use(config => {
 
 //响应拦截器
 Axios.interceptors.response.use(res => {
+
     if (res.headers.Authorization) {
         localStorage.setItem("token", res.headers.Authorization);
     }
@@ -99,9 +101,7 @@ Axios.interceptors.response.use(res => {
 });
 
 export default {
-    install(Vue) {
-        Object.defineProperty(Vue.prototype, '$Axios', {
-            value: Axios
-        })
+    install: (app) => {
+        app.config.globalProperties.$Axios = Axios;
     }
 }

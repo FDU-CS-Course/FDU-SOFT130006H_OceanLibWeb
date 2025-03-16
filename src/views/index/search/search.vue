@@ -39,7 +39,7 @@
 }
 </style>
 <style lang="less" scoped>
-/deep/ .v-toolbar__content {
+:deep(.v-toolbar__content) {
   padding: 0px 20px;
 }
 </style>
@@ -49,8 +49,8 @@
     </van-nav-bar>
 
     <van-sticky :offset-top="0">
-      <v-toolbar class="search__input" color="#fff">
-        <v-text-field v-model="keywords" prepend-inner-icon="mdi-file-search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @input="suggest"
+      <v-toolbar class="search__input" color="surface">
+        <v-text-field v-model="keywords" prepend-inner-icon="mdi-file-search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
           @click:clear="restartSearch" hide-details="auto"></v-text-field>
       </v-toolbar>
     </van-sticky>
@@ -69,7 +69,7 @@
       </div>
     </div>
 
-    <van-list class="search__result" v-model="loading" :finished="finished" :immediate-check="true" @load="search(true)" v-if="showResult && !showSuggest">
+    <van-list class="search__result" v-model:loading="loading" :finished="finished" :immediate-check="true" @load="search(true)" v-if="showResult && !showSuggest">
       <v-skeleton-loader type="article,article,article,article,article" v-if="initLoading"></v-skeleton-loader>
       <div class="search__result__box" v-for="fileInfo in fileList" :key="fileInfo.fileID">
         <v-fileBox :fileID="fileInfo.fileID" :searchResultContent="fileInfo.content" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title"
@@ -80,7 +80,7 @@
         <!--若无合适的文件则显示空提示-->
         <van-empty :description="'抱歉没有找到与「'+keywords+'」相关的文档'" v-if="fileList.length==0">
           <template #image>
-            <img src="@/images/empty-picture/no_search.svg" />
+            <img :src="require('@/images/empty-picture/no_search.svg')" />
           </template>
           <template>
             <v-btn color="primary" small>
@@ -106,8 +106,8 @@
       <v-searchHistory class="search__history" ref="searchHistory" @onHistoryTagClick="searchKeywords">
       </v-searchHistory>
       <van-empty description="输入关键字开始检索">
-        <template slot="image">
-          <img src="@/images/empty-picture/no_search.svg" />
+        <template v-slot:image>
+          <img :src="require('@/images/empty-picture/no_search.svg')" />
         </template>
       </van-empty>
     </div>
@@ -171,6 +171,8 @@ export default {
         },
       }).then((response) => {
         this.suggestList = response.data.msg;
+      }).catch((error) => {
+        console.log(error);
       });
     },
     searchKeywords(searchString) {
@@ -218,6 +220,8 @@ export default {
         }
         this.loading = false;
         this.initLoading = false;
+      }).catch((error) => {
+        console.log(error);
       });
     },
     toPreview(fileID, abstractContent, title, isOpenDownload = false) {

@@ -44,17 +44,17 @@ export default {
       switch (type) {
         case "error":
           this.icon = "mdi-alert-octagon";
-          this.color = "var(--v-error-darken2)";
+          this.color = "rgb(var(--v-error-darken2))";
           this.isConfirmDialog = false;
           break;
         case "login":
           this.icon = "mdi-account-key";
-          this.color = "var(--v-success-darken2)";
+          this.color = "rgb(var(--v-success-darken2))";
           this.isConfirmDialog = true;
           break;
         case "userInfoAsk":
           this.icon = "mdi-account-details";
-          this.color = "var(--v-primary-darken2)";
+          this.color = "rgb(var(--v-primary-darken2))";
           this.isConfirmDialog = true;
           break;
       }

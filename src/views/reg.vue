@@ -1,5 +1,6 @@
 <style scoped lang="less">
 @import '~@/vant-variables.less';
+
 .reg {
   display: flex;
   flex-direction: column;
@@ -45,7 +46,7 @@
 <template>
   <div class="reg container md-body-1">
     <div class="reg__title">
-      <img class="reg__logo" src="../images/main-picture/logo.png" />
+      <img class="reg__logo" :src="require('../images/main-picture/logo.png')" />
       <br />
       <span class="text-h5" style="color:rgba(0,0,0,0.7)"><strong>用户注册</strong></span>
     </div>
@@ -83,7 +84,7 @@
 import * as axios from 'axios';
 import qs from 'qs';
 import bitRegNotice from '@/components/univlogin/bit/bitRegNotice.vue';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 export default {
   data() {

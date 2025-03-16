@@ -1,77 +1,98 @@
+const login = () => import("../views/login.vue");
+const reg = () => import("../views/reg.vue");
+const homepage = () => import("../views/index/index/index.vue");
+const index = () => import("../views/index/index/index.vue");
+const wall = () => import("../views/wall/index/index.vue");
+const preview = () => import("../views/index/preview/preview.vue");
+const about = () => import("../views/function/about.vue");
+const result = () => import("../views/function/result.vue");
+const vip = () => import("../views/function/vip.vue");
+const freePrint = () => import("../views/function/freePrint.vue");
+const uploadFileStatement = () => import("../views/statement/uploadFileStatement.vue");
+
+const errorPage = () => import("../views/errorPage.vue");
+
 const constantRouterMap = [{
         path: '/login',
         meta: {
             title: '用户登录'
         },
-        component: (resolve) => require(['../views/login.vue'], resolve)
+        component: login
     },
     {
         path: '/reg',
         meta: {
             title: '用户注册'
         },
-        component: (resolve) => require(['../views/reg.vue'], resolve)
+        component: reg
     },
     {
         path: '/',
         meta: {
             title: '主页',
         },
-        component: (resolve) => require(['../views/index/index/index.vue'], resolve)
+        component: homepage
     },
     {
         path: '/index',
         meta: {
             title: '主页',
         },
-        component: (resolve) => require(['../views/index/index/index.vue'], resolve)
+        component: index
     },
     {
         path: '/wall',
         meta: {
             title: '互助墙',
         },
-        component: (resolve) => require(['../views/wall/index/index.vue'], resolve)
+        component: wall
     },
     {
         path: '/preview',
         meta: {
             title: '预览',
         },
-        component: (resolve) => require(['../views/index/preview/preview.vue'], resolve)
+        component: preview
     },
     {
         path: '/about',
         meta: {
             title: '关于',
         },
-        component: (resolve) => require(['../views/function/about.vue'], resolve)
+        component: about
     }, {
         path: '/result',
         meta: {
             title: '结果',
         },
-        component: (resolve) => require(['../views/function/result.vue'], resolve)
+        component: result
     }, {
         path: '/vip',
         meta: {
             title: 'VIP申请',
         },
-        component: (resolve) => require(['../views/function/vip.vue'], resolve)
+        component: vip
     },
     {
         path: '/freePrint',
         meta: {
             title: '免费打印',
         },
-        component: (resolve) => require(['../views/function/freePrint.vue'], resolve)
+        component: freePrint
     }, 
     {
         path: '/statement/uploadFileStatement',
         meta: {
             title: '文件上传须知',
         },
-        component: (resolve) => require(['../views/statement/uploadFileStatement.vue'], resolve)
+        component: uploadFileStatement
+    },
+    {
+        path: '/errorPage',
+        meta: {
+            title: '布豪！',
+        },
+        component: errorPage
     }
 ];
 export default constantRouterMap;

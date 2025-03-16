@@ -110,13 +110,13 @@
         <!-- </v-img> -->
         <v-card-text>
           <div class="upload__typebox">
-            <span>支持格式：</span><img src="../../images/type-icon/doc.svg" width="28" />
+            <span>支持格式：</span><img :src="require('../../images/type-icon/doc.svg')" width="28" />
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/xls.svg" class="upload__typebox__icon" />
+            <img :src="require('../../images/type-icon/xls.svg')" class="upload__typebox__icon" />
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/ppt.svg" class="upload__typebox__icon" />
+            <img :src="require('../../images/type-icon/ppt.svg')" class="upload__typebox__icon" />
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/pdf.svg" class="upload__typebox__icon" />
+            <img :src="require('../../images/type-icon/pdf.svg')" class="upload__typebox__icon" />
           </div>
           <input type="file" hidden ref="docFileUploader" name="docFileUploader" @change="onFileChange">
         </v-card-text>
@@ -131,9 +131,9 @@
         <v-divider class="mx-4"></v-divider>
         <v-card-text class="upload__note">
           <div class="upload__typebox">
-            支持格式：<img src="../../images/type-icon/jpg.svg" class="upload__typebox__icon" />
+            支持格式：<img :src="require('../../images/type-icon/jpg.svg')" class="upload__typebox__icon" />
             <span class="upload__typebox__divider"> | </span>
-            <img src="../../images/type-icon/png.svg" class="upload__typebox__icon" />
+            <img :src="require('../../images/type-icon/png.svg')" class="upload__typebox__icon" />
           </div>
           <van-uploader v-model="picFileList" multiple accept=".png,.jpg" name="uploadFile" />
           <v-btn color="primary" @click="upload('pic')" small>
@@ -142,14 +142,14 @@
         </v-card-text>
       </v-card>
 
-      <van-popup class="upload__notice" v-model="showNotice" closeable position="bottom" round>
+      <van-popup class="upload__notice" v-model:show="showNotice" closeable position="bottom" round>
         <v-uploadFileStatement class="upload__notice__statement"></v-uploadFileStatement>
         <v-btn color="primary" @click="doUpload()">
           同意上述协议并继续
         </v-btn>
       </van-popup>
 
-      <v-dialog v-model="uploading" persistent width="300">
+      <v-dialog v-model:show="uploading" persistent width="300">
         <v-card color="primary" dark>
           <v-card-text>
             文档已上传{{uploadProgress}}%...

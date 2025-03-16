@@ -89,9 +89,16 @@
       您当前处于校园局域网内，已为您切换校内服务器提供服务。当您离开校园局域网时首次加载可能会有短暂延迟，望您见谅。
     </van-notice-bar>
     <div class="index__top">
-      <img class="index__top__logo" src="@/images/main-picture/logo.png" />
+      <img class="index__top__logo" :src="require('@/images/main-picture/logo.png')" />
       <div class="index__top__searchBox" @click="toSearch">
-        <v-text-field outlined readonly dense hide-details="auto" prepend-inner-icon="mdi-file-find">
+        <v-text-field
+            variant="outlined"
+            density="compact"
+            readonly
+            :hide-details="'auto'"
+            prepend-inner-icon="mdi-file-find"
+            @click:prepend-inner="toSearch"
+        >
           <template v-slot:label>
             <div class="text-body-2 text--secondary">搜索你想查找的资料名称</div>
           </template>
@@ -101,16 +108,16 @@
         <!--一重循环，把各个Top的Group循环显示出来-->
         <van-grid-item :text="item.groupName" v-for="item in topItemList" :key="item.groupID"
           @click="toIndexResult(item.groupName,item.includeIndex,item.includeType,item.includeTag)">
-          <template slot="icon">
-            <v-icon style="color:var(--v-primary-base)">mdi-{{item.icon}}</v-icon>
+          <template v-slot:icon>
+            <v-icon style="color:rgb(var(--v-theme-primary))">mdi-{{item.icon}}</v-icon>
           </template>
         </van-grid-item>
       </van-grid>
       <van-swipe class="index__top__adSwipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item style="background-color: var(--v-primary-base);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图1</div>
         </van-swipe-item>
-        <van-swipe-item style="background-color: var(--v-primary-base);height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图2</div>
         </van-swipe-item>
       </van-swipe>
@@ -129,7 +136,7 @@
         </a>
       </div>
 
-      <van-tabs v-model="item.activeTag" class="index__artical__group__tabs" :ellipsis="false" sticky @change="getFileListByTypeIDAndTagIDAndIndexString">
+      <van-tabs v-model:active="item.activeTag" class="index__artical__group__tabs" :ellipsis="false" sticky @change="getFileListByTypeIDAndTagIDAndIndexString">
         <!--二重循环，把各个Type循环出来-->
         <van-tab :title="type.typeName" class="index__artical__group__tabs__tab" :name="item.groupID+'/'+item.includeIndex+'/'+type.typeID+'/'+item.includeTag"
           v-for="type in typeList[item.groupID]" :key="type.typeID">
@@ -138,8 +145,8 @@
             <div v-if="!type.isload">
               <!--若无合适的文件则显示空提示-->
               <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].size==0">
-                <template slot="image">
-                  <img src="@/images/empty-picture/no_data.svg" />
+                <template v-slot:image>
+                  <img :src="require('@/images/empty-picture/no_data.svg')" />
                 </template>
               </van-empty>
               <!--三重循环，把Type对应的文件列表循环出来-->
@@ -223,6 +230,15 @@ export default {
           this.getTypesByTypeString(groupList[index].includeIndex, groupList[index].includeType, groupList[index].includeTag, groupList[index].groupID);
         }
       }
+    })
+    .catch((error) => {
+      if (error.status && error.status === 401 &&
+          error.statusText && error.statusText === 'Unauthorized') {
+        console.log('unauthorized access');
+      } else {
+        console.error('unexpected error:', error);
+        throw error;
+      }
     });
   },
   methods: {
@@ -238,7 +254,7 @@ export default {
         for (let index in typeList) {
           typeList[index].isload = true;
         }
-        Vue.set(this.typeList, groupID, typeList);
+        this.typeList[groupID] = typeList;
         this.getFileListByTypeIDAndTagIDAndIndexString(groupID + '/' + indexString + '/' + typeList[0].typeID + '/' + tagString);
       });
     },
@@ -259,10 +275,10 @@ export default {
         },
       }).then((response) => {
         let fileList = response.data.msg;
-        Vue.set(this.fileList, typeID, fileList);
+        this.fileList[typeID] = fileList;
         for (let index in this.typeList[groupID]) {
           if (this.typeList[groupID][index].typeID == typeID) {
-            Vue.set(this.typeList[groupID][index], 'isload', false);
+            this.typeList[groupID][index].isload = false;
           }
         }
       });

@@ -10,7 +10,7 @@
     </van-nav-bar>
     <div class="full">
       <van-pull-refresh v-model="loading" @refresh="getWalletChangeRecord(true)" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getWalletChangeRecord()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getWalletChangeRecord()">
           <div v-for="(record,index) in recordList" :key="index">
             <van-cell :value="record.time" size="large" :label="record.reason">
               <template #title>
@@ -22,8 +22,8 @@
           <template #finished>
             <!--若无合适的文件则显示空提示-->
             <van-empty description="没有账单记录" v-if="recordList.length===0">
-              <template slot="image">
-                <img src="@/images/empty-picture/no_record.svg" />
+              <template v-slot:image>
+                <img :src="require('@/images/empty-picture/no_record.svg')" />
               </template>
             </van-empty>
             <div class="notice-nomore__text" v-else>没有更多账单了</div>

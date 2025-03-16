@@ -1,40 +1,59 @@
-import ConstantRouters from "./constantRouter";
+import constantRouterMap from "./constantRouter";
 import asyncRouters from "./asyncRouter";
-import VueRouter from 'vue-router';
-import Vue from 'vue';
 import axios from 'axios'
 import {
     baseURL
 } from '@/config.js'
+import {createRouter, createWebHistory} from "vue-router";
+
+const errorPage = () => import("../views/errorPage.vue");
 
 //import ViewUI from 'view-design';
 //Vue.use(ViewUI);
-
-Vue.use(VueRouter);
-
-const RouterConfig = {
-    mode: 'history',
-    routes: ConstantRouters,
-    base: '/platform/',
-};
 
 const router = NewRouter();
 
 //路由转发拦截器
 router.beforeEach((to, from, next) => {
-
     //ViewUI.LoadingBar.start();
     window.document.title = "Ocean文库-" + to.meta.title;
 
-    if (sessionStorage.getItem("role") == null && localStorage.getItem("token") != null) {
-        getUserInfo(() => {
-            next(to);
-        });
-    } else {
-        next();
-    }
     if (to.matched.length === 0) { //to.matched（路由匹配到的所有路由记录）的匹配会在beforeEach前进行，若更新了路由，则需要重新匹配，否则将导致进入空白页
-        next();
+        next("/errorPage");
+        return;
+    }
+
+    const isAuthenticated = localStorage.getItem('token') !== null;
+    
+    if (to.path === "/login") {
+        if(isAuthenticated) {
+            // if authenticated user visits login, redirect to '/index'.
+            next('/index');
+            return;
+        } else {
+            // if unauthenticated user visits login, accept.
+            next();
+            return;
+        }
+    } else {
+        if(isAuthenticated) {
+            // if authenticated user visits other pages, accept.
+            if (sessionStorage.getItem("role") == null) {
+                // if lost session, fetch it from server.
+                getUserInfo(() => {
+                    next(to);
+                });
+                return;
+            } else {
+                // if have session, directly move to page.
+                next();
+                return;
+            }
+        } else {
+            // if unauthenticated user visits other pages, redirect to '/login'.
+            next("/login");
+            return;
+        }
     }
 });
 
@@ -48,7 +67,10 @@ router.afterEach((to, from) => {
 
 //生成新路由（token有效时将包含动态权限路由，token无效将跳转登录页）
 function NewRouter() {
-    let router = new VueRouter(RouterConfig);
+    let router = createRouter({
+        history: createWebHistory("/platform/"),
+        routes: constantRouterMap,
+    });
     if (sessionStorage.getItem("role")) {
         //若存在sessionStorage保存的ROLE值（说明单次会话未结束），则直接生成动态权限路由表
         // router.addRoutes(routerMatch(sessionStorage.getItem("role")));
@@ -115,11 +137,11 @@ function routerMatch(role) {
         }
     }
     routers.push({
-        path: '*',
+        path: '/:catchAll(.*)',
         meta: {
             title: '访问受限',
         },
-        component: (resolve) => require(['../views/errorPage.vue'], resolve)
+        component: errorPage
     });
     return routers;
 }

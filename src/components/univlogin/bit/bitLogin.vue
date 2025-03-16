@@ -84,7 +84,7 @@
 <script>
 import * as axios from 'axios';
 import { encryptPassword } from './bitLoginEncrypt.js';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 export default {
   data() {

@@ -39,7 +39,7 @@
     }
   }
 }
-/deep/ .van-tabs__content {
+:deep(.van-tabs__content) {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -61,10 +61,10 @@
           <van-icon name="arrow" />
         </a>
       </div>
-      <van-tabs class="index__artical full" v-model="activeTag" :ellipsis="false" sticky>
+      <van-tabs class="index__artical full" v-model:active="activeTag" :ellipsis="false" sticky>
         <van-tab :title="type.typeName" :name="index" v-for="(type,index) in typeList" :key="type.typeID" class="full">
           <van-pull-refresh v-model="type.refreshing" @refresh="getFileListByTypeIDAndTagIDAndIndexString(type.typeID,true)" class="full">
-            <van-list v-model="type.loading" :finished="type.finished" @load="getFileListByTypeIDAndTagIDAndIndexString(type.typeID)">
+            <van-list v-model:loading="type.loading" :finished="type.finished" @load="getFileListByTypeIDAndTagIDAndIndexString(type.typeID)">
               <div v-for="fileInfo in fileList[type.typeID]" :key="fileInfo.fileID">
                 <v-fileBox class="index__artical__fileBox" :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title"
                   :fileType="fileInfo.fileType" :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.fileExtraEntity.readNum"
@@ -74,8 +74,8 @@
               <template #finished>
                 <!--若无合适的文件则显示空提示-->
                 <van-empty description="本分类下没有文档" v-if="fileList[type.typeID].length==0">
-                  <template slot="image">
-                    <img src="@/images/empty-picture/no_data.svg" />
+                  <template v-slot:image>
+                    <img :src="require('@/images/empty-picture/no_data.svg')" />
                   </template>
                 </van-empty>
                 <div class="notice-nomore__text" v-else>没有更多的文档了</div>
@@ -85,7 +85,7 @@
         </van-tab>
       </van-tabs>
     </div>
-    <van-popup class="indexBox" v-model="indexDrawerShow" position="right" :style="{ height:'100%',width: '90%' }" closeable round>
+    <van-popup class="indexBox" v-model:show="indexDrawerShow" position="right" :style="{ height:'100%',width: '90%' }" closeable round>
       <p class="indexBox__title">索引列表</p>
       <v-indexSupport class="indexBox__indexSupport" :rootString="$route.query.indexString" @setIndexString="setIndexString"></v-indexSupport>
     </van-popup>
@@ -163,14 +163,14 @@ export default {
         },
       }).then((response) => {
         if (!this.fileList[typeID] || isNew) {
-          Vue.set(this.fileList, typeID, []);
+          this.fileList[typeID] = [];
         }
         this.fileList[typeID].push.apply(this.fileList[typeID], response.data.msg.list);
 
-        Vue.set(this.typeList[this.activeTag], 'loading', false);
-        Vue.set(this.typeList[this.activeTag], 'refreshing', false);
-        Vue.set(this.typeList[this.activeTag], 'nextPage', this.typeList[this.activeTag].nextPage + 1);
-        Vue.set(this.typeList[this.activeTag], 'finished', response.data.msg.isLastPage);
+        this.typeList[this.activeTag].loading = false;
+        this.typeList[this.activeTag].refreshing = false;
+        this.typeList[this.activeTag].nextPage = this.typeList[this.activeTag].nextPage + 1;
+        this.typeList[this.activeTag].finished = response.data.msg.isLastPage;
       });
     },
     changeIndex() {

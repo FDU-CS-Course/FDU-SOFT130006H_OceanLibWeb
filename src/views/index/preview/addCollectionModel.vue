@@ -30,7 +30,7 @@
 }
 </style>
 <template>
-  <van-popup class="collection" v-model="collectionModel" closeable close-icon-position="top-left" position="bottom" round>
+  <van-popup class="collection" v-model:show="collectionModel" closeable close-icon-position="top-left" position="bottom" round>
     <div class="collection__title">
       已加入 {{ collectedNum }} 个收藏夹
     </div>
@@ -49,11 +49,11 @@
           <van-icon name="lock" v-if="!item.isPublic" color="#1989fa" size="20" />
         </template>
         <template #extra>
-          <van-checkbox v-model="isCollectedList[index]"></van-checkbox>
+          <van-checkbox modelValue="isCollectedList[index]"></van-checkbox>
         </template>
       </van-cell>
     </div>
-    <van-button class="collection__button" type="info" @click="doCollectionChange">确认</van-button>
+    <van-button class="collection__button" type="primary" @click="doCollectionChange">确认</van-button>
   </van-popup>
 </template>
 

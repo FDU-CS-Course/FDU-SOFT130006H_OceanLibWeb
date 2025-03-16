@@ -1,15 +1,14 @@
-import Vue from 'vue';
+import { reactive } from "vue";
 
-
-export const state = Vue.observable({
-    userInfoArray: [],
-})
+export const state = reactive({
+  userInfoArray: [],
+});
 
 export const action = {
-    setUserInfoArray(newValue) {
-        state.userInfoArray = newValue
-    },
-    clearUserInfoArray() {
-        state.userInfoArray = []
-    }
-}
+  setUserInfoArray(newValue) {
+    state.userInfoArray = newValue;
+  },
+  clearUserInfoArray() {
+    state.userInfoArray = [];
+  },
+};

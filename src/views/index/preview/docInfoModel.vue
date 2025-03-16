@@ -26,9 +26,9 @@
 }
 </style>
 <template>
-  <van-popup v-model="infoModel" position="bottom" style="height: 540px" closeable>
+  <van-popup v-model:show="infoModel" position="bottom" style="height: 540px" closeable>
     <div class="fileinfo">
-      <img src="@/images/main-picture/logo.png" width="120" />
+      <img :src="require('@/images/main-picture/logo.png')" width="120" />
 
       <van-divider content-position="right">文档详情</van-divider>
       <div class="fileinfo__detail__item">

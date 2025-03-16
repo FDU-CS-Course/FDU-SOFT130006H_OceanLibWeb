@@ -19,6 +19,7 @@ export default {
 
 <style lang="less">
 @import './vant-variables.less';
+
 .page {
   display: flex;
   flex-direction: column;
@@ -46,9 +47,9 @@ body {
 </style>
 
 <style lang="less">
-@import '~vant/lib/index.less';
+@import '~vant/lib/index.css';
 @import './vant-variables.less';
 .van-tabs__line {
-  background-color: var(--v-primary-base) !important;
+  background-color: rgb(var(--v-theme-primary)) !important;
 }
 </style>

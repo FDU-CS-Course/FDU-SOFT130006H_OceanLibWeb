@@ -46,7 +46,7 @@
 </style>
 
 <template>
-  <van-popup style="width:100%;height:100%" v-model="replyModel" round position="bottom" :overlay="false" closeable>
+  <van-popup style="width:100%;height:100%" v-model:show="replyModel" round position="bottom" :overlay="false" closeable>
     <div class="replyBox" v-if="replyModel">
       <div class="replyBox__title">回复评论</div>
       <div class="replies" style="flex:1;overflow:auto;width: 100%;">
@@ -60,13 +60,13 @@
 
         <div style="flex:1;overflow:auto">
           <van-skeleton title avatar :row="3" :loading="initLoading" style="width:100%">
-            <van-list v-model="pageLoading" :finished="this.isEnd" @load="getReply">
+            <van-list v-model:loading="pageLoading" :finished="this.isEnd" @load="getReply">
               <div v-for="(item,index) in this.replies" :key="index">
                 <v-commentBox class="replies__commentBox" :isIndex="false" :faterCommentID="commentID" :bindID="bindID" :mainType="mainType" :comment="item" :isComment="false"
                   @doReply="(args)=> $refs['sendBox'].showSendBox(args)" @needLoginNotice="$emit('needLoginNotice')">
                 </v-commentBox>
               </div>
-              <template slot="finished" style="line-height:unset">
+              <template v-slot:finished style="line-height:unset">
                 <div class="notice-nomore__text" v-if="!this.isIndex && isEnd">没有更多的回复了</div>
               </template>
             </van-list>
@@ -85,7 +85,7 @@
 import commentBox from './commentBox';
 import sendBox from './sendBox';
 
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 
 import userBehaviorStore from '@/components/common/userBehavior/userBehaviorStore.js';
 

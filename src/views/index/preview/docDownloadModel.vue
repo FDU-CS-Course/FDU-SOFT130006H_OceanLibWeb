@@ -28,7 +28,7 @@
 }
 </style>
 <template>
-  <van-popup class="download" v-model="downloadConfirmModel" closeable position="bottom" round>
+  <van-popup class="download" v-model:show="downloadConfirmModel" closeable position="bottom" round>
     <div class="download__title">
       {{ this.fileInfo.title }}
       ({{ (this.fileInfo.size / (1024 * 1024)).toFixed(2) }} MB)
@@ -43,22 +43,22 @@
       <div class="download__content__payment" v-else>
         价值 • {{this.fileInfo.paymentAmount}}{{ this.fileInfo.paymentMethod == 2 ? "金币" : "下载券" }}
         <span v-if="this.fileInfo.isAllowVipfree==1">
-          • <img class="mine__userinfo__nickname__icon" src="@/images/main-icon/icon_VIP.svg" width="20" /> VIP免费下</span>
+          • <img class="mine__userinfo__nickname__icon" :src="require('@/images/main-icon/icon_VIP.svg')" width="20" /> VIP免费下</span>
       </div>
-      <v-alert dense type="info">
+      <v-alert density="compact" type="info">
         该文档格式为
         <strong>{{this.fileInfo.fileType}}</strong>
       </v-alert>
       <v-alert border="left" colored-border type="info" elevation="2">
         <div class="text-body-2">文档贡献者将完全取得您的积分或下载券，下载券可无门槛折换现金。文档重复下载不收费，余额不足将下载失败!</div>
       </v-alert>
-      <van-goods-action>
-        <van-goods-action-button v-if="isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="VIP 免费下载" @click="doDownload" />
-        <van-goods-action-button v-if="!isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="申请VIP 文档免费下" @click="$router.push('/vip')" />
-        <van-goods-action-button v-if="this.fileInfo.paymentMethod == 1" type="info" text="免费下载" @click="doDownload" />
-        <van-goods-action-button v-if="this.fileInfo.paymentMethod != 1 && (this.fileInfo.isAllowVipfree!=1 || !isVip)" type="info"
+      <van-action-bar>
+        <van-action-bar-button v-if="isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="VIP 免费下载" @click="doDownload" />
+        <van-action-bar-button v-if="!isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="申请VIP 文档免费下" @click="$router.push('/vip')" />
+        <van-action-bar-button v-if="this.fileInfo.paymentMethod == 1" type="info" text="免费下载" @click="doDownload" />
+        <van-action-bar-button v-if="this.fileInfo.paymentMethod != 1 && (this.fileInfo.isAllowVipfree!=1 || !isVip)" type="info"
           :text="'付'+this.fileInfo.paymentAmount+(this.fileInfo.paymentMethod == 2 ? '金币' : '下载券')+'下载'" @click="doDownload" />
-      </van-goods-action>
+      </van-action-bar>
     </div>
     <my-dialog ref="dialog"></my-dialog>
   </van-popup>

@@ -83,7 +83,7 @@
 <script>
 import * as axios from 'axios';
 import { encryptPassword } from '../assets/js/csuLoginEncrypt';
-import { Notify } from 'vant';
+import { Notify } from '@vant/compat';
 import loading from '../components/loading';
 
 export default {

@@ -14,13 +14,13 @@
 }
 </style>
 <style lang="less" scoped>
-/deep/ .v-data-table > .v-data-table__wrapper > table {
+:deep(.v-data-table > .v-data-table__wrapper > table) {
   width: 550px !important;
 }
-/deep/ .v-data-table > .v-data-table__wrapper > table > tbody > tr > td {
+:deep(.v-data-table > .v-data-table__wrapper > table > tbody > tr > td) {
   font-size: 12px;
 }
-/deep/ .van-tabs__content {
+:deep(.van-tabs__content) {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@
     <van-tabs sticky class="full" :offset-top="tabsOffset">
       <van-tab title="文档" name="0" class="full">
         <van-pull-refresh class="pullRefresh full" v-model="content.fileList.refreshing" @refresh="getMyFileList(true)">
-          <van-list v-model="content.fileList.loading" :finished="content.fileList.finished" @load="getMyFileList()" class="full">
+          <van-list v-model:loading="content.fileList.loading" :finished="content.fileList.finished" @load="getMyFileList()" class="full">
             <div v-for="fileInfo in myFileList" :key="fileInfo.fileID">
               <v-card class="myUpload" outlined>
                 <v-fileBox class="myUpload__fileBox" :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
@@ -40,13 +40,13 @@
                   :ratersNum="fileInfo.fileExtraEntity.ratersNum" :paymentMethod="fileInfo.paymentMethod" :paymentAmount="fileInfo.paymentAmount"
                   :isVipIncome="fileInfo.fileExtraEntity.isVipIncome" :fileTagList="fileInfo.tagNames"></v-fileBox>
                 <v-card-actions>
-                  <v-btn fab dark x-small color="primary" @click="changeFileInfo(fileInfo.fileID)">
+                  <v-btn fab theme="dark" x-small color="primary" @click="changeFileInfo(fileInfo.fileID)">
                     <v-icon>mdi-note-edit</v-icon>
                   </v-btn>
-                  <v-btn fab dark x-small color="primary">
+                  <v-btn fab theme="dark" x-small color="primary">
                     <v-icon>mdi-share-variant</v-icon>
                   </v-btn>
-                  <v-btn fab dark x-small color="warning">
+                  <v-btn fab theme="dark" x-small color="warning">
                     <v-icon>mdi-file-cancel</v-icon>
                   </v-btn>
                   <v-spacer></v-spacer>
@@ -57,7 +57,7 @@
                 <v-expand-transition>
                   <div v-show="fileInfo.show">
                     <v-divider></v-divider>
-                    <v-simple-table dense style="width:500px">
+                    <v-simple-table density="compact" style="width:500px">
                       <template v-slot:default>
                         <thead>
                           <tr>
@@ -92,8 +92,8 @@
             <template #finished>
               <!--若无文件则显示空提示-->
               <van-empty description="您还没有已经发布的文档呢" v-if="myFileList.length==0">
-                <template slot="image">
-                  <img src="@/images/empty-picture/no_record.svg" />
+                <template v-slot:image>
+                  <img :src="require('@/images/empty-picture/no_record.svg')" />
                 </template>
                 <template>
                   <v-btn color="primary" small class="mr-2" to="/uploadFile">上传更多文档
@@ -117,8 +117,8 @@
       </van-tab>
       <van-tab title="专栏" name="1">
         <van-empty description="程序猿们正在努力开发中">
-          <template slot="image">
-            <img src="@/images/empty-picture/no_internet.svg" />
+          <template v-slot:image>
+            <img :src="require('@/images/empty-picture/no_internet.svg')" />
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们
             <v-icon right dark>mdi-account-cog</v-icon>
@@ -127,8 +127,8 @@
       </van-tab>
       <van-tab title="帮帮帖" name="2">
         <van-empty description="程序猿们正在努力开发中">
-          <template slot="image">
-            <img src="@/images/empty-picture/no_internet.svg" />
+          <template v-slot:image>
+            <img :src="require('@/images/empty-picture/no_internet.svg')" />
           </template>
           <v-btn color="primary" small class="mr-2" to="/about">加入我们
             <v-icon right dark>mdi-account-cog</v-icon>

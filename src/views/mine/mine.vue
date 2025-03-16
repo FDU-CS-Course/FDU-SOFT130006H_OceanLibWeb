@@ -90,7 +90,7 @@
           <div>{{userInfo.level}}</div>
         </template>
         <v-avatar color="primary" size="80" class="mine__userinfo-box__avatar">
-          <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar != ''" />
+          <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar !== ''" />
           <span class="white--text" v-else>{{userInfo.nickname.substring(0, 1)}}</span>
         </v-avatar>
       </v-badge>
@@ -119,7 +119,7 @@
         <div>
           <div class="mine__userinfo__nickname">
             {{ userInfo.nickname }}
-            <img class="mine__userinfo__nickname__icon" src="../../images/main-icon/icon_VIP.svg" v-if="userInfo.wallet.isVip == 1" width="20" />
+            <img class="mine__userinfo__nickname__icon" :src="require('../../images/main-icon/icon_VIP.svg')" v-if="userInfo.wallet.isVip === 1" width="20" />
 
             <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
               v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
@@ -133,7 +133,9 @@
 
           </div>
           <div class="mine__userinfo__personalsign" v-if="userInfo.userExtraEntity!=null">
-            {{ (userInfo.userExtraEntity.personalSignature==null || userInfo.userExtraEntity.personalSignature=="")? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature }}
+            {{
+              (userInfo.userExtraEntity.personalSignature == null || userInfo.userExtraEntity.personalSignature === "") ? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature
+            }}
           </div>
         </div>
       </div>
@@ -141,38 +143,39 @@
     <van-grid style="margin-bottom: 10px">
       <van-grid-item text="我的收藏" to="/myCollectionList">
         <template #icon>
-          <img src="../../images/module-icon/icon_collection.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/module-icon/icon_collection.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="我的下载" to="/myDownloadList">
         <template #icon>
-          <img src="../../images/module-icon/icon_download.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/module-icon/icon_download.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="最近浏览" to="/myRecentlyReadList">
         <template #icon>
-          <img src="../../images/module-icon/icon_look.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/module-icon/icon_look.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="我的贡献" to="/myUpload">
         <template #icon>
-          <img src="../../images/module-icon/icon_contribution.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/module-icon/icon_contribution.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="上传文档" to="/uploadFile">
         <template #icon>
-          <img src="../../images/module-icon/icon_upload.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/module-icon/icon_upload.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
       <van-grid-item text="申请VIP" to="/vip">
         <template #icon>
-          <img src="../../images/main-icon/icon_VIP.svg" width="30" style="margin-bottom: 5px" />
+          <img :src="require('../../images/main-icon/icon_VIP.svg')" width="30" style="margin-bottom: 5px" />
         </template>
       </van-grid-item>
     </van-grid>
     <van-cell title="我的订单" is-link />
     <van-cell title="我的钱包变动" is-link to="/walletChangeRecordList" />
     <van-cell title="关于Lib4Univ文库" is-link style="margin-top: 5px" to="/about" />
+    <van-cell title="退出登录" style="color: var(--van-danger-color);" is-link @click="handleLogout" />
     <div style="position: fixed;bottom: 0;left: 0;right: 0;">
       <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
         <v-btn link to="/index">
@@ -225,6 +228,10 @@ export default {
       }).then((response) => {
         this.userInfo = response.data.msg;
       });
+    },
+    handleLogout() {
+      localStorage.removeItem("token");
+      this.$router.push("/login");
     },
   },
 };

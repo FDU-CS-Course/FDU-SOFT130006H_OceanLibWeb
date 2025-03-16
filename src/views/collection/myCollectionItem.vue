@@ -33,7 +33,7 @@
       <p class="collection__desc" v-if="$route.query.collectionDesc!=null">{{$route.query.collectionDesc}}</p>
 
       <van-pull-refresh v-model="refreshing" @refresh="getCollectionFileList()" class="full">
-        <van-list v-model="loading" :finished="finished" @load="getCollectionFileList()">
+        <van-list v-model:loading="loading" :finished="finished" @load="getCollectionFileList()">
           <div v-for="(fileInfo,index) in fileList" :key="fileInfo.fileID">
             <van-swipe-cell>
               <v-fileBox :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
@@ -48,8 +48,8 @@
           <template #finished>
             <!--若无收藏夹则显示空提示-->
             <van-empty description="本收藏夹下还没有收藏文档" v-if="fileList.length==0">
-              <template slot="image">
-                <img src="@/images/empty-picture/no_data.svg" />
+              <template v-slot:image>
+                <img :src="require('@/images/empty-picture/no_data.svg')" />
               </template>
             </van-empty>
             <div v-else class="notice-nomore__text">没有更多文档了</div>

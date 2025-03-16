@@ -24,38 +24,38 @@
   }
   &--primary {
     font-size: 14px;
-    color: var(--v-primary-base);
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
 }
 </style>
 <template>
-  <van-popup class="ccprotocal" v-model="showCCprotocalModel" round position="bottom" closeable>
+  <van-popup class="ccprotocal" v-model:show="showCCprotocalModel" round position="bottom" closeable>
     <p class="ccprotocal__title">请选择版权协议</p>
     <v-card class="ccprotocal__box">
       <div class="ccprotocal__checkbox">
         <v-checkbox v-model="copyrightNotice" value="BY" hide-details :disabled="ccDisabled">
-          <template slot="label">
+          <template v-slot:label>
             <div class="ccprotocal__checkbox__label">姓名标示（BY）</div>
           </template>
         </v-checkbox>
         <v-checkbox v-model="copyrightNotice" value="NC" hide-details :disabled="ccDisabled">
-          <template slot="label">
+          <template v-slot:label>
             <div class="ccprotocal__checkbox__label">非商业性（NC）</div>
           </template>
         </v-checkbox>
         <v-checkbox v-model="copyrightNotice" value="ND" hide-details :disabled="ccDisabled">
-          <template slot="label">
+          <template v-slot:label>
             <div class="ccprotocal__checkbox__label">禁止改作（ND）</div>
           </template>
         </v-checkbox>
         <v-checkbox v-model="copyrightNotice" value="SA" hide-details :disabled="ccDisabled">
-          <template slot="label">
+          <template v-slot:label>
             <div class="ccprotocal__checkbox__label">相同方式分享（SA）</div>
           </template>
         </v-checkbox>
         <v-checkbox v-model="copyrightNotice" value="COPYRIGHT" hide-details>
-          <template slot="label">
+          <template v-slot:label>
             <div class="ccprotocal__checkbox__label">作者保留全部著作权</div>
           </template>
         </v-checkbox>

@@ -17,7 +17,7 @@
       text-align: center;
     }
     &--warning {
-      color: var(--v-primary-base);
+      color: rgb(var(--v-theme-primary));
       font-size: 12px;
       text-align: center;
     }
@@ -44,7 +44,7 @@
   <div class="about">
     <van-nav-bar id="toolbar" title="关于Ocean" left-text="返回" left-arrow @click-left="back" fixed placeholder>
     </van-nav-bar>
-    <img src="../../images/main-picture/about_top.png" style="width: 100%" />
+    <img :src="require('../../images/main-picture/about_top.png')" style="width: 100%" />
     <div class="about__content">
       <p class="about__content--primary">内部版本3.1.12 (20220221Build)内测版本</p>
       <p class="about__content--warning">本项目为中南大学、北京理工大学大学生创新创业项目支持的非盈利性公益项目</p>
@@ -57,7 +57,7 @@
       但必需在产品首页声明产品原始名称及<a>主要作者</a>
     </p>
 
-    <van-popup v-model="showSponsor" closeable position="right" round style="width:90%;height:100%">
+    <van-popup v-model:show="showSponsor" closeable position="right" round style="width:90%;height:100%">
       <div class="sponsor">
         <v-card class="my-2" style="width:90%">
           <v-img src="@/images/main-picture/sponsor_code.jpg"></v-img>

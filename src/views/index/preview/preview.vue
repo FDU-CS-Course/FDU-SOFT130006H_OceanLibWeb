@@ -145,8 +145,8 @@
     <div ref="contentFileList" v-show="isFolder" class="preview__folder">
       <!--若无合适的文件则显示空提示-->
       <van-empty description="专栏中尚未添加文档" v-if="folderFileList.length==0">
-        <template slot="image">
-          <img src="@/images/empty-picture/no_data.svg" />
+        <template v-slot:image>
+          <img :src="require('@/images/empty-picture/no_data.svg')" />
         </template>
       </van-empty>
       <div v-for="fileInfo in folderFileList" :key="fileInfo.fileID">
@@ -183,19 +183,19 @@
         <div v-if="!baseInfoLoading">
           <!--底部操作按钮：收藏-->
           <van-button class="preview__tooltip__button--func" plain type="default" size="small" @click="$refs['addCollectionModel'].open()">
-            <img v-if="isCollected" class="preview__tooltip__icon--img" src="@/images/function-icon/icon_collection_selected.svg" />
-            <img v-else class="preview__tooltip__icon--img" src="@/images/function-icon/icon_collection.svg" />
+            <img v-if="isCollected" class="preview__tooltip__icon--img" :src="require('@/images/function-icon/icon_collection_selected.svg')" />
+            <img v-else class="preview__tooltip__icon--img" :src="require('@/images/function-icon/icon_collection.svg')" />
             <div class="preview__tooltip__icon--text">{{ fileInfo.fileExtraEntity.collectionNum }}</div>
           </van-button>
           <!--底部操作按钮：下载-->
           <van-button class="preview__tooltip__button--func" plain type="default" size="small" @click="$refs['docDownloadModel'].open();" :disabled="isFolder">
-            <img class="preview__tooltip__icon--img" src="@/images/function-icon/icon_download.svg" />
+            <img class="preview__tooltip__icon--img" :src="require('@/images/function-icon/icon_download.svg')" />
             <div class="preview__tooltip__icon--text" v-if="!isFolder">{{ fileInfo.fileExtraEntity.downloadNum }}</div>
             <div class="preview__tooltip__icon--text" v-else>不可用</div>
           </van-button>
           <!--底部操作按钮：评论-->
           <van-button class="preview__tooltip__button--func" plain type="default" size="small" @click="openComment">
-            <img class="preview__tooltip__icon--img" src="@/images/function-icon/icon_comment.svg" />
+            <img class="preview__tooltip__icon--img" :src="require('@/images/function-icon/icon_comment.svg')" />
             <div class="preview__tooltip__icon--text">{{ fileInfo.fileExtraEntity.commentNum }}</div>
           </van-button>
         </div>
