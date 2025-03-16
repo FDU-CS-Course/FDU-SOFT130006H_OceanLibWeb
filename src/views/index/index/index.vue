@@ -117,7 +117,7 @@
         <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图1</div>
         </van-swipe-item>
-        <van-swipe-item style="background-color: rgb(rgb(var(--v-theme-primary)));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图2</div>
         </van-swipe-item>
       </van-swipe>

@@ -50,7 +50,7 @@
 
     <van-sticky :offset-top="0">
       <v-toolbar class="search__input" color="surface">
-        <v-text-field v-model="keywords" :prepend-inner-icon="mdiFileSearch" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
+        <v-text-field v-model="keywords" prepend-inner-icon="mdi-file-search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
           @click:clear="restartSearch" hide-details="auto"></v-text-field>
       </v-toolbar>
     </van-sticky>
@@ -171,6 +171,8 @@ export default {
         },
       }).then((response) => {
         this.suggestList = response.data.msg;
+      }).catch((error) => {
+        console.log(error);
       });
     },
     searchKeywords(searchString) {
@@ -218,6 +220,8 @@ export default {
         }
         this.loading = false;
         this.initLoading = false;
+      }).catch((error) => {
+        console.log(error);
       });
     },
     toPreview(fileID, abstractContent, title, isOpenDownload = false) {
