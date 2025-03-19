@@ -118,25 +118,38 @@
         </v-btn>
       </v-bottom-navigation>
     </div>
-    <div style="position: fixed;bottom: 60px;right: 10px;">
-      <v-speed-dial v-model="fab" bottom right direction="top" transition="slide-y-reverse-transition">
-        <template v-slot:activator>
-          <v-btn v-model="fab" color="blue darken-2" theme="dark" fab>
-            <v-icon v-if="fab">
-              mdi-close
-            </v-icon>
-            <v-icon v-else>
-              mdi-fountain-pen-tip
-            </v-icon>
+    <div style="position: fixed; bottom: 60px; right: 10px;">
+      <v-fab
+        :color="fab ? '' : 'primary'"
+        location="bottom right"
+        icon
+        size="small"
+      >
+        <v-icon>{{ fab ? 'mdi-close' : 'mdi-fountain-pen-tip' }}</v-icon>
+        
+        <v-speed-dial
+          v-model="fab"
+          direction="top"
+          transition="slide-y-reverse-transition"
+          activator="parent"
+        >
+          <v-btn
+            color="green"
+            icon
+            size="small"
+          >
+            <v-icon>mdi-pencil</v-icon>
           </v-btn>
-        </template>
-        <v-btn fab theme="dark" small color="green">
-          <v-icon>mdi-pencil</v-icon>
-        </v-btn>
-        <v-btn fab theme="dark" small color="red">
-          <v-icon>mdi-delete</v-icon>
-        </v-btn>
-      </v-speed-dial>
+
+          <v-btn
+            color="red"
+            icon
+            size="small"
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
     </div>
   </div>
 </template>
