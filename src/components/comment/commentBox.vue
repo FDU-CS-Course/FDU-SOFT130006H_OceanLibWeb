@@ -107,7 +107,7 @@
     padding-top: 5px;
     &__more {
       padding-left: 10px;
-      color: rgb(var(--v-secondary-darken1));
+      color: @gray-6;
       background-color: @gray-1;
       margin: 0px 0px 20px 30px;
     }
@@ -138,14 +138,11 @@
           <v-username v-if="isComment" class="comment__userlevel" type="level" :username="isComment?comment.commentBuildUsername:comment.replyBuildUsername">
           </v-username>
           <!--回复评论时显示回复的对象-->
-          <v-icon class="comment__nickname__replyuser" v-if="!isComment && comment.replyToCommentReplier!=null && comment.replyToCommentReplier!=''">mdi-menu-right</v-icon>
+          <van-icon name="arrow-down" class="comment__nickname__replyuser" v-if="!isComment && comment.replyToCommentReplier!=null && comment.replyToCommentReplier!=''"></van-icon>
           <v-username class="comment__nickname__replyuser" type="username" v-if="!isComment && comment.replyToCommentReplier!=null && comment.replyToCommentReplier!=''"
             :username="comment.replyToCommentReplier"></v-username>
         </div>
-        <v-btn small text rounded class=" comment__bottom__moreButton" @click="$refs['moreModel'].open()" v-if="comment.commentStatus=='NORMAL'">
-          <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))">
-            mdi-dots-horizontal</v-icon>
-        </v-btn>
+        <van-icon name="ellipsis" class="comment__bottom__moreButton" @click="$refs['moreModel'].open()" v-if="comment.commentStatus=='NORMAL'"></van-icon>
       </div>
 
       <div :class="'comment__content'+(isComment?' comment__content--comment':' comment__content--reply')+(isIndex?' comment__content--index':'')"
@@ -162,17 +159,14 @@
           </div>
         </div>
         <div v-if="comment.commentStatus=='NORMAL'">
-          <v-btn small text rounded class=" comment__bottom__replyButton" @click="doReply()">
-            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))">
-              mdi-comment-text-multiple-outline</v-icon>
-          </v-btn>
-          <v-btn small text rounded class="comment__bottom__likeButton" @click="doEvaluateComment('like',comment)">
-            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-secondary-lighten4))" v-if="!comment.isLike">mdi-thumb-up-outline</v-icon>
-            <v-icon class="comment__bottom__buttonIcon" style="color:rgb(var(--v-theme-primary))" v-else>mdi-thumb-up</v-icon>
+          <van-icon name="comment-o" class="comment__bottom__replyButton" @click="doReply()"></van-icon>
+          <van-icon name="thumb-up-o" class="comment__bottom__likeButton" @click="doEvaluateComment('like',comment)">
+            <van-icon name="thumb-up-outline" class="comment__bottom__buttonIcon" style="color:#c8c9cc" v-if="!comment.isLike"></van-icon>
+            <van-icon name="thumb-up" class="comment__bottom__buttonIcon" style="color:#1989fa" v-else></van-icon>
             <div class="comment__bottom__likeNum">
               {{ comment.likeNumber == 0 ? "":comment.likeNumber}}
             </div>
-          </v-btn>
+          </van-icon>
         </div>
       </div>
       <div class="comment__replyBox" v-if="isComment">
@@ -181,16 +175,16 @@
             @doReply="(args)=>$emit('doReply', args)"></commentBox>
         </div>
         <van-tag class="comment__replyBox__more" v-if="comment.replyCommentList!=null && comment.replyCount>=2 && !isIndex" round size="medium"
-          @click="()=>$emit('showReplyList',comment.id)">查看全部 {{comment.replyCount}} 条回复 <v-icon>mdi-menu-right</v-icon>
+          @click="()=>$emit('showReplyList',comment.id)">查看全部 {{comment.replyCount}} 条回复 <van-icon name="arrow-right"></van-icon>
         </van-tag>
       </div>
     </div>
 
     <v-more ref="moreModel">
-      <v-moreItem title="删除评论" icon="mdi-delete" @click="doDelete(comment)" v-if="isComment? myUsername == comment.commentBuildUsername: myUsername == comment.replyBuildUsername">
+      <v-moreItem title="删除评论" icon="delete-o" @click="doDelete(comment)" v-if="isComment? myUsername == comment.commentBuildUsername: myUsername == comment.replyBuildUsername">
       </v-moreItem>
-      <v-moreItem :title="comment.isDislike?'取消踩评论':'踩评论'" icon="mdi-thumb-down" @click="doEvaluateComment('dislike',comment)"></v-moreItem>
-      <v-moreItem title="举报" icon="mdi-comment-alert" v-if="isComment? myUsername != comment.commentBuildUsername: myUsername != comment.replyBuildUsername">
+      <v-moreItem :title="comment.isDislike?'取消踩评论':'踩评论'" icon="thumb-circle-down-o" @click="doEvaluateComment('dislike',comment)"></v-moreItem>
+      <v-moreItem title="举报" icon="warning-o" v-if="isComment? myUsername != comment.commentBuildUsername: myUsername != comment.replyBuildUsername">
       </v-moreItem>
     </v-more>
 

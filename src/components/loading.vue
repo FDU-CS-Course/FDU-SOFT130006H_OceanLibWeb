@@ -5,7 +5,7 @@
         <span>加载中</span><br />
         <span v-if="subTitle != null">{{subTitle}}</span>
       </p>
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      <van-loading type="spinner" color="#1989fa" />
     </div>
   </div>
 </template>

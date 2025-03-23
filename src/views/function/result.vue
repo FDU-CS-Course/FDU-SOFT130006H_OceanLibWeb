@@ -4,17 +4,16 @@
     </van-nav-bar>
     <div v-if="state=='ERROR'" style="display:flex;flex-direction:column;height: 90%">
       <div style="flex:1;display: flex;flex-direction: column;align-items:center;justify-content:center;padding:20px;text-align: center">
-        <Icon type="ios-bug" size="64" color="#ed4014" />
-        <v-icon size="64" color="#ed4014">mdi-alert-octagon-outline</v-icon>
+        <van-icon name="warning-o" size="64" color="#ed4014" />
         <p style="font-size: 20px;color: #ed4014;margin-top:10px">我们遇到了一个异常</p>
         <br />
-        <p>“那您说的这个BUG，它离谱吗？”</p>
-        <p>“它不是离不离谱的问题！它真的是那种……那种很少见的那种。”</p>
+        <p>"那您说的这个BUG，它离谱吗？"</p>
+        <p>"它不是离不离谱的问题！它真的是那种……那种很少见的那种。"</p>
         <br />
-        <p>“它的错误代码是 <span style="color: #ed4014">{{code}}</span> ,它原因是 <span style="color: #ed4014"> {{msg}} </span>牙齿尖尖的，就很离谱。”
+        <p>"它的错误代码是 <span style="color: #ed4014">{{code}}</span> ,它原因是 <span style="color: #ed4014"> {{msg}} </span>牙齿尖尖的，就很离谱。"
         </p>
         <br />
-        <v-btn color="warning" @click="back">返回主页</v-btn>
+        <van-button type="warning" @click="back">返回主页</van-button>
       </div>
       <div style="flex:0;font-size: 10px;text-align: center;color: #17233d;margin-bottom: 20px;">欢迎联系作者反馈，作者QQ
         1257477940
@@ -22,13 +21,13 @@
     </div>
     <div v-else style="display:flex;flex-direction:column;height: 90%">
       <div style="flex:1;display: flex;flex-direction: column;align-items:center;justify-content:center;padding:20px;text-align: center">
-        <v-icon size="64" color="#19be6b">mdi-checkbox-marked-circle-outline</v-icon>
+        <van-icon name="checked" size="64" color="#19be6b" />
         <p style="font-size: 20px;color: #19be6b;margin-top:10px">操作成功</p>
         <br />
         <p>返回结果为 <span style="color: #19be6b"> {{msg}} </span>
         </p>
         <br />
-        <v-btn color="success" @click="back">返回主页</v-btn>
+        <van-button type="primary" color="#19be6b" @click="back">返回主页</van-button>
       </div>
     </div>
   </div>

@@ -10,7 +10,7 @@
   <div>
     <van-cell class="cell" :title="title" @click="$emit('click')">
       <template #right-icon>
-        <v-icon color="secondary-darken5" size="22">{{icon}}</v-icon>
+        <van-icon class="secondary-darken5-color" size="22px" :name="icon" />
       </template>
     </van-cell>
   </div>
@@ -28,4 +28,7 @@ export default {
 </script>
 
 <style scoped>
+.secondary-darken5-color {
+  color: var(--van-gray-7);
+}
 </style>

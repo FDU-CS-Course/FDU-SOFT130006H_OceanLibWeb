@@ -1,9 +1,21 @@
 <template>
   <span>
-    <v-avatar color="primary" :size="avatarSize" v-if="type=='avater' && userInfo!=null">
-      <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar != ''" />
-      <span style="color:white" v-else-if="userInfo.nickname!=null">{{userInfo.nickname.substring(0, 1) }}</span>
-    </v-avatar>
+    <van-image
+      v-if="type=='avater' && userInfo!=null"
+      :width="avatarSize"
+      :height="avatarSize"
+      round
+      :src="userInfo.avatar"
+      v-show="userInfo.avatar != null && userInfo.avatar != ''"
+    />
+    <van-tag
+      v-if="type=='avater' && userInfo!=null && userInfo.nickname!=null"
+      round
+      type="primary"
+      :style="{width: avatarSize + 'px', height: avatarSize + 'px', lineHeight: avatarSize + 'px', textAlign: 'center'}"
+    >
+      {{userInfo.nickname.substring(0, 1)}}
+    </van-tag>
 
     <span v-if="type=='username'">
       {{userInfo!=null?userInfo.nickname:username}}

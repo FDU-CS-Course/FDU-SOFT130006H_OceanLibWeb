@@ -39,7 +39,7 @@
 }
 </style>
 <style lang="less" scoped>
-:deep(.v-toolbar__content) {
+.van-nav-bar {
   padding: 0px 20px;
 }
 </style>
@@ -49,28 +49,28 @@
     </van-nav-bar>
 
     <van-sticky :offset-top="0">
-      <v-toolbar class="search__input" color="surface">
-        <v-text-field v-model="keywords" prepend-inner-icon="mdi-file-search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
-          @click:clear="restartSearch" hide-details="auto"></v-text-field>
-      </v-toolbar>
+      <div class="search__input">
+        <van-field v-model="keywords" left-icon="search" placeholder="搜索你想查找的资料名称" clearable @keydown="keydownListen" @update:model-value="suggest"
+          @click:clear="restartSearch"></van-field>
+      </div>
     </van-sticky>
 
     <!--当用户没有聚焦在搜索框、搜索框内没有输入任何字符时，不显示搜索建议-->
     <!--用户搜索输入产生建议时，立刻唤起搜索建议-->
     <div v-if="showSuggest">
       <div class="search__suggest" v-for="(item,index) in suggestList" v-bind:key="index" @click="searchKeywords(item)">
-        <v-icon class="search__suggest__icon">mdi-magnify</v-icon>
+        <van-icon class="search__suggest__icon" name="search"></van-icon>
         <div class="search__suggest__content">{{item}}</div>
-        <v-icon class="search__suggest__icon">mdi-arrow-top-right</v-icon>
+        <van-icon class="search__suggest__icon" name="arrow"></van-icon>
       </div>
       <div class="search__suggest">
-        <v-icon class="search__suggest__icon" color="primary">mdi-cloud-search</v-icon>
+        <van-icon class="search__suggest__icon" name="search" color="#1989fa"></van-icon>
         <a class="search__suggest__content" @click="search(false)">搜索「{{keywords}}」</a>
       </div>
     </div>
 
     <van-list class="search__result" v-model:loading="loading" :finished="finished" :immediate-check="true" @load="search(true)" v-if="showResult && !showSuggest">
-      <v-skeleton-loader type="article,article,article,article,article" v-if="initLoading"></v-skeleton-loader>
+      <van-loading v-if="initLoading" type="spinner" size="24px">加载中...</van-loading>
       <div class="search__result__box" v-for="fileInfo in fileList" :key="fileInfo.fileID">
         <v-fileBox :fileID="fileInfo.fileID" :searchResultContent="fileInfo.content" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title"
           :fileType="fileInfo.fileType" :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.readNum" :score="fileInfo.score"
@@ -83,22 +83,18 @@
             <img :src="require('@/images/empty-picture/no_search.svg')" />
           </template>
           <template>
-            <v-btn color="primary" small>
+            <van-button type="primary" size="small">
               去帮帮墙发求助帖
-              <v-icon right dark>
-                mdi-wall
-              </v-icon>
-            </v-btn>
+              <van-icon name="wap-nav" />
+            </van-button>
           </template>
         </van-empty>
         <div v-else>
           <div class="notice-nomore__text">没有更多的结果了</div>
-          <v-btn color="primary" small>
+          <van-button type="primary" size="small">
             去帮帮墙发求助帖
-            <v-icon right dark>
-              mdi-wall
-            </v-icon>
-          </v-btn>
+            <van-icon name="wap-nav" />
+          </van-button>
         </div>
       </template>
     </van-list>

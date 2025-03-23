@@ -48,7 +48,7 @@
     <van-nav-bar id="toolbar" title="文档信息编辑" left-text="返回" left-arrow @click-left="back">
       <template #right>
         <div v-if="uploadID!=null">
-          <van-loading color="rgb(var(--v-theme-primary))" v-if="previewLoading" size="24" />
+          <van-loading color="#1989fa" v-if="previewLoading" size="24" />
           <a v-else @click="previewDrawerShow = true">文档预览</a>
         </div>
       </template>
@@ -62,11 +62,15 @@
           <img :src="require('../../images/type-icon/ppt.svg')" width="36" height="36" v-if="fileInfo.fileType=='ppt'||fileInfo.fileType=='pptx'" />
           <img :src="require('../../images/type-icon/pdf.svg')" width="36" height="36" v-if="fileInfo.fileType=='pdf'" />
         </div>
-        <v-text-field v-model="fileInfo.title" placeholder="请输入文档标题" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
-        </v-text-field>
+        <van-field v-model="fileInfo.title" placeholder="请输入文档标题" :rules="[titleRule.required]" class="van-field--outlined">
+        </van-field>
       </div>
       <van-divider></van-divider>
-      <v-textarea v-model="fileInfo.abstractContent" placeholder="简要介绍文档内容等" outlined density="compact" hide-details="auto" hint="准确的文档内容简介更容易被他人检索"></v-textarea>
+      <van-field v-model="fileInfo.abstractContent" placeholder="简要介绍文档内容等" type="textarea" rows="3" class="van-field--outlined" label="文档简介">
+        <template #extra>
+          <div class="van-field__hint">准确的文档内容简介更容易被他人检索</div>
+        </template>
+      </van-field>
     </div>
     <div class="upload--list">
       <van-field readonly clickable :value="folderName" label="专栏组" placeholder="点击加入一个专栏" @click="showFolderList" />
@@ -101,7 +105,7 @@
         <template #input>
           <van-checkbox modelValue="isOriginalConfirm" shape="square">
             我郑重确认所提交的文档系本人独立创作，内容不涉及他人权利，本人依法享有和承担由此作品而产生的权利和全部法律责任。
-            <span style="color:rgb(var(--v-error-base))">转载禁止声明原创，平台一经发现确认将零容忍封禁账号。</span>
+            <span style="color:#ee0a24">转载禁止声明原创，平台一经发现确认将零容忍封禁账号。</span>
           </van-checkbox>
         </template>
       </van-field>
@@ -124,9 +128,7 @@
       <iframe ref="previewContent" fullscreen="yes" :src="url" style="width: 100%;display: block;"></iframe>
 
       <div ref="previewBottom" class="upload__preview--bottom">
-        <v-btn color="error" small>
-          <v-icon>mdi-face-agent</v-icon>反馈文件预览异常
-        </v-btn>
+        <van-button type="danger" size="small" icon="service-o">反馈文件预览异常</van-button>
       </div>
     </van-popup>
   </div>

@@ -1,9 +1,7 @@
 <template>
-  <v-app>
-    <v-main>
-      <router-view :key="key" />
-    </v-main>
-  </v-app>
+  <div class="app">
+    <router-view :key="key" />
+  </div>
 </template>
 
 <script>

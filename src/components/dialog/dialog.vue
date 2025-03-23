@@ -4,24 +4,63 @@
   flex-direction: row;
   justify-content: flex-end;
 }
+.dialog-alert {
+  margin-bottom: 0px;
+  padding: 16px;
+  border-left: 4px solid;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.dialog-title {
+  font-size: 1.25rem;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+}
+.dialog-icon {
+  margin-right: 12px;
+}
+.dialog-content {
+  margin-bottom: 24px;
+  margin-left: 8px;
+}
 </style>
 <template>
-  <v-dialog v-model="showDialog" persistent max-width="290">
-    <v-alert border="left" colored-border :color="color" elevation="2" style="margin-bottom:0px">
-      <div class="text-h6 mt-2 mb-4 ml-2">
-        <v-icon :color="color" class="mr-3">{{icon}}</v-icon>{{title}}
+  <van-dialog
+    v-model:show="showDialog"
+    :show-confirm-button="false"
+    :show-cancel-button="false"
+    :close-on-click-overlay="false"
+    width="290px"
+  >
+    <div class="dialog-alert" :style="{ borderLeftColor: color }">
+      <div class="dialog-title">
+        <van-icon :name="icon" :color="color" class="dialog-icon" />
+        {{ title }}
       </div>
-      <div class="mb-6 ml-2" v-html="content"></div>
+      <div class="dialog-content" v-html="content"></div>
       <div class="button">
-        <v-btn class="mr-1" ref="cancel" v-show="isConfirmDialog" text plain>
-          {{cancelText}}
-        </v-btn>
-        <v-btn ref="confirm" :color="this.color" depressed dark>
-          {{confirmText}}
-        </v-btn>
+        <van-button
+          class="mr-1"
+          ref="cancel"
+          v-show="isConfirmDialog"
+          plain
+          size="small"
+        >
+          {{ cancelText }}
+        </van-button>
+        <van-button
+          ref="confirm"
+          :color="color"
+          size="small"
+          type="primary"
+        >
+          {{ confirmText }}
+        </van-button>
       </div>
-    </v-alert>
-  </v-dialog>
+    </div>
+  </van-dialog>
 </template>
 
 <script>
@@ -43,18 +82,18 @@ export default {
     newDialog(type, title, content, confirmText, cancelText) {
       switch (type) {
         case "error":
-          this.icon = "mdi-alert-octagon";
-          this.color = "rgb(var(--v-error-darken2))";
+          this.icon = "warning-o";
+          this.color = "#ee0a24";
           this.isConfirmDialog = false;
           break;
         case "login":
-          this.icon = "mdi-account-key";
-          this.color = "rgb(var(--v-success-darken2))";
+          this.icon = "user-circle-o";
+          this.color = "#07c160";
           this.isConfirmDialog = true;
           break;
         case "userInfoAsk":
-          this.icon = "mdi-account-details";
-          this.color = "rgb(var(--v-primary-darken2))";
+          this.icon = "contact";
+          this.color = "#1989fa";
           this.isConfirmDialog = true;
           break;
       }

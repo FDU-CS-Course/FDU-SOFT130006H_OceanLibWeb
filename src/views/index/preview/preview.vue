@@ -116,7 +116,7 @@
     <div ref="title" id="title" class="preview__content">
       <div class="preview__content__title">
         <van-tag class="preview__content__tag" type="warning" v-if="isFolder">
-          <v-icon v-if="isFolder" color="white" size="20">mdi-folder-zip-outline</v-icon>专栏
+          <van-icon name="folder-o" color="white" size="20" />专栏
         </van-tag>
         {{ fileInfo.title }}
         <van-tag class="preview__content__tag" type="primary" v-if="!baseInfoLoading && fileInfo.fileExtraEntity.isProCert == 1">专</van-tag>
@@ -220,24 +220,19 @@
     <!-- More更多窗口 -->
     <v-more ref="moreModel">
       <!-- <v-moreItem title="免费打印" icon="mdi-printer" @click="openFreePrint"></v-moreItem> -->
-      <v-moreItem title="修改文档信息" icon="mdi-note-edit" @click="changeFileInfo()" v-if="isOwner"></v-moreItem>
-      <v-moreItem title="删除文档" icon="mdi-file-cancel" v-if="isOwner"></v-moreItem>
-      <v-moreItem title="文档详情" icon="mdi-book-information-variant" @click="openInfo"></v-moreItem>
-      <v-moreItem title="举报文档" icon="mdi-bell-alert"></v-moreItem>
+      <v-moreItem title="修改文档信息" icon="edit" @click="changeFileInfo()" v-if="isOwner"></v-moreItem>
+      <v-moreItem title="删除文档" icon="delete" v-if="isOwner"></v-moreItem>
+      <v-moreItem title="文档详情" icon="info-o" @click="openInfo"></v-moreItem>
+      <v-moreItem title="举报文档" icon="warning-o"></v-moreItem>
     </v-more>
 
     <!--通用对话框-->
     <my-dialog ref="dialog"></my-dialog>
 
     <!--文档加载中-->
-    <v-dialog v-model="docLoading" persistent width="300">
-      <v-card color="primary" dark>
-        <v-card-text>
-          文档正在加载中
-          <v-progress-linear indeterminate color="white" class="mb-0"></v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+    <van-dialog v-model="docLoading" :show-confirm-button="false" width="300">
+      <van-loading type="spinner" color="#1989fa" size="24px">文档正在加载中</van-loading>
+    </van-dialog>
 
   </div>
 </template>

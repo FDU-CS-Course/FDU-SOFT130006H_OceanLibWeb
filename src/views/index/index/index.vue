@@ -78,11 +78,6 @@
   }
 }
 </style>
-<style scoped>
-.v-btn:not(.v-btn--round).v-size--default {
-  height: -webkit-fill-available;
-}
-</style>
 <template>
   <div class="index">
     <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o" v-if="isIntranet">
@@ -91,33 +86,31 @@
     <div class="index__top">
       <img class="index__top__logo" :src="require('@/images/main-picture/logo.png')" />
       <div class="index__top__searchBox" @click="toSearch">
-        <v-text-field
-            variant="outlined"
-            density="compact"
+        <van-field
             readonly
-            :hide-details="'auto'"
-            prepend-inner-icon="mdi-file-find"
-            @click:prepend-inner="toSearch"
-        >
-          <template v-slot:label>
-            <div class="text-body-2 text--secondary">搜索你想查找的资料名称</div>
-          </template>
-        </v-text-field>
+            label="搜索你想查找的资料名称"
+            left-icon="search"
+            @click-left="toSearch"
+            style="--van-field-label-width: auto"
+        ></van-field>
       </div>
       <van-grid class="index__top__grid">
         <!--一重循环，把各个Top的Group循环显示出来-->
         <van-grid-item :text="item.groupName" v-for="item in topItemList" :key="item.groupID"
           @click="toIndexResult(item.groupName,item.includeIndex,item.includeType,item.includeTag)">
           <template v-slot:icon>
-            <v-icon style="color:rgb(var(--v-theme-primary))">mdi-{{item.icon}}</v-icon>
+            <!-- TODO: 后端返回的item.icon对应vuetify中的mdi-{item.icon}，但Vant的icon库中没有这些icon-->
+            <!-- 我们暂时显示一个默认的icon 和 icon的名字-->
+            <van-icon name="fail" color="#1989fa" size="24" />
+            {{ item.icon }}
           </template>
         </van-grid-item>
       </van-grid>
       <van-swipe class="index__top__adSwipe" :autoplay="3000" indicator-color="white">
-        <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: #1989fa;height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图1</div>
         </van-swipe-item>
-        <van-swipe-item style="background-color: rgb(var(--v-theme-primary));height: 100px;display: flex;justify-content: center;align-items: center;color: white">
+        <van-swipe-item style="background-color: #1989fa;height: 100px;display: flex;justify-content: center;align-items: center;color: white">
           <div>轮播图2</div>
         </van-swipe-item>
       </van-swipe>
@@ -162,20 +155,11 @@
       </van-tabs>
     </div>
     <div class="index__bottom">
-      <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
-        <v-btn link to="/index">
-          <span>文库</span>
-          <v-icon>mdi-text-box-search</v-icon>
-        </v-btn>
-        <v-btn link to="/wall">
-          <span>互助</span>
-          <v-icon>mdi-handshake</v-icon>
-        </v-btn>
-        <v-btn link to="/mine">
-          <span>我的</span>
-          <v-icon>mdi-account-circle</v-icon>
-        </v-btn>
-      </v-bottom-navigation>
+      <van-tabbar v-model="navigation" class="index__bottom__navigation">
+        <van-tabbar-item icon="search" to="/index">文库</van-tabbar-item>
+        <van-tabbar-item icon="friends-o" to="/wall">互助</van-tabbar-item>
+        <van-tabbar-item icon="contact" to="/mine">我的</van-tabbar-item>
+      </van-tabbar>
     </div>
   </div>
 </template>

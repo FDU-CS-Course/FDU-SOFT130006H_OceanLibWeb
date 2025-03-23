@@ -74,41 +74,37 @@
     <div class="upload__box">
       <!-- <p class="upload__title">共建文档 分享即获取</p>
       <p style="font-size:14px">文库坚决打击盗版、非法、侵权内容传播，上传文档请阅读<a>发布须知</a>。</p> -->
-      <!-- <v-alert border="right" colored-border type="error" elevation="2">
+      <!-- <van-alert type="warning">
         文库坚决打击盗版、非法、侵权内容传播，上传文档请阅读<a>发布须知</a>。
-      </v-alert> -->
+      </van-alert> -->
 
       <div style="display: flex;flex-direction: row;margin:10px 0px">
-        <v-card style="flex:1;background-color:#12b7f5;color:white">
+        <van-cell-group inset style="flex:1;background-color:#12b7f5;color:white">
           <div class="upload__card__title--small">QQ上传助手</div>
           <div class="upload__card__subtitle--small">上传QQ群聊中的文件</div>
           <div class="upload__card__icon--normal">
-            <v-icon color="white" size="30">mdi-qqchat</v-icon>
+            <van-icon name="chat" color="white" size="30" />
           </div>
-        </v-card>
+        </van-cell-group>
         <div style="width:10px"></div>
-        <v-card style="flex:1;background-color:#2aae67;color:white">
+        <van-cell-group inset style="flex:1;background-color:#2aae67;color:white">
           <div class="upload__card__title--small">微信上传助手</div>
           <div class="upload__card__subtitle--small">上传微信聊天中的文件</div>
           <div class="upload__card__icon--normal">
-            <v-icon color="white" size="30">mdi-wechat</v-icon>
+            <van-icon name="wechat" color="white" size="30" />
           </div>
-        </v-card>
+        </van-cell-group>
       </div>
 
-      <v-card @click="upload('doc')" style="color:white">
-        <!-- <v-img class="white--text align-end" height="200px" src="@/images/background-picture/background-upload.png"> -->
+      <van-cell-group inset @click="upload('doc')" style="color:white">
         <div style="background-color:#1976d2">
-          <v-card-title>共建文档 分享即获取</v-card-title>
-          <v-card-subtitle>
-            分享你的考前复习秘籍，必过指南，帮助学弟学妹们更好应考
-          </v-card-subtitle>
+          <van-cell title="共建文档 分享即获取" />
+          <van-cell title="分享你的考前复习秘籍，必过指南，帮助学弟学妹们更好应考" />
           <div class="upload__card__icon--main">
-            <v-icon color="white" size="36">mdi-file-upload</v-icon>
+            <van-icon name="upgrade" color="white" size="36" />
           </div>
         </div>
-        <!-- </v-img> -->
-        <v-card-text>
+        <van-cell>
           <div class="upload__typebox">
             <span>支持格式：</span><img :src="require('../../images/type-icon/doc.svg')" width="28" />
             <span class="upload__typebox__divider"> | </span>
@@ -119,44 +115,40 @@
             <img :src="require('../../images/type-icon/pdf.svg')" class="upload__typebox__icon" />
           </div>
           <input type="file" hidden ref="docFileUploader" name="docFileUploader" @change="onFileChange">
-        </v-card-text>
-      </v-card>
+        </van-cell>
+      </van-cell-group>
 
       <van-divider>或</van-divider>
-      <v-card>
-        <v-card-title>拍摄并上传您的纸质笔记</v-card-title>
-        <v-card-subtitle>
-          晒出你的学霸笔记，和更多优秀的同学共同成长
-        </v-card-subtitle>
-        <v-divider class="mx-4"></v-divider>
-        <v-card-text class="upload__note">
+      <van-cell-group inset>
+        <van-cell title="拍摄并上传您的纸质笔记" />
+        <van-cell title="晒出你的学霸笔记，和更多优秀的同学共同成长" />
+        <van-divider />
+        <van-cell class="upload__note">
           <div class="upload__typebox">
             支持格式：<img :src="require('../../images/type-icon/jpg.svg')" class="upload__typebox__icon" />
             <span class="upload__typebox__divider"> | </span>
             <img :src="require('../../images/type-icon/png.svg')" class="upload__typebox__icon" />
           </div>
           <van-uploader v-model="picFileList" multiple accept=".png,.jpg" name="uploadFile" />
-          <v-btn color="primary" @click="upload('pic')" small>
+          <van-button type="primary" @click="upload('pic')" size="small">
             提交笔记
-          </v-btn>
-        </v-card-text>
-      </v-card>
+          </van-button>
+        </van-cell>
+      </van-cell-group>
 
       <van-popup class="upload__notice" v-model:show="showNotice" closeable position="bottom" round>
         <v-uploadFileStatement class="upload__notice__statement"></v-uploadFileStatement>
-        <v-btn color="primary" @click="doUpload()">
+        <van-button type="primary" @click="doUpload()" block>
           同意上述协议并继续
-        </v-btn>
+        </van-button>
       </van-popup>
 
-      <v-dialog v-model:show="uploading" persistent width="300">
-        <v-card color="primary" dark>
-          <v-card-text>
-            文档已上传{{uploadProgress}}%...
-            <v-progress-linear :value="uploadProgress" color="white" class="mb-0"></v-progress-linear>
-          </v-card-text>
-        </v-card>
-      </v-dialog>
+      <van-dialog v-model="uploading" title="上传中" :show-confirm-button="false">
+        <van-cell>
+          文档已上传{{uploadProgress}}%...
+          <van-progress :percentage="uploadProgress" color="#1989fa" />
+        </van-cell>
+      </van-dialog>
 
     </div>
   </div>
@@ -168,7 +160,6 @@ import uploadFileStatement from '@/views/statement/uploadFileStatement.vue';
 export default {
   components: {
     'v-uploadFileStatement': uploadFileStatement,
-    //"v-alert": alert,
   },
   data() {
     return {
