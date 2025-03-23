@@ -16,6 +16,7 @@
   }
   &__button {
     margin-top: 5px;
+    width: 100%;
   }
   &__alert {
     line-height: 20px;
@@ -65,38 +66,47 @@
 
 <template>
   <div class="login container md-body-1">
-    <v-loading ref="loading" />
+    <van-loading ref="loading" />
     <div class="login__title">
       <img class="login__logo" :src="require('@/images/main-picture/logo.png')" />
       <br />
       <span class="text-h5" style="color:rgba(0,0,0,0.7)"><strong>登录到Ocean</strong></span>
     </div>
     <div class="login__body">
-      <v-tabs v-model="tab">
-        <v-tab value="userlogin">
-          <v-icon icon="mdi-account-box" class="login__tab__icon"></v-icon>
-        </v-tab>
-        <v-tab value="univlogin">
-          <v-icon icon="mdi-school" class="login__tab__icon"></v-icon>
-        </v-tab>
-      </v-tabs>
-
-      <v-window v-model="tab" class="login__tab">
-        <v-window-item value="userlogin">
-          <v-text-field v-model="username" type="text" label="用户名" placeholder="请输入用户名"></v-text-field>
-          <v-text-field v-model="password" :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRules.required, passwordRules.min]"
-                        :type="showPassword ? 'text' : 'password'" label="密码" placeholder="请输入账号密码" hint="密码至少为6位" counter
-                        @click:append-inner="showPassword = !showPassword"></v-text-field>
-          <v-btn class="login__button" variant="flat" color="primary" @click="login">
+      <van-tabs v-model:active="tab">
+        <van-tab name="userlogin">
+          <template #title>
+            <van-icon name="manager" class="login__tab__icon" />
+          </template>
+          <van-field v-model="username" type="text" label="用户名" placeholder="请输入用户名"></van-field>
+          <van-field v-model="password" 
+                    :right-icon="showPassword ? 'eye-o' : 'closed-eye'" 
+                    :rules="[{ required: true, message: '密码不可为空' }, { min: 6, message: '密码至少为 6 字符' }]"
+                    :type="showPassword ? 'text' : 'password'" 
+                    label="密码" 
+                    placeholder="请输入账号密码" 
+                    @click-right-icon="showPassword = !showPassword"></van-field>
+          <van-button class="login__button" type="primary" @click="login">
             登录
-          </v-btn>
-          <v-checkbox v-model="isAutoLogin" label="记住账号和密码"></v-checkbox>
-        </v-window-item>
-        <v-window-item value="univlogin">
-          <v-select v-model="univ" :items="univList" item-title="key" item-value="value" label="选择你的所在高校"></v-select>
+          </van-button>
+          <van-checkbox v-model="isAutoLogin" shape="square">记住账号和密码</van-checkbox>
+        </van-tab>
+        <van-tab name="univlogin">
+          <template #title>
+            <van-icon name="bookmark" class="login__tab__icon" />
+          </template>
+          <van-field v-model="univ" is-link readonly label="选择你的所在高校" placeholder="点击选择高校" @click="showUnivPicker = true"></van-field>
+          <van-popup v-model:show="showUnivPicker" position="bottom">
+            <van-picker
+              show-toolbar
+              :columns="univList.map(item => item.key)"
+              @confirm="onUnivConfirm"
+              @cancel="showUnivPicker = false"
+            />
+          </van-popup>
           <v-bitLogin v-if="univ=='BIT'" @onLogin="(data)=>{doLogin(data)}"></v-bitLogin>
-        </v-window-item>
-      </v-window>
+        </van-tab>
+      </van-tabs>
     </div>
 
     <div class="login__bottom">
@@ -107,6 +117,7 @@
     </div>
   </div>
 </template>
+
 <script>
 import axios from 'axios';
 import qs from 'qs';
@@ -116,8 +127,8 @@ import bitLogin from '@/components/univlogin/bit/bitLogin.vue';
 
 export default {
   components: {
-    'v-loading': loading,
     'v-bitLogin': bitLogin,
+    'van-loading': loading,
     [Notify.name]: Notify,
   },
   data() {
@@ -133,6 +144,7 @@ export default {
         },
       ],
       univ: null,
+      showUnivPicker: false,
       passwordRules: {
         required: (value) => value == null || (value != null && value != '') || '密码不可为空',
         min: (value) => value == null || value.length >= 6 || value.length == 0 || '密码至少为 6 字符',
@@ -155,6 +167,10 @@ export default {
     }
   },
   methods: {
+    onUnivConfirm(value) {
+      this.univ = this.univList.find(item => item.key === value).value;
+      this.showUnivPicker = false;
+    },
     reg() {
       this.tab = 'csulogin';
       this.noticeShow = true;
