@@ -63,6 +63,11 @@
 }
 </style>
 
+<style lang="scss" scoped>
+@use '~vuetify/lib/components/VMessages/_variables.scss';
+$messages-line-height: unset;
+</style>
+
 <template>
   <div class="login container md-body-1">
     <v-loading ref="loading" />

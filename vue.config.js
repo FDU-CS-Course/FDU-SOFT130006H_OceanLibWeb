@@ -1,6 +1,8 @@
 const CompressionPlugin = require('compression-webpack-plugin')
 module.exports = {
-    transpileDependencies: [],
+    transpileDependencies: [
+        'vuetify'
+    ],
     css: {},
     configureWebpack: {
         externals: {
@@ -12,9 +14,11 @@ module.exports = {
             threshold: 10240, // 对超过10k的数据进行压缩
             deleteOriginalAssets: false // 是否删除原文件
         })],
-        devtool: 'source-map' // debugger
+        devtool: 'source-map'// debugger
     },
-    pluginOptions: {},
+    pluginOptions: {
+        vuetify: {}
+    },
     devServer: {
         port: 5432,
         open: true,
