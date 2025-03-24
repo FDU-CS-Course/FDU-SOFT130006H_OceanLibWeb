@@ -1,3 +1,8 @@
+<style scoped>
+.v-btn:not(.v-btn--round).v-size--default {
+  height: -webkit-fill-available;
+}
+</style>
 <style scoped lang="less">
 @import '~@/vant-variables.less';
 .wall {
@@ -32,104 +37,119 @@
 </style>
 <template>
   <div class="wall">
-    <div class="text-h5" style="margin:20px 0px">互助集市 <van-icon name="label-o" color="#1989fa" />
+    <div class="text-h5" style="margin:20px 0px">互助集市 <v-icon color="rgb(var(--v-theme-primary))">mdi-sticker</v-icon>
     </div>
     <van-sticky :offset-top="0">
       <div class="wall__search">
-        <van-search
-          v-model="searchValue"
-          placeholder="请输入搜索关键词"
-          shape="round"
-        >
-          <template #right-icon>
-            <div style="display: flex;">
-              <van-icon name="filter-o" size="20" style="margin-right: 8px;" />
-              <van-icon name="replay" size="20" />
-            </div>
-          </template>
-        </van-search>
+        <v-toolbar theme="dark" color="rgb(var(--v-theme-primary))">
+          <v-text-field hide-details prepend-icon="mdi-magnify" single-line></v-text-field>
+          <v-btn icon>
+            <v-icon>mdi-filter</v-icon>
+          </v-btn>
+          <v-btn icon>
+            <v-icon>mdi-refresh</v-icon>
+          </v-btn>
+        </v-toolbar>
       </div>
     </van-sticky>
 
     <div>
       <div v-for="(item,index) in wallInfo" :key="index">
 
-        <van-card class="mb-4" v-if="item.isAD">
-          <template #thumb>
-            <img src="@/images/ad-2.png" style="height: 150px; width: 100%;" />
-          </template>
-        </van-card>
+        <v-card class="mx-auto mb-4" v-if="item.isAD" theme="dark" max-width="400">
+          <v-parallax height="150" src="@/images/ad-2.png"></v-parallax>
+        </v-card>
 
-        <van-cell-group inset class="mb-4" v-else>
-          <van-cell :style="{ backgroundColor: item.backgroundColor, color: 'white' }">
-            <template #title>
-              <div style="display: flex; align-items: center;">
-                <van-icon :name="item.noticeIcon ? item.noticeIcon : getIconName(item.noticeType)" style="margin-right: 5px;" />
-                <span class="wall__card__type">{{item.noticeTypeName ? item.noticeTypeName : getTypeName(item.noticeType)}}</span>
-              </div>
-            </template>
-          </van-cell>
-          
-          <van-cell :style="{ backgroundColor: item.backgroundColor, color: 'white' }">
-            <template #default>
-              <div class="wall__card__content">
-                {{item.noticeContent}}
-              </div>
-            </template>
-          </van-cell>
-          
-          <van-cell :style="{ backgroundColor: item.backgroundColor, color: 'white' }">
-            <template #default>
-              <div style="display: flex; align-items: center; justify-content: space-between;">
-                <div style="display: flex; align-items: center;">
-                  <van-image
-                    round
-                    width="28px"
-                    height="28px"
-                    :src="item.isAnonymous ? 'https://avataaars.io/?avatarStyle=Transparent&topType=Hat&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Serious&skinColor=Light' : item.buildUserEntity.avatar || ''"
-                    v-if="item.isAnonymous || item.buildUserEntity.avatar"
-                  >
-                    <template #error>
-                      <div style="width: 28px; height: 28px; border-radius: 50%; background-color: #ccc; display: flex; justify-content: center; align-items: center; color: white;">
-                        {{ item.isAnonymous ? 'A' : item.buildUserEntity.nickname.substring(0, 1) }}
-                      </div>
-                    </template>
-                  </van-image>
-                  <div v-else style="width: 28px; height: 28px; border-radius: 50%; background-color: #ccc; display: flex; justify-content: center; align-items: center; color: white;">
-                    {{ item.buildUserEntity.nickname.substring(0, 1) }}
-                  </div>
-                  <div class="text-body-2" style="margin-left: 5px;">{{item.isAnonymous ? "匿名纸条" : item.buildUserEntity.nickname}}</div>
-                </div>
-                <div style="display: flex; align-items: center;">
-                  <van-icon name="eye-o" style="margin-right: 3px;" />
-                  <span style="font-size: 12px; margin-right: 8px;">{{item.focusNum}}</span>
-                  <span style="margin-right: 8px;">·</span>
-                  <van-icon name="chat-o" style="margin-right: 3px;" />
-                  <span style="font-size: 12px;">{{item.commentNum}}</span>
-                </div>
-              </div>
-            </template>
-          </van-cell>
-        </van-cell-group>
+        <v-card class="mx-auto mb-4" :color="item.backgroundColor" theme="dark" max-width="400" v-else>
+          <v-card-title>
+            <v-icon left>
+              {{item.noticeIcon?item.noticeIcon:getIcon(item.noticeType)}}
+            </v-icon>
+            <span class="wall__card__type">{{item.noticeTypeName?item.noticeTypeName:getTypeName(item.noticeType)}}</span>
+          </v-card-title>
+
+          <v-card-text class="wall__card__content">
+            {{item.noticeContent}}
+          </v-card-text>
+
+          <v-card-actions>
+            <v-list-item class="grow">
+              <v-avatar color="grey darken-3" size="28" v-if="!item.isAnonymous">
+                <v-img class="elevation-6" :src="item.buildUserEntity.avatar" alt="Avatar" v-if="item.buildUserEntity.avatar != null" />
+                <span v-else>{{ item.buildUserEntity.nickname.substring(0, 1) }}</span>
+              </v-avatar>
+              <v-avatar color="grey darken-3" size="28" v-else>
+                <v-img class="elevation-6"
+                  src="https://avataaars.io/?avatarStyle=Transparent&topType=Hat&accessoriesType=Round&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Wink&eyebrowType=RaisedExcitedNatural&mouthType=Serious&skinColor=Light"
+                  alt="Avatar" />
+              </v-avatar>
+<!--              <v-list-item-content>-->
+              <div class="text-body-2">{{item.isAnonymous?"匿名纸条":item.buildUserEntity.nickname}}</div>
+<!--              </v-list-item-content>-->
+              <v-row align="center" justify="end">
+                <v-icon class="mr-1">
+                  mdi-comment-eye
+                </v-icon>
+                <span class="text-caption mr-2">{{item.focusNum}}</span>
+                <span class="mr-1">·</span>
+                <v-icon class="mr-1">
+                  mdi-comment
+                </v-icon>
+                <span class="text-caption">{{item.commentNum}}</span>
+              </v-row>
+            </v-list-item>
+          </v-card-actions>
+        </v-card>
       </div>
     </div>
-    <div style="position: fixed; bottom: 0; left: 0; right: 0;">
-      <van-tabbar v-model="navigation">
-        <van-tabbar-item icon="search" to="/index">文库</van-tabbar-item>
-        <van-tabbar-item icon="friends-o" to="/wall">互助</van-tabbar-item>
-        <van-tabbar-item icon="manager-o" to="/mine">我的</van-tabbar-item>
-      </van-tabbar>
+    <div style="position: fixed;bottom: 0;left: 0;right: 0;">
+      <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
+        <v-btn link to="/index">
+          <span>文库</span>
+          <v-icon>mdi-text-box-search</v-icon>
+        </v-btn>
+        <v-btn link to="/wall">
+          <span>互助</span>
+          <v-icon>mdi-handshake</v-icon>
+        </v-btn>
+        <v-btn link to="/mine">
+          <span>我的</span>
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
     </div>
     <div style="position: fixed; bottom: 60px; right: 10px;">
-      <van-button 
-        round 
-        type="primary" 
-        size="small" 
-        icon="edit" 
-        @click="showActions = true"
-      />
-      
-      <van-action-sheet v-model:show="showActions" :actions="actions" @select="onSelect" />
+      <v-fab
+        :color="fab ? '' : 'primary'"
+        location="bottom right"
+        icon
+        size="small"
+      >
+        <v-icon>{{ fab ? 'mdi-close' : 'mdi-fountain-pen-tip' }}</v-icon>
+        
+        <v-speed-dial
+          v-model="fab"
+          direction="top"
+          transition="slide-y-reverse-transition"
+          activator="parent"
+        >
+          <v-btn
+            color="green"
+            icon
+            size="small"
+          >
+            <v-icon>mdi-pencil</v-icon>
+          </v-btn>
+
+          <v-btn
+            color="red"
+            icon
+            size="small"
+          >
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-speed-dial>
+      </v-fab>
     </div>
   </div>
 </template>
@@ -138,12 +158,7 @@
 export default {
   data() {
     return {
-      searchValue: '',
-      showActions: false,
-      actions: [
-        { name: '编辑', icon: 'edit' },
-        { name: '删除', icon: 'delete-o' }
-      ],
+      fab: true,
       navigation: 1,
       wallInfo: [
         {
@@ -232,16 +247,16 @@ export default {
   },
   mounted() {},
   methods: {
-    getIconName(noticeType) {
+    getIcon(noticeType) {
       switch (noticeType) {
         case '1':
-          return 'question-o';
+          return 'mdi-help-circle';
         case '2':
-          return 'search';
+          return 'mdi-note-search';
         case '3':
-          return 'contact';
+          return 'mdi-account-search';
         case '4':
-          return 'location-o';
+          return 'mdi-map-marker-radius';
       }
     },
     getTypeName(noticeType) {
@@ -256,10 +271,9 @@ export default {
           return '寻物';
       }
     },
-    onSelect(action) {
-      this.showActions = false;
-      // Handle action selection
-    }
   },
 };
 </script>
+
+<style scoped>
+</style>

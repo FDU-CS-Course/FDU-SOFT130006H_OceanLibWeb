@@ -3,6 +3,16 @@
         <p style="font-size:18px;text-align: center;" v-html="describe"></p>
         <p style="margin-top: 10px;font-size:16px;text-align: center;">如有疑问请联系网站管理员</p>
     </van-empty>
+    <!-- <Layout class="layout" style="background-color:#f5f7f9;justify-content: center;align-items: flex-end;position: absolute;top:0px;bottom: 0px;left: 0px;right: 0px;">
+        <Card style="margin-right: 10%;padding:20px;text-align: right">
+            <div slot="title">
+                <v-img src="../images/notice-icon/error.svg" width="100"></v-img>
+                <h1>{{state}} - {{msg}}</h1>
+            </div>
+            <h3 v-html="describe"></h3>
+            <p style="margin-top: 10px;">如有疑问请联系网站管理员</p>
+        </Card>
+    </Layout> -->
 </template>
 
 <script>

@@ -32,42 +32,54 @@
 <template>
   <van-popup class="ccprotocal" v-model:show="showCCprotocalModel" round position="bottom" closeable>
     <p class="ccprotocal__title">请选择版权协议</p>
-    <van-card class="ccprotocal__box">
+    <v-card class="ccprotocal__box">
       <div class="ccprotocal__checkbox">
-        <van-checkbox v-model="copyrightNotice" name="BY" :disabled="ccDisabled">
-          <span class="ccprotocal__checkbox__label">姓名标示（BY）</span>
-        </van-checkbox>
-        <van-checkbox v-model="copyrightNotice" name="NC" :disabled="ccDisabled">
-          <span class="ccprotocal__checkbox__label">非商业性（NC）</span>
-        </van-checkbox>
-        <van-checkbox v-model="copyrightNotice" name="ND" :disabled="ccDisabled">
-          <span class="ccprotocal__checkbox__label">禁止改作（ND）</span>
-        </van-checkbox>
-        <van-checkbox v-model="copyrightNotice" name="SA" :disabled="ccDisabled">
-          <span class="ccprotocal__checkbox__label">相同方式分享（SA）</span>
-        </van-checkbox>
-        <van-checkbox v-model="copyrightNotice" name="COPYRIGHT">
-          <span class="ccprotocal__checkbox__label">作者保留全部著作权</span>
-        </van-checkbox>
+        <v-checkbox v-model="copyrightNotice" value="BY" hide-details :disabled="ccDisabled">
+          <template v-slot:label>
+            <div class="ccprotocal__checkbox__label">姓名标示（BY）</div>
+          </template>
+        </v-checkbox>
+        <v-checkbox v-model="copyrightNotice" value="NC" hide-details :disabled="ccDisabled">
+          <template v-slot:label>
+            <div class="ccprotocal__checkbox__label">非商业性（NC）</div>
+          </template>
+        </v-checkbox>
+        <v-checkbox v-model="copyrightNotice" value="ND" hide-details :disabled="ccDisabled">
+          <template v-slot:label>
+            <div class="ccprotocal__checkbox__label">禁止改作（ND）</div>
+          </template>
+        </v-checkbox>
+        <v-checkbox v-model="copyrightNotice" value="SA" hide-details :disabled="ccDisabled">
+          <template v-slot:label>
+            <div class="ccprotocal__checkbox__label">相同方式分享（SA）</div>
+          </template>
+        </v-checkbox>
+        <v-checkbox v-model="copyrightNotice" value="COPYRIGHT" hide-details>
+          <template v-slot:label>
+            <div class="ccprotocal__checkbox__label">作者保留全部著作权</div>
+          </template>
+        </v-checkbox>
       </div>
 
-      <van-cell @click="showMore = !showMore">
+      <v-card-actions @click="showMore = !showMore">
         <div>什么是CC版权协议</div>
-        <template #right-icon>
-          <van-icon :name="showMore ? 'arrow-up' : 'arrow-down'" />
-        </template>
-      </van-cell>
+        <v-spacer></v-spacer>
 
-      <van-collapse-transition>
+        <v-btn icon>
+          <v-icon>{{ showMore ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        </v-btn>
+      </v-card-actions>
+
+      <v-expand-transition>
         <div v-show="showMore">
-          <van-divider />
+          <v-divider></v-divider>
           <v-ccProtocalStatement></v-ccProtocalStatement>
         </div>
-      </van-collapse-transition>
-    </van-card>
-    <van-button type="primary" block @click="ok()">
+      </v-expand-transition>
+    </v-card>
+    <v-btn color="primary" @click="ok()">
       确定
-    </van-button>
+    </v-btn>
   </van-popup>
 </template>
 

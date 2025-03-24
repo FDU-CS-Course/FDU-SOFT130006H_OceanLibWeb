@@ -15,14 +15,9 @@
   }
   &__button {
     margin-top: 5px;
-    width: 100%;
   }
   &__alert {
     line-height: 20px;
-    padding: 10px;
-    background-color: #fff6e6;
-    border-left: 4px solid #ff976a;
-    margin-bottom: 10px;
   }
   &__captcha {
     display: flex;
@@ -66,32 +61,24 @@
   left: 0;
 }
 </style>
+
 <template>
   <div>
-    <div class="login__alert" v-if="noticeShow">
+    <v-alert class="login__alert" border="bottom" colored-border type="warning" elevation="2" v-if="noticeShow">
       高校限制，注册者必须是北京理工大学学生/教职工，登录时未注册将自动关联注册。
-    </div>
-    <van-field v-model="bitUserID" type="text" name="username" label="学号/工号" placeholder="请输入北京理工大学学号/工号" @change="getBITLoginCaptchaCode"></van-field>
-    <van-field 
-      v-model="bitPwd" 
-      :right-icon="showPassword ? 'eye-o' : 'closed-eye'" 
-      :rules="[passwordRulesBIT.required, passwordRulesBIT.min]"
-      :type="showPassword ? 'text' : 'password'" 
-      label="统一认证密码" 
-      placeholder="请输入门户/统一认证密码" 
-      @click-right-icon="showPassword = !showPassword">
-      <template #extra>
-        <div style="font-size: 12px; color: #999;">默认密码为身份证后6位</div>
-      </template>
-    </van-field>
+    </v-alert>
+    <v-text-field v-model="bitUserID" type="text" name="username" label="学号/工号" placeholder="请输入北京理工大学学号/工号" @change="getBITLoginCaptchaCode"></v-text-field>
+    <v-text-field v-model="bitPwd" hide-details="auto" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRulesBIT.required, passwordRulesBIT.min]"
+      :type="showPassword ? 'text' : 'password'" label="统一认证密码" placeholder="请输入门户/统一认证密码" hint="默认密码为身份证后6位" counter @click:append="showPassword = !showPassword">
+    </v-text-field>
     <div class="login__captcha" v-if="bitCaptchaBoxShow">
-      <van-field class="login__captcha__input" v-model="bitCaptcha" type="text" name="bitCaptcha" label="验证码" placeholder="请输入右侧验证码"></van-field>
+      <v-text-field class="login__captcha__input" v-model="bitCaptcha" type="text" name="bitCaptcha" label="验证码" placeholder="请输入右侧验证码"></v-text-field>
       <img class="login__captcha__img" :src="bitCaptchaImg" @click="getBITLoginCaptchaCode" />
     </div>
-    <van-button class="login__button" type="primary" @click="login">
+    <v-btn class="login__button" depressed color="primary" @click="login">
       登录
-    </van-button>
-    <van-checkbox v-model="isAutoLogin" shape="square">记住账号和密码</van-checkbox>
+    </v-btn>
+    <v-checkbox v-model="isAutoLogin" label="记住账号和密码"></v-checkbox>
   </div>
 </template>
 <script>

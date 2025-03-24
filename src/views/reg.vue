@@ -17,7 +17,6 @@
   }
   &__button {
     margin-top: 5px;
-    width: 100%;
   }
   &__bottom {
     display: flex;
@@ -33,11 +32,6 @@
     margin-top: 5px;
     margin-bottom: 10px;
   }
-  &__error {
-    color: #ee0a24;
-    font-size: 12px;
-    margin-top: 4px;
-  }
 }
 .container {
   padding: 25px;
@@ -48,6 +42,7 @@
   left: 0;
 }
 </style>
+
 <template>
   <div class="reg container md-body-1">
     <div class="reg__title">
@@ -59,58 +54,22 @@
 
       <v-bitRegNotice ref="bitRegNotice" v-if="univ=='BIT'"></v-bitRegNotice>
 
-      <van-field 
-        v-model="username" 
-        type="text" 
-        name="username" 
-        label="用户名" 
-        placeholder="请输入您的用户名" 
-        @blur="checkUsername(username)">
-        <template #extra>
-          <div style="font-size: 12px; color: #999;">用户名一经设置不可修改</div>
-        </template>
-      </van-field>
-      <div class="reg__error" v-if="isSameUsername">用户名已被注册，请更换后重试</div>
+      <v-text-field v-model="username" type="text" name="username" label="用户名" placeholder="请输入您的用户名" hint="用户名一经设置不可修改" @blur="checkUsername(username)"
+        :error-messages="!isSameUsername?null:'用户名已被注册，请更换后重试'"></v-text-field>
 
-      <van-field 
-        v-model="nickname" 
-        type="text" 
-        name="nickname" 
-        label="昵称" 
-        placeholder="请输入您的昵称">
-      </van-field>
+      <v-text-field v-model="nickname" type="text" name="username" label="昵称" placeholder="请输入您的昵称"></v-text-field>
 
-      <van-field 
-        v-model="password" 
-        :right-icon="showPassword ? 'eye-o' : 'closed-eye'" 
-        :type="showPassword ? 'text' : 'password'" 
-        name="password" 
-        label="密码" 
-        placeholder="请输入账号密码" 
-        :rules="[passwordRules.required, passwordRules.min]"
-        @click-right-icon="showPassword = !showPassword">
-        <template #extra>
-          <div style="font-size: 12px; color: #999;">密码至少为6位</div>
-        </template>
-      </van-field>
+      <v-text-field v-model="password" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRules.required, passwordRules.min]"
+        :type="showPassword ? 'text' : 'password'" name="password" label="密码" placeholder="请输入账号密码" hint="密码至少为6位" counter @click:append="showPassword = !showPassword">
+      </v-text-field>
 
-      <van-field 
-        v-model="password2" 
-        :right-icon="showPassword ? 'eye-o' : 'closed-eye'" 
-        :type="showPassword ? 'text' : 'password'" 
-        name="password2" 
-        label="验证密码" 
-        placeholder="请再次输入账号密码" 
-        :rules="[passwordRules.required, passwordRules.min, passwordRules.issame]"
-        @click-right-icon="showPassword = !showPassword">
-        <template #extra>
-          <div style="font-size: 12px; color: #999;">密码至少为6位</div>
-        </template>
-      </van-field>
+      <v-text-field v-model="password2" :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'" :rules="[passwordRules.required, passwordRules.min, passwordRules.issame]"
+        :type="showPassword ? 'text' : 'password'" name="password" label="验证密码" placeholder="请再次输入账号密码" hint="密码至少为6位" counter @click:append="showPassword = !showPassword">
+      </v-text-field>
 
-      <van-button class="reg__button" type="primary" @click="reg()">
+      <v-btn class="reg__button" depressed color="primary" @click="reg()">
         确认并注册
-      </van-button>
+      </v-btn>
     </div>
 
     <div class="reg__bottom">

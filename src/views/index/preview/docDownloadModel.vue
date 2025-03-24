@@ -35,7 +35,7 @@
     </div>
     <div class="download__content">
       <div>
-        <van-score-model :ratersNum="fileInfo.fileExtraEntity.ratersNum" :score="fileInfo.fileExtraEntity.score"></van-score-model>
+        <v-addScoreModel :ratersNum="fileInfo.fileExtraEntity.ratersNum" :score="fileInfo.fileExtraEntity.score"></v-addScoreModel>
       </div>
       <div class="download__content__payment" v-if="this.fileInfo.paymentMethod == 1">
         价值 • <span style="color:green">免费</span>（给作者点个赞支持一下吧）
@@ -45,15 +45,13 @@
         <span v-if="this.fileInfo.isAllowVipfree==1">
           • <img class="mine__userinfo__nickname__icon" :src="require('@/images/main-icon/icon_VIP.svg')" width="20" /> VIP免费下</span>
       </div>
-      <van-notice-bar type="info">
+      <v-alert density="compact" type="info">
         该文档格式为
         <strong>{{this.fileInfo.fileType}}</strong>
-      </van-notice-bar>
-      <van-cell-group inset>
-        <van-cell>
-          <div class="text-body-2">文档贡献者将完全取得您的积分或下载券，下载券可无门槛折换现金。文档重复下载不收费，余额不足将下载失败!</div>
-        </van-cell>
-      </van-cell-group>
+      </v-alert>
+      <v-alert border="left" colored-border type="info" elevation="2">
+        <div class="text-body-2">文档贡献者将完全取得您的积分或下载券，下载券可无门槛折换现金。文档重复下载不收费，余额不足将下载失败!</div>
+      </v-alert>
       <van-action-bar>
         <van-action-bar-button v-if="isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="VIP 免费下载" @click="doDownload" />
         <van-action-bar-button v-if="!isVip && this.fileInfo.isAllowVipfree==1" type="warning" text="申请VIP 文档免费下" @click="$router.push('/vip')" />
@@ -77,7 +75,7 @@ export default {
   },
   components: {
     'my-dialog': dialog,
-    'van-score-model': addScoreModel,
+    'v-addScoreModel': addScoreModel,
   },
   data() {
     return {

@@ -29,10 +29,10 @@
 </style>
 
 <style scoped lang="less">
-.van-field__word-limit {
-  text-align: right;
-  margin-top: 4px;
-  color: rgba(0, 0, 0, 0.6);
+:deep(.v-textarea textarea) {
+  line-height: 1.2rem;
+  margin-top: 35px !important;
+  font-size: 14px;
 }
 </style>
 
@@ -44,16 +44,8 @@
     </div>
 
     <van-popup class="inputbox" v-model:show="inputModel" round position="bottom" closeable>
-      <van-field
-        v-model="commentContent"
-        class="inputbox__textarea"
-        type="textarea"
-        :label="notice"
-        rows="6"
-        autosize
-        maxlength="500"
-        show-word-limit
-      ></van-field>
+      <v-textarea v-model="commentContent" class="inputbox__textarea" background-color="white" :loader-height="1" filled no-resize :label="notice" hide-details="auto" rows="6"
+        shaped></v-textarea>
       <div class="comments-input-mask-2">
         <div class="comments-input-mask-2__button" @click="sendCommentOrReply">发布</div>
       </div>

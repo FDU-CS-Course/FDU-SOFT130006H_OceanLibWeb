@@ -79,10 +79,12 @@
           本文档收益归属内容提供方。<a>点此查看我们的版权保护政策</a>,若发现您的版权权益受到侵害,请立即举报或联系客服,我们会第一时间为您处理并反馈结果。
         </div>
       </div>
-      <van-button type="danger" block class="fileinfo__copyright__report">
-        <van-icon name="warning-o" style="margin-right: 5px;" />
+      <v-btn tile color="error" class="fileinfo__copyright__report">
+        <v-icon left>
+          mdi-message-alert
+        </v-icon>
         举报版权违规
-      </van-button>
+      </v-btn>
     </div>
   </van-popup>
 </template>

@@ -23,12 +23,12 @@
 <template>
   <van-popup class="payment" v-model:show="showPaymentMethodModel" round position="bottom" closeable>
     <p class="payment__title">请设置收益类型</p>
-    <van-card class="payment__box">
+    <v-card class="payment__box">
 
-      <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
-        您的文档目前{{!isProCert?'暂时还不是':'已是'}}精华文档，{{!isProCert?'不可':'可以'}}设置收益类型为 下载券 下载。<span v-if="!isProCert">若要申请精华文档，请点击 <van-button type="primary" size="mini">申请优质认证
-          </van-button> 并耐心等待管理员审核。</span>
-      </van-notice-bar>
+      <v-alert border="right" colored-border type="info" elevation="2">
+        您的文档目前{{!isProCert?'暂时还不是':'已是'}}精华文档，{{!isProCert?'不可':'可以'}}设置收益类型为 下载券 下载。<span v-if="!isProCert">若要申请精华文档，请点击 <v-btn color="primary" x-small>申请优质认证
+          </v-btn> 并耐心等待管理员审核。</span>
+      </v-alert>
 
       <van-field readonly clickable :value="revenueTypeName" label="收益类型" placeholder="点击选择收益类型" @click="showRevenueTypePicker = true" />
       <van-popup v-model:show="showRevenueTypePicker" position="bottom">
@@ -38,13 +38,17 @@
       <van-field label="售价" v-if="paymentMethod!=1">
         <template #input>
           下载需
-          <van-button class="mx-2" round size="mini" type="primary" @click="()=>paymentAmount-=1" :disabled="paymentAmount==0">
-            <van-icon name="minus" />
-          </van-button>
+          <v-btn class="mx-2" fab x-small color="primary" @click="()=>paymentAmount-=1" :disabled="paymentAmount==0">
+            <v-icon dark>
+              mdi-minus
+            </v-icon>
+          </v-btn>
           {{paymentAmount}}
-          <van-button class="mx-2" round size="mini" type="primary" @click="()=>paymentAmount+=1" :disabled="paymentAmount>=30">
-            <van-icon name="plus" />
-          </van-button>
+          <v-btn class="mx-2" fab x-small color="primary" @click="()=>paymentAmount+=1" :disabled="paymentAmount>=30">
+            <v-icon dark>
+              mdi-plus
+            </v-icon>
+          </v-btn>
 
           <span v-if="paymentMethod!=1">{{paymentMethod==2?' 金币':' 下载券'}}</span>
         </template>
@@ -61,23 +65,25 @@
         </template>
       </van-field>
 
-      <van-cell @click="showMore = !showMore">
-        <div>文档收益、优质文档评价与"优享免费下"说明</div>
-        <template #right-icon>
-          <van-icon :name="showMore ? 'arrow-up' : 'arrow-down'" />
-        </template>
-      </van-cell>
+      <v-card-actions @click="showMore = !showMore">
+        <div>文档收益、优质文档评价与“优享免费下”说明</div>
+        <v-spacer></v-spacer>
 
-      <van-collapse-transition>
+        <v-btn icon>
+          <v-icon>{{ showMore ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        </v-btn>
+      </v-card-actions>
+
+      <v-expand-transition>
         <div v-show="showMore">
-          <van-divider />
+          <v-divider></v-divider>
           <v-filePaymentStatement></v-filePaymentStatement>
         </div>
-      </van-collapse-transition>
-    </van-card>
-    <van-button type="primary" block @click="ok()">
+      </v-expand-transition>
+    </v-card>
+    <v-btn color="primary" @click="ok()">
       确定
-    </van-button>
+    </v-btn>
   </van-popup>
 </template>
 

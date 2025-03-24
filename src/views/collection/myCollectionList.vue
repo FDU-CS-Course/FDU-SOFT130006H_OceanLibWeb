@@ -31,7 +31,7 @@
                   >
                     <template #title>
                       <span class="collectionlist__box__title">{{ item.name }}</span>
-                      <van-icon name="closed-eye" size="20" color="#1989fa" v-if="!item.isPublic" />
+                      <v-icon size="20" color="primary" v-if="!item.isPublic">mdi-eye-remove-outline</v-icon>
                     </template>
                   </van-cell>
                   <template #right>
@@ -52,10 +52,10 @@
                     <img :src="require('@/images/empty-picture/no_data.svg')" />
                   </template>
                   <template>
-                    <van-button type="primary" size="small" @click="$router.push('/newCollection')">
+                    <v-btn color="primary" small @click="$router.push('/newCollection')">
                       新增收藏夹
-                      <van-icon name="plus" />
-                    </van-button>
+                      <v-icon right dark> mdi-star-plus </v-icon>
+                    </v-btn>
                   </template>
                 </van-empty>
                 <div v-else class="notice-nomore__text">没有更多的收藏了</div>
@@ -76,7 +76,6 @@ export default {
       refreshing: false,
       loading: false,
       finished: false,
-      active: 0,
       collections:[{
         "title":"文档",
         "mainType":"DOCUMENT"

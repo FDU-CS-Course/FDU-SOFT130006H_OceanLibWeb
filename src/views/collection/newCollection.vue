@@ -11,17 +11,6 @@
       font-size: 14px;
     }
   }
-  &__alert {
-    line-height: 20px;
-    padding: 10px;
-    background-color: #fff6e6;
-    border-left: 4px solid #ff976a;
-    margin-bottom: 15px;
-  }
-  &__button {
-    margin-top: 5px;
-    width: 100%;
-  }
 }
 </style>
 <template>
@@ -32,36 +21,21 @@
       </template>
     </van-nav-bar>
     <div class="newcollection">
-      <van-field 
-        class="newcollection__input" 
-        v-model="collectionName" 
-        placeholder="请填写合适的名称" 
-        label="收藏夹名称"
-        :rules="[titleRule.required]">
-      </van-field>
-      
-      <van-field 
-        class="newcollection__input" 
-        v-model="collectionDesc" 
-        type="textarea" 
-        placeholder="收藏夹描述(可选)" 
-        label="描述"
-        rows="3">
-      </van-field>
-      
-      <van-cell title="设为公开">
-        <template #right-icon>
-          <van-switch v-model="isPublic" size="24" />
+      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
+      </v-text-field>
+      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined density="compact" hide-details></v-textarea>
+      <v-switch class="newcollection__input" v-model="isPublic" hide-details>
+        <template v-slot:label>
+          <div class="newcollection__input__label">设为公开</div>
         </template>
-      </van-cell>
-      
-      <div class="newcollection__alert">
-        收藏夹一旦设置为公开，<span style="color: #1989fa">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
-      </div>
+      </v-switch>
+      <v-alert border="right" colored-border type="info" elevation="2">
+        收藏夹一旦设置为公开，<span style="color: rgb(var(--v-theme-primary))">将无法更改为私密</span>。公开的收藏夹在站内可以流通，其他人可以看到你的收藏夹。
+      </v-alert>
 
-      <van-button class="newcollection__button" type="primary" @click="addOrChangeCollection">
+      <v-btn color="primary" @click="addOrChangeCollection">
         保存
-      </van-button>
+      </v-btn>
 
       <v-more ref="moreModel">
         <v-moreItem title="删除收藏夹" icon="mdi-delete" @click="deleteCollection"></v-moreItem>

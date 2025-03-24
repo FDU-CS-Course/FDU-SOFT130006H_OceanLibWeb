@@ -17,7 +17,7 @@
       text-align: center;
     }
     &--warning {
-      color: #2d8bf0;
+      color: rgb(var(--v-theme-primary));
       font-size: 12px;
       text-align: center;
     }
@@ -48,7 +48,7 @@
     <div class="about__content">
       <p class="about__content--primary">内部版本3.1.12 (20220221Build)内测版本</p>
       <p class="about__content--warning">本项目为中南大学、北京理工大学大学生创新创业项目支持的非盈利性公益项目</p>
-      <van-button class="about__content__button" size="small" type="primary" @click="showSponsor=true">捐赠Ocean项目</van-button>
+      <v-btn class="about__content__button" small @click="showSponsor=true">捐赠Ocean项目</v-btn>
     </div>
 
     <p class="about__bottom">
@@ -59,25 +59,20 @@
 
     <van-popup v-model:show="showSponsor" closeable position="right" round style="width:90%;height:100%">
       <div class="sponsor">
-        <van-card class="my-2" style="width:90%">
-          <template #thumb>
-            <van-image src="@/images/main-picture/sponsor_code.jpg"></van-image>
-          </template>
-          <template #desc>
-            <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
-              如果有时间，麻烦亲动动手给文库捐助一个免费的红包包，今年的服务器费用也拜托亲啦！<a>捐助者名单</a>
-            </van-notice-bar>
-          </template>
-        </van-card>
-        <van-card class="my-2" style="width:90%">
-          <template #thumb>
-            <van-image src="@/images/main-picture/red_packet.jpg"></van-image>
-          </template>
-        </van-card>
+        <v-card class="my-2" style="width:90%">
+          <v-img src="@/images/main-picture/sponsor_code.jpg"></v-img>
+          <v-alert border="right" colored-border type="info" elevation="2" class="mb-0">
+            如果有时间，麻烦亲动动手给文库捐助一个免费的红包包，今年的服务器费用也拜托亲啦！<a>捐助者名单</a>
+          </v-alert>
+        </v-card>
+        <v-card class="my-2" style="width:90%">
+          <v-img src="@/images/main-picture/red_packet.jpg"></v-img>
+        </v-card>
       </div>
     </van-popup>
   </div>
 </template>
+
 <script>
 export default {
   name: 'about',

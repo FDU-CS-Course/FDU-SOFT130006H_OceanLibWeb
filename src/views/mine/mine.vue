@@ -1,5 +1,5 @@
 <style scoped>
-.van-button:not(.van-button--round).van-button--normal {
+.v-btn:not(.v-btn--round).v-size--default {
   height: -webkit-fill-available;
 }
 </style>
@@ -20,6 +20,7 @@
       &__icon {
         margin-left: 10px;
         padding: 0px !important;
+        min-width: unset !important;
       }
     }
     &__avatar-box {
@@ -76,32 +77,23 @@
     <div class="mine__userinfo-box" :style="newBackground">
 
       <div class="mine__userinfo-box__tools">
-        <van-button to="/notify" class="mine__userinfo-box__tools__icon" plain icon="bell">
-        </van-button>
-        <van-button to="/notify" class="mine__userinfo-box__tools__icon" plain icon="setting-o">
-        </van-button>
+        <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
+          <v-icon>mdi-bell-outline</v-icon>
+        </v-btn>
+        <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
+          <v-icon>mdi-cog-outline</v-icon>
+        </v-btn>
       </div>
 
-      <div class="mine__userinfo-box__avatar-box">
-        <van-image
-          round
-          width="80"
-          height="80"
-          class="mine__userinfo-box__avatar"
-          :src="userInfo.avatar"
-          v-if="userInfo.avatar != null && userInfo.avatar !== ''"
-        >
-          <template #error>
-            <div class="van-image__error" style="background-color: #1976d2; color: white; font-size: 36px; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">
-              {{userInfo.nickname.substring(0, 1)}}
-            </div>
-          </template>
-        </van-image>
-        <div v-else style="background-color: #1976d2; color: white; font-size: 36px; display: flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%;">
-          {{userInfo.nickname.substring(0, 1)}}
-        </div>
-        <van-tag type="warning" style="position: absolute; right: -10px; bottom: -10px;">{{userInfo.level}}</van-tag>
-      </div>
+      <v-badge class="mine__userinfo-box__avatar-box" offset-x="20" offset-y="80" bordered color="warning" overlap>
+        <template v-slot:badge>
+          <div>{{userInfo.level}}</div>
+        </template>
+        <v-avatar color="primary" size="80" class="mine__userinfo-box__avatar">
+          <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar !== ''" />
+          <span class="white--text" v-else>{{userInfo.nickname.substring(0, 1)}}</span>
+        </v-avatar>
+      </v-badge>
 
       <div class="mine__userinfo">
         <div class="mine__userinfo__detail">
@@ -129,13 +121,15 @@
             {{ userInfo.nickname }}
             <img class="mine__userinfo__nickname__icon" :src="require('../../images/main-icon/icon_VIP.svg')" v-if="userInfo.wallet.isVip === 1" width="20" />
 
-            <div class="mine__userinfo__nickname__icon" 
+            <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
               v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
-              <van-tag type="primary" size="medium">
+              <template v-slot:badge>
+                <v-icon color="white" size="16">{{userInfo.userCertificationEntity.icon}}</v-icon>
+              </template>
+              <v-chip x-small color="primary" outlined>
                 {{userInfo.userCertificationEntity.certName}}
-                <van-icon :name="userInfo.userCertificationEntity.icon" size="16" color="white" />
-              </van-tag>
-            </div>
+              </v-chip>
+            </v-badge>
 
           </div>
           <div class="mine__userinfo__personalsign" v-if="userInfo.userExtraEntity!=null">
@@ -183,11 +177,20 @@
     <van-cell title="关于Lib4Univ文库" is-link style="margin-top: 5px" to="/about" />
     <van-cell title="退出登录" style="color: var(--van-danger-color);" is-link @click="handleLogout" />
     <div style="position: fixed;bottom: 0;left: 0;right: 0;">
-      <van-tabbar v-model="navigation" route>
-        <van-tabbar-item icon="search" to="/index">文库</van-tabbar-item>
-        <van-tabbar-item icon="friends-o" to="/wall">互助</van-tabbar-item>
-        <van-tabbar-item icon="contact" to="/mine">我的</van-tabbar-item>
-      </van-tabbar>
+      <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
+        <v-btn link to="/index">
+          <span>文库</span>
+          <v-icon>mdi-text-box-search</v-icon>
+        </v-btn>
+        <v-btn link to="/wall">
+          <span>互助</span>
+          <v-icon>mdi-handshake</v-icon>
+        </v-btn>
+        <v-btn link to="/mine">
+          <span>我的</span>
+          <v-icon>mdi-account-circle</v-icon>
+        </v-btn>
+      </v-bottom-navigation>
     </div>
   </div>
 </template>

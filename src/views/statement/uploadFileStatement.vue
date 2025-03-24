@@ -9,12 +9,12 @@
     font-size: 12px;
   }
   &--important {
-    color: #ee0a24;
+    color: rgb(var(--v-error-darken1));
     font-weight: bold;
   }
   &--primary {
     font-size: 14px;
-    color: #1989fa;
+    color: rgb(var(--v-theme-primary));
     font-weight: bold;
   }
   &--label {
@@ -30,9 +30,9 @@
 <template style="overflow-y:hidden">
   <div>
     <div class="statement">
-      <van-notice-bar color="#1989fa" background="#ecf9ff" left-icon="info-o">
+      <v-alert border="right" colored-border type="info" elevation="2">
         请您仔细参阅《文档类内容发布与下载须知》，本协议仅在您首次下载或发布文档时显示，您可在 <span class="statement--primary">设置-服务条款与声明</span> 中找到本协议。
-      </van-notice-bar>
+      </v-alert>
       <p class="statement__title">《文档类内容发布与下载须知》</p>
       <div class="statement__content">
         <p>用户在此明确陈述并保证对所有上载、传播到Lib4Univ文库上的内容，拥有或取得了所有必要的权利并承担全部的法律责任，包括但不限于：用户有权或已取得必要的许可、授权、准许来使用所有与上传作品有关的所有专利、商标、商业秘密、版权、邻接权及其他私有权利。

@@ -11,33 +11,15 @@
   &__fileBox {
     padding: 10px;
   }
-  &__actions {
-    display: flex;
-    padding: 8px 16px;
-  }
-  &__spacer {
-    flex: 1;
-  }
-  &__details {
-    padding: 10px;
-  }
-  &__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-  &__table th, &__table td {
-    text-align: left;
-    padding: 4px;
-  }
-  &__divider {
-    height: 1px;
-    background-color: #ebedf0;
-    margin: 0;
-  }
 }
 </style>
 <style lang="less" scoped>
+:deep(.v-data-table > .v-data-table__wrapper > table) {
+  width: 550px !important;
+}
+:deep(.v-data-table > .v-data-table__wrapper > table > tbody > tr > td) {
+  font-size: 12px;
+}
 :deep(.van-tabs__content) {
   flex: 1;
   display: flex;
@@ -52,24 +34,31 @@
         <van-pull-refresh class="pullRefresh full" v-model="content.fileList.refreshing" @refresh="getMyFileList(true)">
           <van-list v-model:loading="content.fileList.loading" :finished="content.fileList.finished" @load="getMyFileList()" class="full">
             <div v-for="fileInfo in myFileList" :key="fileInfo.fileID">
-              <van-card class="myUpload">
+              <v-card class="myUpload" outlined>
                 <v-fileBox class="myUpload__fileBox" :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
                   :previewPictureObjectName="fileInfo.previewPictureObjectName" :readNum="fileInfo.fileExtraEntity.readNum" :score="fileInfo.fileExtraEntity.score"
                   :ratersNum="fileInfo.fileExtraEntity.ratersNum" :paymentMethod="fileInfo.paymentMethod" :paymentAmount="fileInfo.paymentAmount"
                   :isVipIncome="fileInfo.fileExtraEntity.isVipIncome" :fileTagList="fileInfo.tagNames"></v-fileBox>
-                <div class="myUpload__actions">
-                  <van-button type="primary" size="mini" icon="edit" round @click="changeFileInfo(fileInfo.fileID)"></van-button>
-                  <van-button type="primary" size="mini" icon="share" round class="ml-2"></van-button>
-                  <van-button type="warning" size="mini" icon="close" round class="ml-2"></van-button>
-                  <div class="myUpload__spacer"></div>
-                  <van-button plain icon="arrow-down" @click="fileInfo.show = !fileInfo.show;$forceUpdate();" v-if="!fileInfo.show"></van-button>
-                  <van-button plain icon="arrow-up" @click="fileInfo.show = !fileInfo.show;$forceUpdate();" v-else></van-button>
-                </div>
-                <van-collapse-transition>
+                <v-card-actions>
+                  <v-btn fab theme="dark" x-small color="primary" @click="changeFileInfo(fileInfo.fileID)">
+                    <v-icon>mdi-note-edit</v-icon>
+                  </v-btn>
+                  <v-btn fab theme="dark" x-small color="primary">
+                    <v-icon>mdi-share-variant</v-icon>
+                  </v-btn>
+                  <v-btn fab theme="dark" x-small color="warning">
+                    <v-icon>mdi-file-cancel</v-icon>
+                  </v-btn>
+                  <v-spacer></v-spacer>
+                  <v-btn icon @click="fileInfo.show = !fileInfo.show;$forceUpdate();">
+                    <v-icon>{{ fileInfo.show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                  </v-btn>
+                </v-card-actions>
+                <v-expand-transition>
                   <div v-show="fileInfo.show">
-                    <div class="myUpload__divider"></div>
-                    <div class="myUpload__details">
-                      <table class="myUpload__table">
+                    <v-divider></v-divider>
+                    <v-simple-table density="compact" style="width:500px">
+                      <template v-slot:default>
                         <thead>
                           <tr>
                             <th class="text-left">下载量</th>
@@ -82,21 +71,23 @@
                         </thead>
                         <tbody>
                           <tr>
-                            <td>{{fileInfo.fileExtraEntity.downloadNum}}次</td>
+                            <td class="">{{fileInfo.fileExtraEntity.downloadNum}}次</td>
                             <td>{{fileInfo.fileExtraEntity.likeNum}}次</td>
                             <td>{{fileInfo.fileExtraEntity.collectionNum}}次</td>
                             <td>{{fileInfo.fileExtraEntity.commentNum}}次</td>
                             <td>
-                              <van-icon :name="fileInfo.fileExtraEntity.isProCert==0?'warning':'success'" :color="fileInfo.fileExtraEntity.isProCert==0?'#ff9800':'#4caf50'" size="16px" />
+                              <v-icon :color="fileInfo.fileExtraEntity.isProCert==0?'warning':'success'" size="16">
+                                mdi-circle
+                              </v-icon>
                             </td>
                             <td>{{fileInfo.uploadDate}}</td>
                           </tr>
                         </tbody>
-                      </table>
-                    </div>
+                      </template>
+                    </v-simple-table>
                   </div>
-                </van-collapse-transition>
-              </van-card>
+                </v-expand-transition>
+              </v-card>
             </div>
             <template #finished>
               <!--若无文件则显示空提示-->
@@ -105,21 +96,21 @@
                   <img :src="require('@/images/empty-picture/no_record.svg')" />
                 </template>
                 <template>
-                  <van-button type="primary" size="small" class="mr-2" to="/uploadFile">上传更多文档
-                    <van-icon name="upgrade" />
-                  </van-button>
-                  <van-button type="primary" size="small">查看草稿箱文档
-                    <van-icon name="bookmark" />
-                  </van-button>
+                  <v-btn color="primary" small class="mr-2" to="/uploadFile">上传更多文档
+                    <v-icon right dark>mdi-file-upload</v-icon>
+                  </v-btn>
+                  <v-btn color="primary" small>查看草稿箱文档
+                    <v-icon right dark>mdi-seal-variant</v-icon>
+                  </v-btn>
                 </template>
               </van-empty>
               <div v-else class="notice-nomore__text">没有更多已经发布的文档了</div>
-              <van-button type="primary" size="small" class="mr-2" to="/uploadFile">上传更多文档
-                <van-icon name="upgrade" />
-              </van-button>
-              <van-button type="primary" size="small">查看草稿箱文档
-                <van-icon name="bookmark" />
-              </van-button>
+              <v-btn color="primary" small class="mr-2" to="/uploadFile">上传更多文档
+                <v-icon right dark>mdi-file-upload</v-icon>
+              </v-btn>
+              <v-btn color="primary" small>查看草稿箱文档
+                <v-icon right dark>mdi-seal-variant</v-icon>
+              </v-btn>
             </template>
           </van-list>
         </van-pull-refresh>
@@ -129,9 +120,9 @@
           <template v-slot:image>
             <img :src="require('@/images/empty-picture/no_internet.svg')" />
           </template>
-          <van-button type="primary" size="small" class="mr-2" to="/about">加入我们
-            <van-icon name="manager" />
-          </van-button>
+          <v-btn color="primary" small class="mr-2" to="/about">加入我们
+            <v-icon right dark>mdi-account-cog</v-icon>
+          </v-btn>
         </van-empty>
       </van-tab>
       <van-tab title="帮帮帖" name="2">
@@ -139,9 +130,9 @@
           <template v-slot:image>
             <img :src="require('@/images/empty-picture/no_internet.svg')" />
           </template>
-          <van-button type="primary" size="small" class="mr-2" to="/about">加入我们
-            <van-icon name="manager" />
-          </van-button>
+          <v-btn color="primary" small class="mr-2" to="/about">加入我们
+            <v-icon right dark>mdi-account-cog</v-icon>
+          </v-btn>
         </van-empty>
       </van-tab>
     </van-tabs>

@@ -23,27 +23,19 @@
 }
 </style>
 <template>
-  <van-button-group :value="evaluateButtonStatus" class="evaluate-buttons" type="primary">
-    <van-button 
-      :style="{width:(evaluateLoading?'130px':(this.isDisLike?'40px':'90px'))}" 
-      class="button--like" 
-      plain
-      :loading="evaluateLoading" 
-      @click="doEvaluateDoc('like')">
-      <van-icon class="button__icon" name="thumb-circle-o" />
+  <v-btn-toggle :value="evaluateButtonStatus" multiple rounded color="primary" background-color="#2d8cf011">
+    <v-btn :style="{width:(evaluateLoading?'130px':(this.isDisLike?'40px':'90px')),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--like" plain
+      :loading="evaluateLoading" @click="doEvaluateDoc('like')">
+      <v-icon class="button__icon" style="color:rgb(var(--v-theme-primary))">mdi-thumb-up</v-icon>
       <span class="button__text" v-if="!this.isDisLike"> {{this.isLike?" 已赞同":" 赞同"}}
         {{ fileInfo.fileExtraEntity.likeNum }}</span>
-    </van-button>
-    <van-button 
-      :style="{width:(!this.isDisLike?'40px':'90px')}" 
-      class="button--dislike" 
-      plain 
-      v-if="!evaluateLoading"
+    </v-btn>
+    <v-btn :style="{width:(!this.isDisLike?'40px':'90px'),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--dislike" plain v-if="!evaluateLoading"
       @click="doEvaluateDoc('dislike')">
       <span v-if="this.isDisLike" class="button__text" style="margin-right:5px">已反对</span>
-      <van-icon class="button__icon" name="thumb-circle-down-o" />
-    </van-button>
-  </van-button-group>
+      <v-icon class="button__icon" style="color:rgb(var(--v-theme-primary))">mdi-thumb-down</v-icon>
+    </v-btn>
+  </v-btn-toggle>
 </template>
 
 <script>
