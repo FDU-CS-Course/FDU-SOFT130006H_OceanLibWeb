@@ -26,7 +26,7 @@
                 <van-swipe-cell>
                   <van-cell
                     class="collectionlist__box"
-                    :label="item.files.length + ' 个内容 · ' + (item.isPublic ? '公开收藏夹' : '私密收藏夹')"
+                    :label="item.items.length + ' 个内容 · ' + (item.isPublic ? '公开收藏夹' : '私密收藏夹')"
                     @click="showItem(item.collectionID, item.name, item.desc, item.isPublic)"
                   >
                     <template #title>
@@ -92,7 +92,7 @@ export default {
         method: 'get',
         url: '/collectionService/getCollection',
         params: {
-          "mainType": mainType
+          mainType: "DOCUMENT"
         }
       }).then((response) => {
         this.myCollection = response.data.msg.collection;

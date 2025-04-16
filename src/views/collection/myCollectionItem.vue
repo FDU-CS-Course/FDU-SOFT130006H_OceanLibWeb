@@ -32,8 +32,8 @@
       <p class="collection__title">{{$route.query.collectionName}}</p>
       <p class="collection__desc" v-if="$route.query.collectionDesc!=null">{{$route.query.collectionDesc}}</p>
 
-      <van-pull-refresh v-model="refreshing" @refresh="getCollectionFileList()" class="full">
-        <van-list v-model:loading="loading" :finished="finished" @load="getCollectionFileList()">
+      <van-pull-refresh v-model="refreshing" @refresh="getCollectionItemList()" class="full">
+        <van-list v-model:loading="loading" :finished="finished" @load="getCollectionItemList()">
           <div v-for="(fileInfo,index) in fileList" :key="fileInfo.fileID">
             <van-swipe-cell>
               <v-fileBox :fileID="fileInfo.fileID" :abstractContent="fileInfo.abstractContent" :title="fileInfo.title" :fileType="fileInfo.fileType"
@@ -76,19 +76,20 @@ export default {
     };
   },
   mounted() {
-    this.getCollectionFileList();
+    this.getCollectionItemList();
   },
   methods: {
     back() {
       this.$router.go(-1); //返回上一层
     },
-    getCollectionFileList() {
+    getCollectionItemList() {
       this.loading = true;
       this.$Axios({
         method: 'get',
-        url: '/collectionService/getCollectionFileList',
+        url: '/collectionService/getCollectionItemList',
         params: {
           collectionID: this.$route.query.collectionID,
+          mainType: "DOCUMENT"
         },
       }).then((response) => {
         this.fileList = response.data.msg;

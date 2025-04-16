@@ -42,14 +42,15 @@
           </span>
         </template>
       </van-cell>
-      <van-cell :label="item.files.length +' 个内容 · ' +(item.isPublic ? '公开收藏夹' : '私密收藏夹')" v-for="(item, index) in myCollection" :key="index">
+      <van-cell :label="item.items.length +' 个内容 · ' +(item.isPublic ? '公开收藏夹' : '私密收藏夹')" v-for="(item, index) in myCollection" :key="index">
         <!-- 使用 title 插槽来自定义标题 -->
         <template #title>
           <span class="collection__list--item-title">{{ item.name }}</span>
           <van-icon name="lock" v-if="!item.isPublic" color="#1989fa" size="20" />
         </template>
         <template #extra>
-          <van-checkbox modelValue="isCollectedList[index]"></van-checkbox>
+          <van-checkbox :modelValue="isCollectedList[index]"
+                        @click="() => { isCollectedList[index] = !isCollectedList[index]; }"></van-checkbox>
         </template>
       </van-cell>
     </div>
@@ -90,14 +91,17 @@ export default {
       this.$Axios({
         method: 'get',
         url: '/collectionService/getCollection',
+        params: {
+          mainType: "DOCUMENT"
+        }
       }).then((response) => {
         this.collectedNum = 0;
         this.myCollection = response.data.msg.collection;
 
         for (let index in this.myCollection) {
           let isExist = false;
-          for (let j = 0; j < this.myCollection[index].files.length; j++) {
-            if (this.myCollection[index].files[j] == this.fileInfo.fileID) {
+          for (let j = 0; j < this.myCollection[index].items.length; j++) {
+            if (this.myCollection[index].items[j] == this.fileInfo.fileID) {
               isExist = true;
             }
           }
@@ -117,12 +121,15 @@ export default {
       for (let index in this.myCollection) {
         changedCollection[this.myCollection[index].collectionID] = this.isCollectedList[index];
       }
+      console.log("yes")
+      console.log(JSON.stringify(changedCollection));
       this.$Axios({
         method: 'post',
         url: '/collectionService/changeCollectionItem',
         data: qs.stringify({
           changedList: JSON.stringify(changedCollection),
-          fileID: this.fileInfo.fileID,
+          itemID: this.fileInfo.fileID,
+          mainType: "DOCUMENT"
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

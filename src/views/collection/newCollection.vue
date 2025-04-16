@@ -87,6 +87,7 @@ export default {
           newName: this.collectionName,
           isPublic: this.isPublic,
           desc: this.collectionDesc,
+          mainType: "DOCUMENT"
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -113,6 +114,7 @@ export default {
           newName: this.collectionName,
           isPublic: this.isPublic,
           desc: this.collectionDesc,
+          mainType: "DOCUMENT"
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
@@ -136,12 +138,17 @@ export default {
         url: '/collectionService/deleteCollection',
         params: {
           collectionID: this.collectionID,
+          mainType: "DOCUMENT"
         },
       }).then((response) => {
         if (response.data.code == 1) {
           Notify({ type: 'success', message: '删除成功' });
           this.$router.replace('/myCollectionList');
+        } else {
+          console.log(response.data);
         }
+      }).catch((e) => {
+        console.log(e);
       });
     },
   },
