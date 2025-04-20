@@ -121,8 +121,6 @@ export default {
       for (let index in this.myCollection) {
         changedCollection[this.myCollection[index].collectionID] = this.isCollectedList[index];
       }
-      console.log("yes")
-      console.log(JSON.stringify(changedCollection));
       this.$Axios({
         method: 'post',
         url: '/collectionService/changeCollectionItem',

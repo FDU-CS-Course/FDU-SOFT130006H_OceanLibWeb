@@ -70,21 +70,22 @@ export default {
   data() {
     return {
       fileList: [],
+      tmpFileList: [],
       refreshing: false,
       loading: false,
       finished: false,
     };
   },
-  mounted() {
-    this.getCollectionItemList();
+  async mounted() {
+    await this.getCollectionItemList();
   },
   methods: {
     back() {
       this.$router.go(-1); //返回上一层
     },
-    getCollectionItemList() {
+    async getCollectionItemList() {
       this.loading = true;
-      this.$Axios({
+      await this.$Axios({
         method: 'get',
         url: '/collectionService/getCollectionItemList',
         params: {
@@ -92,11 +93,27 @@ export default {
           mainType: "DOCUMENT"
         },
       }).then((response) => {
-        this.fileList = response.data.msg;
-        this.loading = false;
-        this.refreshing = false;
-        this.finished = true; //一次性全部加载，直接完成
+        this.tmpFileList = response.data.msg;
       });
+      await this.getFileInfoByFileIDWithAnon();
+    },
+    async getFileInfoByFileIDWithAnon() {
+      for (const fileID of this.tmpFileList) {
+        const index = this.tmpFileList.indexOf(fileID);
+        await this.$Axios({
+          method: 'get',
+          url: '/docInfoService/getFileInfoByFileIDWithAnon',
+          params: {
+            fileID: fileID,
+          },
+        }).then((response) => {
+          this.fileList[index] = response.data.msg;
+        });
+      }
+
+      this.loading = false;
+      this.refreshing = false;
+      this.finished = true; //一次性全部加载，直接完成
     },
     deleteCollectionItem(index, fileID) {
       this.$Axios({
