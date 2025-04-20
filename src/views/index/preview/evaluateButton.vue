@@ -23,14 +23,14 @@
 }
 </style>
 <template>
-  <v-btn-toggle :value="evaluateButtonStatus" multiple rounded color="primary" background-color="#2d8cf011">
-    <v-btn :style="{width:(evaluateLoading?'130px':(this.isDisLike?'40px':'90px')),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--like" plain
+  <v-btn-toggle :value="evaluateButtonStatus" multiple rounded color="#2d8cf011" background-color="#2d8cf011">
+    <v-btn :style="{width:(evaluateLoading?'200px':(this.isLike?'200px':this.isDisLike?'90px':'200px')),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--like" plain
       :loading="evaluateLoading" @click="doEvaluateDoc('like')">
       <v-icon class="button__icon" style="color:rgb(var(--v-theme-primary))">mdi-thumb-up</v-icon>
       <span class="button__text" v-if="!this.isDisLike"> {{this.isLike?" 已赞同":" 赞同"}}
         {{ fileInfo.fileExtraEntity.likeNum }}</span>
     </v-btn>
-    <v-btn :style="{width:(!this.isDisLike?'40px':'90px'),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--dislike" plain v-if="!evaluateLoading"
+    <v-btn :style="{width:(!this.isDisLike?'90px':'200px'),'border-color': 'rgb(var(--v-theme-primary)) !important'}" class="button--dislike" plain v-if="!evaluateLoading"
       @click="doEvaluateDoc('dislike')">
       <span v-if="this.isDisLike" class="button__text" style="margin-right:5px">已反对</span>
       <v-icon class="button__icon" style="color:rgb(var(--v-theme-primary))">mdi-thumb-down</v-icon>
@@ -126,10 +126,11 @@ export default {
               } else {
                 Notify({ type: 'success', message: '已取消反对' });
               }
-              if (this.isDisLike && this.isLike) {
-                this.isLike = false;
-                // eslint-disable-next-line vue/no-mutating-props
-                this.fileInfo.fileExtraEntity.likeNum -= 1;
+              if (this.isDisLike) {
+                if (this.isLike) {
+                  this.isLike = false;
+                  // eslint-disable-next-line vue/no-mutating-props
+                  this.fileInfo.fileExtraEntity.likeNum -= 1;}
               }
             }
           }
