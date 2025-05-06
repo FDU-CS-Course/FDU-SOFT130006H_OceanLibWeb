@@ -206,7 +206,8 @@
     <v-docDownloadModel ref="docDownloadModel" :fileInfo="fileInfo" @needLoginNotice="needLoginNotice">
     </v-docDownloadModel>
     <!-- 新增收藏窗口组件 -->
-    <v-addCollectionModel ref="addCollectionModel" :fileInfo="fileInfo" @needLoginNotice="needLoginNotice">
+    <v-addCollectionModel ref="addCollectionModel" :fileInfo="fileInfo" @needLoginNotice="needLoginNotice"
+                          @collectionChange="this.getUserBehaviorByFileID(this.$route.query.fileID)">
     </v-addCollectionModel>
     <!-- 文档评论窗口组件 -->
     <v-docCommentModel ref="docCommentModel" :fileInfo="fileInfo" @needLoginNotice="needLoginNotice">
@@ -407,6 +408,7 @@ export default {
       });
     },
     getUserBehaviorByFileID(fileID) {
+      this.isCollected = false;
       userBehaviorStore.getUserBehaviorList('DOCUMENT', fileID, this, true).then((userBehaviorList) => {
         this.$refs['evaluateButton'].initEvaluateStatus(userBehaviorList);
         userBehaviorList.map((value) => {

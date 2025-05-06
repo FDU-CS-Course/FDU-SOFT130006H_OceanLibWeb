@@ -134,6 +134,7 @@ export default {
         },
       }).then((response) => {
         if (response.data.code == 1) {
+          this.$emit('collectionChange');
           this.collectionModel = false;
         }
       });
