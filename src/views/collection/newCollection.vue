@@ -76,6 +76,11 @@ export default {
       if (this.$route.query.isChange) {
         this.changeCollection();
       } else {
+        if (this.collectionName === null || this.collectionName === '') {
+          Notify({ type: 'danger', message: '收藏夹名称不可为空' });
+          return;
+        }
+
         this.addCollection();
       }
     },
