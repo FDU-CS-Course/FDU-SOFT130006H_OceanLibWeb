@@ -208,7 +208,7 @@ export default {
         });
         comments.map((comment) => {
           this.commentUserBehavior.map((record) => {
-            let commentID = record.extraInfo.COMMENT_ID;
+            let commentID = record.extraInfo.commentID;
             if (commentID.indexOf(comment.id) != -1) {
               if (commentID == comment.id) {
                 //是评论

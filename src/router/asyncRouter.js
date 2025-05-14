@@ -12,6 +12,9 @@ const myDownloadList = () => import("../views/mine/myDownloadList.vue");
 const walletChangeRecordList = () => import("../views/mine/walletChangeRecordList.vue");
 const notify = () => import("../views/notify/notify.vue");
 const notifyLikeList = () => import("../views/notify/notifyLikeList.vue");
+const notifyDownloadAndScoreList = () => import("../views/notify/notifyDownloadAndScoreList.vue");
+const notifyCommentList = () => import("../views/notify/notifyCommentList.vue");
+const notifyInvitationList = () => import("../views/notify/notifyInvitationList.vue");
 
 const asyncRouterMap = [{
         path: '/newCollection',
@@ -124,6 +127,30 @@ const asyncRouterMap = [{
             permission: ["USER", "ADMIN"]
         },
         component: notifyLikeList
+    },
+    {
+        path: '/notifyDownloadAndScoreList',
+        meta: {
+            title: '下载与评价',
+            permission: ["USER", "ADMIN"]
+        },
+        component: notifyDownloadAndScoreList
+    },
+    {
+        path: '/notifyCommentList',
+        meta: {
+            title: '评论与回复',
+            permission: ["USER", "ADMIN"]
+        },
+        component: notifyCommentList
+    },
+    {
+        path: '/notifyInvitationList',
+        meta: {
+            title: '帮帮求助',
+            permission: ["USER", "ADMIN"]
+        },
+        component: notifyInvitationList
     },
 ];
 export default asyncRouterMap;

@@ -23,8 +23,8 @@
 </style>
 <template>
   <div class="page">
-    <van-nav-bar id="toolbar" title="赞同" left-text="返回" left-arrow @click-left="back" fixed placeholder></van-nav-bar>
-    <div v-for="(item,index) in likeList" :key="index" class="notifyBox">
+    <van-nav-bar id="toolbar" title="下载与评价" left-text="返回" left-arrow @click-left="back" fixed placeholder></van-nav-bar>
+    <div v-for="(item,index) in downloadAndScoreList" :key="index" class="notifyBox">
       <div class="notifyBox__top">
         <div class="notifyBox__top__avatar">
           <v-username class="comment__avatar" type="avater" :avatarSize="28" :username="item.buildUsername"></v-username>
@@ -32,7 +32,7 @@
         <div>
           <div>
             <v-username type="username" :username="item.buildUsername"></v-username>
-            点赞了你的{{item.action=='LIKE_COMMENT'?'评论':'文章'}}
+            {{item.action=="DOWNLOAD"?'下载':'评价'}}了你的文章
           </div>
           <div class="notifyBox__top__date">{{item.buildDate}}</div>
         </div>
@@ -42,12 +42,22 @@
 </template>
 
 <script>
+import Username from '@/components/common/username/username';
+import userNotifyStore from './userNotifyStore.js';
+
 export default {
-  components: {},
-  mounted() {},
+  components: {
+    'v-username': Username,
+    // 'v-fileBox': fileBox,
+  },
+  mounted() {
+    userNotifyStore.pullUserNotifyList(this, () => {
+      this.downloadAndScoreList = userNotifyStore.getUserNotifyList().downloadAndScoreList;
+    });
+  },
   data() {
     return {
-      likeList: [],
+      downloadAndScoreList: [],
     };
   },
   methods: {

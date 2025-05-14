@@ -9,12 +9,19 @@ export default {
                 invitationList: [],
             }
         }
+        else {
+            userNotifyList.likeList = [];
+            userNotifyList.downloadAndScoreList = [];
+            userNotifyList.commentList = [];
+            userNotifyList.invitationList = [];
+        }
         let lastPullDate = localStorage.getItem("notifyLastPullDate");
         self.$Axios({
             method: 'get',
             url: '/notify/getLatestNotifications',
             params: {
-                lastPullDate: lastPullDate,
+                username: sessionStorage.getItem("username"),
+                latestPullDate: lastPullDate,
             },
         }).then((response) => {
             let notifyList = response.data.msg;
