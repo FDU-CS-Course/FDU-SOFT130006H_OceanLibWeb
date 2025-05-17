@@ -76,6 +76,47 @@
               <v-icon>{{ comment.isDisliked ? 'mdi-thumb-down' : 'mdi-thumb-down-outline' }}</v-icon>
               <span class="ml-1">{{ comment.dislikeNum }}</span>
             </v-btn>
+            <v-btn icon size="small" @click="showReplyInput(index)" variant="text">
+              <v-icon>mdi-reply</v-icon>
+              <span class="ml-1">回复</span>
+            </v-btn>
+          </div>
+          
+          <!-- 回复列表 -->
+          <div v-if="comment.replies && comment.replies.length > 0" class="replies-section pl-8 mt-2">
+            <div v-for="(reply, replyIndex) in comment.replies" :key="replyIndex" class="reply-item mb-2">
+              <div class="d-flex align-center">
+                <v-avatar size="24" color="primary" class="mr-2">
+                  <span class="text-caption">{{ reply.username.charAt(0) }}</span>
+                </v-avatar>
+                <span class="text-subtitle-2">{{ reply.username }}</span>
+                <span class="text-caption ml-2 text-grey">{{ reply.createTime }}</span>
+              </div>
+              <div class="reply-content pl-6">
+                {{ reply.content }}
+              </div>
+            </div>
+          </div>
+
+          <!-- 回复输入框 -->
+          <div v-if="activeReplyIndex === index" class="reply-input-section pl-8 mt-2">
+            <v-text-field
+              v-model="newReply"
+              label="写下你的回复..."
+              variant="outlined"
+              density="comfortable"
+              hide-details
+              class="mb-2"
+              @keyup.enter="submitReply(index)"
+            ></v-text-field>
+            <div class="d-flex justify-end">
+              <v-btn size="small" color="primary" @click="submitReply(index)" :disabled="!newReply.trim()">
+                回复
+              </v-btn>
+              <v-btn size="small" variant="text" @click="cancelReply" class="ml-2">
+                取消
+              </v-btn>
+            </div>
           </div>
         </div>
       </v-card-text>
@@ -115,6 +156,7 @@
 <script>
 export default {
   data() {
+    // 暂时写死，后续需要从后端获取
     return {
       wallInfo: {
         tag: "问题",
@@ -134,7 +176,14 @@ export default {
           likeNum: 5,
           dislikeNum: 1,
           isLiked: false,
-          isDisliked: false
+          isDisliked: false,
+          replies: [
+            {
+              username: "热心网友2",
+              content: "好的，我加你了",
+              createTime: "2024-03-20 10:35"
+            }
+          ]
         },
         {
           username: "热心网友2",
@@ -143,10 +192,13 @@ export default {
           likeNum: 3,
           dislikeNum: 0,
           isLiked: false,
-          isDisliked: false
+          isDisliked: false,
+          replies: []
         }
       ],
       newComment: '',
+      newReply: '',
+      activeReplyIndex: -1,
       isLiked: false,
       isDisliked: false,
       snackbar: {
@@ -256,6 +308,30 @@ export default {
       } else {
         comment.dislikeNum--
       }
+    },
+    showReplyInput(index) {
+      this.activeReplyIndex = index
+      this.newReply = ''
+    },
+    cancelReply() {
+      this.activeReplyIndex = -1
+      this.newReply = ''
+    },
+    submitReply(index) {
+      if (!this.newReply.trim()) return
+      
+      if (!this.comments[index].replies) {
+        this.comments[index].replies = []
+      }
+      
+      this.comments[index].replies.push({
+        username: "我",
+        content: this.newReply,
+        createTime: new Date().toLocaleString()
+      })
+      
+      this.newReply = ''
+      this.activeReplyIndex = -1
     }
   }
 }
@@ -306,5 +382,27 @@ export default {
 .v-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.replies-section {
+  background-color: #f5f8ff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.reply-item {
+  padding: 4px 0;
+}
+
+.reply-content {
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.reply-input-section {
+  background-color: #f5f8ff;
+  border-radius: 8px;
+  padding: 8px;
 }
 </style> 
