@@ -138,6 +138,8 @@ input[type="text"], textarea {
   border: 1px solid #eee;
   border-radius: 4px;
   background-color: #f9f9f9;
+  width: auto;
+  overflow-wrap: break-word;
 }
 
 .preview-section h3 {
