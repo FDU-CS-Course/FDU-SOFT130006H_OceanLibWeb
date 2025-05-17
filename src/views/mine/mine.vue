@@ -75,7 +75,6 @@
 <template>
   <div class="mine">
     <div class="mine__userinfo-box" :style="newBackground">
-
       <div class="mine__userinfo-box__tools">
         <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
           <v-icon>mdi-bell-outline</v-icon>
@@ -83,8 +82,10 @@
         <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
           <v-icon>mdi-cog-outline</v-icon>
         </v-btn>
+        <v-btn class="mine__userinfo-box__tools__icon" text @click="enterEditMode" v-if="!editMode">
+          <v-icon>mdi-pencil</v-icon> Edit
+        </v-btn>
       </div>
-
       <v-badge class="mine__userinfo-box__avatar-box" offset-x="20" offset-y="80" bordered color="warning" overlap>
         <template v-slot:badge>
           <div>{{userInfo.level}}</div>
@@ -94,50 +95,72 @@
           <span class="white--text" v-else>{{userInfo.nickname.substring(0, 1)}}</span>
         </v-avatar>
       </v-badge>
-
       <div class="mine__userinfo">
-        <div class="mine__userinfo__detail">
-          <div class="mine__userinfo__detail__box">
-            <div class="mine__userinfo__detail--title">积分</div>
-            <div class="mine__userinfo__detail--number">
-              {{ userInfo.wallet.exp }}
+        <template v-if="!editMode">
+          <!-- Display mode -->
+          <div class="mine__userinfo__detail">
+            <div class="mine__userinfo__detail__box">
+              <div class="mine__userinfo__detail--title">积分</div>
+              <div class="mine__userinfo__detail--number">
+                {{ userInfo.wallet.exp }}
+              </div>
+            </div>
+            <div class="mine__userinfo__detail__box">
+              <div class="mine__userinfo__detail--title">金币</div>
+              <div class="mine__userinfo__detail--number">
+                {{ userInfo.wallet.coin }}
+              </div>
+            </div>
+            <div class="mine__userinfo__detail__box">
+              <div class="mine__userinfo__detail--title">下载卷</div>
+              <div class="mine__userinfo__detail--number">
+                {{ userInfo.wallet.ticket }}
+              </div>
             </div>
           </div>
-          <div class="mine__userinfo__detail__box">
-            <div class="mine__userinfo__detail--title">金币</div>
-            <div class="mine__userinfo__detail--number">
-              {{ userInfo.wallet.coin }}
+          <div>
+            <div class="mine__userinfo__nickname">
+              {{ userInfo.nickname }}
+              <img class="mine__userinfo__nickname__icon" :src="require('../../images/main-icon/icon_VIP.svg')" v-if="userInfo.wallet.isVip === 1" width="20" />
+              <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
+                v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
+                <template v-slot:badge>
+                  <v-icon color="white" size="16">{{userInfo.userCertificationEntity.icon}}</v-icon>
+                </template>
+                <v-chip x-small color="primary" outlined>
+                  {{userInfo.userCertificationEntity.certName}}
+                </v-chip>
+              </v-badge>
+            </div>
+            <div class="mine__userinfo__personalsign" v-if="userInfo.userExtraEntity!=null">
+              {{
+                (userInfo.userExtraEntity.personalSignature == null || userInfo.userExtraEntity.personalSignature === "") ? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature
+              }}
             </div>
           </div>
-          <div class="mine__userinfo__detail__box">
-            <div class="mine__userinfo__detail--title">下载卷</div>
-            <div class="mine__userinfo__detail--number">
-              {{ userInfo.wallet.ticket }}
-            </div>
-          </div>
-        </div>
-        <div>
-          <div class="mine__userinfo__nickname">
-            {{ userInfo.nickname }}
-            <img class="mine__userinfo__nickname__icon" :src="require('../../images/main-icon/icon_VIP.svg')" v-if="userInfo.wallet.isVip === 1" width="20" />
-
-            <v-badge class="mine__userinfo__nickname__icon" bordered color="primary" overlap
-              v-if="userInfo.userCertificationEntity!=null && userInfo.userCertificationEntity.certName!=null">
-              <template v-slot:badge>
-                <v-icon color="white" size="16">{{userInfo.userCertificationEntity.icon}}</v-icon>
+        </template>
+        <template v-else>
+          <!-- Edit mode -->
+          <v-form ref="editForm" lazy-validation>
+            <v-text-field v-model="editUserInfo.nickname" label="Nickname" :rules="[v => !!v || 'Required']" />
+            <v-text-field v-model="editUserInfo.email" label="Email" type="email" />
+            <v-text-field v-model="editUserInfo.phoneNum" label="Phone Number" />
+            <v-text-field v-model="editUserInfo.realname" label="Real Name" />
+            <v-text-field v-model="editUserInfo.avatar" label="Avatar URL" />
+            <v-text-field v-model="editUserInfo.college" label="College" />
+            <v-text-field v-model="editUserInfo.major" label="Major" />
+            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field v-model="editUserInfo.birthday" label="Birthday" readonly v-bind="attrs" v-on="on" />
               </template>
-              <v-chip x-small color="primary" outlined>
-                {{userInfo.userCertificationEntity.certName}}
-              </v-chip>
-            </v-badge>
-
-          </div>
-          <div class="mine__userinfo__personalsign" v-if="userInfo.userExtraEntity!=null">
-            {{
-              (userInfo.userExtraEntity.personalSignature == null || userInfo.userExtraEntity.personalSignature === "") ? "原装签名送给每个小可爱" : userInfo.userExtraEntity.personalSignature
-            }}
-          </div>
-        </div>
+              <v-date-picker v-model="editUserInfo.birthday" @input="menu = false"></v-date-picker>
+            </v-menu>
+            <v-select v-model="editUserInfo.sex" :items="sexOptions" label="Sex" />
+            <v-textarea v-model="editUserInfo.personalSignature" label="Personal Signature" />
+            <v-btn color="primary" @click="saveEdit">Save</v-btn>
+            <v-btn color="secondary" @click="cancelEdit">Cancel</v-btn>
+          </v-form>
+        </template>
       </div>
     </div>
     <van-grid style="margin-bottom: 10px">
@@ -192,6 +215,9 @@
         </v-btn>
       </v-bottom-navigation>
     </div>
+    <v-snackbar v-model="snackbar" :color="snackbarColor" :timeout="3000">
+      {{ snackbarMsg }}
+    </v-snackbar>
   </div>
 </template>
 
@@ -214,6 +240,17 @@ export default {
           ticket: 0,
         },
       },
+      editMode: false,
+      editUserInfo: {},
+      menu: false,
+      sexOptions: [
+        { text: 'Unknown', value: null },
+        { text: 'Male', value: 1 },
+        { text: 'Female', value: 2 },
+      ],
+      snackbar: false,
+      snackbarMsg: '',
+      snackbarColor: 'success',
     };
   },
   mounted() {
@@ -232,6 +269,58 @@ export default {
     handleLogout() {
       localStorage.removeItem("token");
       this.$router.push("/login");
+    },
+    enterEditMode() {
+      this.editUserInfo = {
+        nickname: this.userInfo.nickname,
+        email: this.userInfo.email,
+        phoneNum: this.userInfo.phoneNum,
+        realname: this.userInfo.realname,
+        avatar: this.userInfo.avatar,
+        college: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.college : '',
+        major: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.major : '',
+        birthday: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.birthday : '',
+        sex: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.sex : null,
+        personalSignature: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.personalSignature : '',
+      };
+      this.editMode = true;
+    },
+    cancelEdit() {
+      this.editMode = false;
+      this.editUserInfo = {};
+    },
+    saveEdit() {
+      const payload = {};
+      for (const key in this.editUserInfo) {
+        if (this.editUserInfo[key] !== undefined && this.editUserInfo[key] !== null && this.editUserInfo[key] !== '') {
+          payload[key] = this.editUserInfo[key];
+        }
+      }
+      this.$Axios({
+        method: 'post',
+        url: '/userInfoService/updateUserInfo',
+        data: payload,
+      }).then((response) => {
+        console.log(response.data);
+        this.editMode = false;
+        this.getUserAllInfo();
+        this.snackbarMsg = 'User info updated successfully';
+        this.snackbarColor = 'success';
+        this.snackbar = true;
+      }).catch((error) => {
+        let msg = 'Failed to update user info: ';
+        if (error && error.response && error.response.data && error.response.data.msg) {
+          msg += error.response.data.msg;
+        } else if (error && error.message) {
+          msg += error.message;
+        } else {
+          msg += 'Unknown error';
+        }
+        console.log(msg);
+        this.snackbarMsg = msg;
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+      });
     },
   },
 };
