@@ -3,6 +3,7 @@ const reg = () => import("../views/reg.vue");
 const homepage = () => import("../views/index/index/index.vue");
 const index = () => import("../views/index/index/index.vue");
 const wall = () => import("../views/wall/index/index.vue");
+const wallDetail = () => import("../views/wall/detail.vue");
 const preview = () => import("../views/index/preview/preview.vue");
 const about = () => import("../views/function/about.vue");
 const result = () => import("../views/function/result.vue");
@@ -46,6 +47,13 @@ const constantRouterMap = [{
             title: '互助墙',
         },
         component: wall
+    },
+    {
+        path: '/wall/detail',
+        meta: {
+            title: '问题详情',
+        },
+        component: wallDetail
     },
     {
         path: '/preview',

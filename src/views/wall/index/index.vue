@@ -66,7 +66,7 @@
           <v-parallax height="150" src="@/images/ad-2.png"></v-parallax>
         </v-card>
 
-        <v-card class="mx-auto mb-4" style="border-radius: 20px; background-color: white;" v-else>
+        <v-card class="mx-auto mb-4" style="border-radius: 20px; background-color: white;" v-else @click="goToDetail(item)">
           <v-card-title style="padding: 30px 30px;">
             <span class="wall__card__type text-h4">{{ item.tag }}</span>
           </v-card-title>
@@ -131,6 +131,7 @@
                   icon="mdi-pencil"
                   size="small"
                   fab
+                  to="/createNotePage"
               ></v-btn>
               <v-btn
                   style="background-color:red; margin-bottom: 20px;"
@@ -148,9 +149,11 @@
 
 <script setup>
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const fab = ref(true);
 const navigation = ref(1);
+const router = useRouter();
 
 const wallInfo = [
   {
@@ -224,6 +227,15 @@ const wallInfo = [
     isAllowComment: true,
   }
 ];
+
+const goToDetail = (item) => {
+  router.push({
+    path: '/wall/detail',
+    query: {
+      id: item.noteID
+    }
+  });
+};
 </script>
 
 <style scoped>
