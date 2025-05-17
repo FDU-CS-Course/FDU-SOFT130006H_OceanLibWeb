@@ -131,6 +131,7 @@
                   icon="mdi-pencil"
                   size="small"
                   fab
+                  to="/createNotePage"
               ></v-btn>
               <v-btn
                   style="background-color:red; margin-bottom: 20px;"

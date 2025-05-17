@@ -15,6 +15,7 @@ const notifyLikeList = () => import("../views/notify/notifyLikeList.vue");
 const notifyDownloadAndScoreList = () => import("../views/notify/notifyDownloadAndScoreList.vue");
 const notifyCommentList = () => import("../views/notify/notifyCommentList.vue");
 const notifyInvitationList = () => import("../views/notify/notifyInvitationList.vue");
+const createNotePage = () => import("../views/wall/createNotePage.vue");
 
 const asyncRouterMap = [{
         path: '/newCollection',
@@ -151,6 +152,14 @@ const asyncRouterMap = [{
             permission: ["USER", "ADMIN"]
         },
         component: notifyInvitationList
+    },
+    {
+        path: '/createNotePage',
+        meta: {
+            title: '帮帮求助',
+            permission: ["USER", "ADMIN"]
+        },
+        component: createNotePage
     },
 ];
 export default asyncRouterMap;
