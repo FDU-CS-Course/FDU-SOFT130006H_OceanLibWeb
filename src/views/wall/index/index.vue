@@ -17,7 +17,7 @@
   </div>
 
   <!-- 加载状态 -->
-  <div v-if="loading" class="text-center mt-5">
+  <div v-if="isLoading" class="text-center mt-5">
     <v-progress-circular indeterminate color="primary"></v-progress-circular>
   </div>
 
@@ -28,7 +28,7 @@
   </div>
 
   <!-- 内容卡片列表 -->
-  <div class="wall" v-else>
+  <div class="wall">
     <div>
       <div v-for="(item, index) in wallInfo" :key="index">
 
@@ -43,7 +43,7 @@
             @click="goToDetail(item)"
         >
           <v-card-title style="padding: 30px 30px;">
-            <span class="wall__card__type text-h4">{{ item.tag }}</span>
+            <span class="wall__card__type text-h4">{{ getValueLabel(tags, item.tag) }}</span>
           </v-card-title>
 
           <v-card-text class="wall__card__content">
@@ -127,9 +127,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import {ref, onMounted, onUnmounted} from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentInstance } from 'vue';
+
+const tags = [
+  { value: 'question', label: '问题' },
+  { value: 'finditem', label: '寻物' },
+  { value: 'help', label: '帮帮' },
+  { value: 'findperson', label: '捞人' }
+];
 
 const { proxy } = getCurrentInstance();
 const router = useRouter();
@@ -144,27 +151,58 @@ const pageSize = ref(10);
 
 // 墙数据
 const wallInfo = ref([]);
-const loading = ref(true);
 const error = ref(null);
 
-// 获取数据
-const fetchWallData = async () => {
-  loading.value = true;
-  error.value = null;
+const isLoading = ref(false);
+const hasMore = ref(true);
 
-  proxy.$Axios({
-    method: 'post',
-    url: '/noteService/getLatestNote', // 确保URL路径正确
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    params: {
-      pageNO: 1,
-      pageSize: 10
+const handleScroll = () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const windowHeight = window.innerHeight;
+  const scrollHeight = document.documentElement.scrollHeight;
+
+  const scrollBottom = scrollHeight - (scrollTop + windowHeight);
+
+  if (scrollBottom <= 50) {
+    fetchWallData(true);
+  }
+};
+
+onMounted(() => {
+  fetchWallData();
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+const getValueLabel = (tags, value) => {
+  const foundTag = tags.find(tag => tag.value === value);
+  return foundTag ? foundTag.label : null;
+};
+
+// 获取数据
+const fetchWallData = async (isLoadMore = false) => {
+  if (isLoading.value || !hasMore.value) return;
+
+  isLoading.value = true;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/getLatestNote',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        pageNO: pageNo.value,
+        pageSize: pageSize.value
       }
-  }).then(function (res) {
+    });
+
     if (res.data && res.data.code === "1") {
-      wallInfo.value = res.data.msg.list.map(note => ({
+      const list = res.data.msg.list.map(note => ({
         noteID: note.id,
         tag: note.tag,
         content: note.content,
@@ -177,19 +215,30 @@ const fetchWallData = async () => {
         isAllowComment: note.isAllowComment === 1,
         isDeleted: note.isDeleted === 1,
       }));
+
+      // 如果是加载更多，则追加；否则替换
+      if (isLoadMore) {
+        wallInfo.value = [...wallInfo.value, ...list];
+      } else {
+        wallInfo.value = list;
+      }
+
+      // 判断是否还有下一页
+      if (list.length < pageSize.value) {
+        hasMore.value = false;
+      } else {
+        pageNo.value += 1; // 只有成功加载才自增页码
+      }
     } else {
       console.error("数据请求失败！");
+      hasMore.value = false;
     }
-  }).catch(function (error) {
-    console.error("Error:", error);
-  }).finally(function () {
-    loading.value = false;
-  });
+  } catch (err) {
+    console.error("请求出错：", err);
+  } finally {
+    isLoading.value = false;
+  }
 };
-
-onMounted(() => {
-  fetchWallData();
-});
 
 const goToDetail = (item) => {
   router.push({

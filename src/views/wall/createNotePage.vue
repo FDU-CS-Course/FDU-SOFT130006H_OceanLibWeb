@@ -61,8 +61,8 @@ const { proxy } = getCurrentInstance();
 
 const content = ref('');
 const selectedTag = ref('question');
-const isAnonymous = ref(0);
-const allowComment = ref(1); // 默认允许评论
+const isAnonymous = ref(false);
+const allowComment = ref(true); // 默认允许评论
 
 const tags = [
   { value: 'question', label: '问题' },
@@ -87,8 +87,8 @@ const submitPost = () => {
     params: {
       content: content.value,
       tag: selectedTag.value,
-      isAnon: isAnonymous.value,
-      isAllowComment: allowComment.value,
+      isAnon: isAnonymous.value === false ? 0 : 1,
+      isAllowComment: allowComment.value === false ? 0 : 1,
       buildUsername: sessionStorage.getItem('username')
     },
     headers: {
