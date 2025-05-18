@@ -1,10 +1,11 @@
 <template>
   <div class="post-container">
-    <h1 style="margin-top: 20px;" class="text-h4">发布新帖子</h1>
-
-    <div class="form-group">
-      <label for="post-title" class="text-h5">标题</label>
-      <input id="post-title" v-model="title" type="text" class="text-h5" placeholder="输入标题">
+    <!-- 标题区域（含返回按钮） -->
+    <div class="header-bar">
+      <v-btn icon style="height: 0px;" @click="$router.back()" variant="text">
+        <v-icon>mdi-arrow-left</v-icon>
+      </v-btn>
+      <h1 style="margin-top: 20px;" class="text-h4">发布新帖子</h1>
     </div>
 
     <div class="form-group">
@@ -21,25 +22,47 @@
       </div>
     </div>
 
+    <div class="form-group">
+      <label class="text-h5">发布设置</label>
+      <div class="settings-options text-h6">
+        <label>
+          <input type="checkbox" v-model="isAnonymous" style="width: 18px; height: 18px;">
+          匿名发布
+        </label>
+        <label>
+          <input type="checkbox" v-model="allowComment" style="width: 18px; height: 18px;">
+          允许评论
+        </label>
+      </div>
+    </div>
+
     <div class="content-editor">
       <textarea v-model="content" placeholder="请在正确的分区发帖"></textarea>
     </div>
 
     <div class="preview-section text-h5">
-      <h3>预览</h3>
+      <h3 style="margin-bottom: 20px;">预览</h3>
       <div class="preview-content">{{ content }}</div>
     </div>
 
-    <button class="submit-button" @click="submitPost">发布</button>
+    <!-- 禁用条件：content 为空 -->
+    <button class="submit-button" :disabled="!content.trim()" @click="submitPost">
+      发布
+    </button>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
-const title = ref('');
+const router = useRouter();
+const { proxy } = getCurrentInstance();
+
 const content = ref('');
 const selectedTag = ref('question');
+const isAnonymous = ref(0);
+const allowComment = ref(1); // 默认允许评论
 
 const tags = [
   { value: 'question', label: '问题' },
@@ -53,27 +76,56 @@ const selectTag = (tag) => {
 };
 
 const submitPost = () => {
-  console.log('提交帖子:', {
-    title: title.value,
-    content: content.value,
-    tag: selectedTag.value
-  });
-  // 这里可以添加实际的提交逻辑
+  if (!content.value.trim()) {
+    alert('内容不能为空，请输入内容后再发布。');
+    return;
+  }
+
+  proxy.$Axios({
+    method: 'post',
+    url: '/noteService/createNote',
+    params: {
+      content: content.value,
+      tag: selectedTag.value,
+      isAnon: isAnonymous.value,
+      isAllowComment: allowComment.value,
+      buildUsername: sessionStorage.getItem('username')
+    },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+  })
+      .then(() => {
+        router.back(); // 发布成功后返回上一页
+      })
+      .catch((error) => {
+        console.error('发布失败:', error);
+        alert('发布失败，请重试');
+      });
 };
 </script>
 
 <style scoped>
+.header-bar {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button {
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-right: 10px;
+  color: #4CAF50;
+}
+
 .post-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-}
-
-h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
 }
 
 .form-group {
@@ -84,14 +136,6 @@ h1 {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
-}
-
-input[type="text"], textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
 }
 
 .tag-selector {
@@ -112,24 +156,14 @@ input[type="text"], textarea {
   border-color: #a0a0ff;
 }
 
-.toolbar {
-  display: flex;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-.tool-button {
-  padding: 8px 12px;
-  background-color: #f5f5f5;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
 .content-editor textarea {
+  width: 100%;
   min-height: 150px;
   resize: vertical;
   font-size: 13px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
 }
 
 .preview-section {
@@ -138,18 +172,12 @@ input[type="text"], textarea {
   border: 1px solid #eee;
   border-radius: 4px;
   background-color: #f9f9f9;
-  width: auto;
   overflow-wrap: break-word;
 }
 
 .preview-section h3 {
   margin-top: 0;
   color: #666;
-}
-
-.preview-content {
-  min-height: 50px;
-  padding: 10px;
 }
 
 .submit-button {
@@ -166,8 +194,8 @@ input[type="text"], textarea {
   background-color: #45a049;
 }
 
-.moderator-icon {
-  color: #ff5722;
-  font-weight: bold;
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 </style>
