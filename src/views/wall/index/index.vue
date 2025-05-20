@@ -4,10 +4,41 @@
     <van-sticky :offset-top="0">
       <div class="wall__search">
         <v-toolbar color="black">
-          <v-text-field hide-details prepend-icon="mdi-magnify" single-line style="padding-left: 20px;"></v-text-field>
-          <v-btn icon>
+          <v-text-field hide-details prepend-icon="mdi-magnify" single-line
+                        style="padding-left: 20px;"></v-text-field>
+          <v-btn ref="filterBtn" icon>
             <v-icon>mdi-filter</v-icon>
           </v-btn>
+
+          <!-- 筛选下拉菜单 -->
+          <v-menu
+              v-model="isFilterMenuOpen"
+              :activator="filterBtn"
+              location="bottom center"
+              transition="slide-y-transition"
+          >
+            <v-list dense style="width: 75px;">
+              <!-- “全部”选项 -->
+              <v-list-item
+                  @click="clearFilter"
+                  :class="{ 'selected-item': selectedTag === null }"
+              >
+                <v-list-item-title>全部</v-list-item-title>
+              </v-list-item>
+
+              <v-divider></v-divider>
+
+              <!-- tag 列表 -->
+              <v-list-item
+                  v-for="tag in tags"
+                  :key="tag.value"
+                  @click="applyTagFilter(tag.value)"
+                  :class="{ 'selected-item': selectedTag === tag.value }"
+              >
+                <v-list-item-title>{{ tag.label }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
           <v-btn icon @click="refreshList">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
@@ -148,8 +179,15 @@ const pageSize = ref(10);
 const wallInfo = ref([]);
 const error = ref(null);
 
+const originalWallInfo = ref([]);
+
 const isLoading = ref(false);
 const hasMore = ref(true);
+
+const filterBtn = ref(null);
+
+const isFilterMenuOpen = ref(false);
+const selectedTag = ref(null);
 
 const handleScroll = () => {
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -218,11 +256,12 @@ const fetchWallData = async (isLoadMore = false) => {
         isDeleted: note.isDeleted === 1,
       }));
 
-      // 如果是加载更多，则追加；否则替换
-      if (isLoadMore) {
-        wallInfo.value = [...wallInfo.value, ...list];
+      originalWallInfo.value = isLoadMore ? [...originalWallInfo.value, ...list] : [...list];
+
+      if (selectedTag.value) {
+        wallInfo.value = originalWallInfo.value.filter(item => item.tag === selectedTag.value);
       } else {
-        wallInfo.value = list;
+        wallInfo.value = [...originalWallInfo.value];
       }
 
       // 判断是否还有下一页
@@ -240,6 +279,21 @@ const fetchWallData = async (isLoadMore = false) => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const applyTagFilter = (tagValue) => {
+  selectedTag.value = tagValue;
+  isFilterMenuOpen.value = false;
+
+  // 如果有数据就过滤显示
+  if (originalWallInfo.value) {
+    wallInfo.value = originalWallInfo.value.filter(item => item.tag === tagValue);
+  }
+};
+
+const clearFilter = () => {
+  selectedTag.value = null;
+  wallInfo.value = originalWallInfo.value;
 };
 
 const goToDetail = (item) => {
@@ -292,5 +346,13 @@ const goToDetail = (item) => {
 
 .title {
   margin-bottom: 20px;
+}
+
+.selected-item {
+  background-color: #e8f5e9 !important; // 浅绿色背景
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>
