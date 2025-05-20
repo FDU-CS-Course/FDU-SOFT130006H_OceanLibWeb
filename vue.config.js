@@ -20,7 +20,17 @@ module.exports = {
         vuetify: {}
     },
     devServer: {
+        host: '0.0.0.0',
         port: 5432,
         open: true,
+        allowedHosts: 'all',
+        client: {
+            webSocketURL: 'auto://0.0.0.0:0/ws'
+        },
+        headers: {
+            'Access-Control-Allow-Origin': '*'
+        },
+        https: false,
+        hot: true
     }
 }
