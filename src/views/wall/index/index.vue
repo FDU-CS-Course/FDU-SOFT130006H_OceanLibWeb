@@ -1,6 +1,6 @@
 <template>
   <div class="title">
-    <div class="text-h4" style="margin:30px 40px">互助集市 <v-icon color="orange">mdi-sticker</v-icon></div>
+    <div class="text-h5" style="margin:30px 30px">互助集市 <v-icon color="orange">mdi-sticker</v-icon></div>
     <van-sticky :offset-top="0">
       <div class="wall__search">
         <v-toolbar color="black">
@@ -8,7 +8,7 @@
           <v-btn icon>
             <v-icon>mdi-filter</v-icon>
           </v-btn>
-          <v-btn icon>
+          <v-btn icon @click="refreshList">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
         </v-toolbar>
@@ -18,7 +18,7 @@
 
   <!-- 加载状态 -->
   <div v-if="isLoading" class="text-center mt-5">
-    <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    <v-progress-circular indeterminate color="black"></v-progress-circular>
   </div>
 
   <!-- 错误提示 -->
@@ -32,18 +32,13 @@
     <div>
       <div v-for="(item, index) in wallInfo" :key="index">
 
-        <v-card class="mx-auto mb-4" v-if="item.isAD" theme="dark">
-          <v-parallax height="150" src="@/images/ad-2.png"></v-parallax>
-        </v-card>
-
         <v-card
             class="mx-auto mb-4"
-            style="border-radius: 20px; background-color: white;"
-            v-else
+            style="border-radius: 10px; background-color: white;"
             @click="goToDetail(item)"
         >
-          <v-card-title style="padding: 30px 30px;">
-            <span class="wall__card__type text-h4">{{ getValueLabel(tags, item.tag) }}</span>
+          <v-card-title style="padding: 25px 20px 15px;">
+            <span class="wall__card__type text-h6">{{ getValueLabel(tags, item.tag) }}</span>
           </v-card-title>
 
           <v-card-text class="wall__card__content">
@@ -52,9 +47,9 @@
 
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
-              <div class="text-h6" style="padding-left: 30px;">{{ item.isAnon ? "匿名纸条" : item.buildUsername }}</div>
+              <div class="text-h6" style="padding-left: 30px;"></div>
 
-              <div class="d-flex align-center" style="padding-right: 30px;">
+              <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
                 <v-icon small class="mr-1">mdi-comment-eye</v-icon>
                 <span class="text-caption mr-2">{{ item.readNum }}</span>
                 <span class="mr-1">·</span>
@@ -87,7 +82,7 @@
   </div>
 
   <!-- 发布按钮 -->
-  <div style="position: fixed; bottom: 60px; right: 10px;">
+  <div style="position: fixed; bottom: 80px; right: 20px;">
     <v-btn
         v-model="fab"
         :color="fab ? 'white' : 'orange'"
@@ -181,6 +176,13 @@ const getValueLabel = (tags, value) => {
   const foundTag = tags.find(tag => tag.value === value);
   return foundTag ? foundTag.label : null;
 };
+
+const refreshList = () => {
+  pageNo.value = 1;
+  hasMore.value = true;
+  window.scrollTo(0, 0);
+  fetchWallData(false);
+}
 
 // 获取数据
 const fetchWallData = async (isLoadMore = false) => {
@@ -279,8 +281,8 @@ const goToDetail = (item) => {
       padding-left: 5px;
     }
     &__content {
-      font-size: 14px;
-      padding: 0px 20px;
+      font-size: 15px;
+      padding: 0 22px 20px;
       word-break: break-all;
       word-wrap: break-word;
       line-break: anywhere;
