@@ -4,8 +4,8 @@
     <van-sticky :offset-top="0">
       <div class="wall__search">
         <v-toolbar color="black">
-          <v-text-field hide-details prepend-icon="mdi-magnify" single-line
-                        style="padding-left: 20px;"></v-text-field>
+          <v-text-field hide-details v-model="searchString" prepend-icon="mdi-magnify" single-line
+                        style="padding-left: 20px;" @keyup.enter="toggleSearch"></v-text-field>
           <v-btn ref="filterBtn" icon>
             <v-icon>mdi-filter</v-icon>
           </v-btn>
@@ -179,6 +179,9 @@ const pageSize = ref(10);
 const wallInfo = ref([]);
 const error = ref(null);
 
+const searchString = ref('');
+const searchMode = ref(false);
+
 const originalWallInfo = ref([]);
 
 const isLoading = ref(false);
@@ -197,7 +200,10 @@ const handleScroll = () => {
   const scrollBottom = scrollHeight - (scrollTop + windowHeight);
 
   if (scrollBottom <= 50) {
-    fetchWallData(true);
+    if (searchMode.value) {
+      searchList(searchString.value);
+    }
+    else fetchWallData(true);
   }
 };
 
@@ -219,7 +225,82 @@ const refreshList = () => {
   pageNo.value = 1;
   hasMore.value = true;
   window.scrollTo(0, 0);
-  fetchWallData(false);
+  if (searchMode.value) searchList(true, searchString.value);
+  else fetchWallData(false);
+}
+
+const toggleSearch = () => {
+  if (searchString.value === "") {
+    searchMode.value = false;
+    pageNo.value = 1;
+    hasMore.value = true;
+    fetchWallData(false);
+  }
+  else {
+    searchMode.value = true;
+    pageNo.value = 1;
+    hasMore.value = true;
+    searchList(false, searchString.value);
+  }
+}
+
+const searchList = async (isLoadMore = false, searchString) => {
+  if (isLoading.value || !hasMore.value) return;
+
+  isLoading.value = true;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/getNotesByKeywords',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        searchString: searchString,
+        pageNO: pageNo.value,
+        pageSize: pageSize.value
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      const list = res.data.msg.list.map(note => ({
+        noteID: note.id,
+        tag: note.tag,
+        content: note.content,
+        likeNum: note.likeNum || 0,
+        commentNum: note.commentNum || 0,
+        readNum: note.readNum || 0,
+        buildDate: note.buildDate,
+        buildUsername: note.buildUsername,
+        isAnon: note.isAnon === 1,
+        isAllowComment: note.isAllowComment === 1,
+        isDeleted: note.isDeleted === 1,
+      }));
+
+      originalWallInfo.value = isLoadMore ? [...originalWallInfo.value, ...list] : [...list];
+
+      if (selectedTag.value) {
+        wallInfo.value = originalWallInfo.value.filter(item => item.tag === selectedTag.value);
+      } else {
+        wallInfo.value = [...originalWallInfo.value];
+      }
+
+      // 判断是否还有下一页
+      if (list.length < pageSize.value) {
+        hasMore.value = false;
+      } else {
+        pageNo.value += 1; // 只有成功加载才自增页码
+      }
+    } else {
+      console.error("数据请求失败！");
+      hasMore.value = false;
+    }
+  } catch (err) {
+    console.error("请求出错：", err);
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 // 获取数据
