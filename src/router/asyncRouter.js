@@ -16,6 +16,7 @@ const notifyDownloadAndScoreList = () => import("../views/notify/notifyDownloadA
 const notifyCommentList = () => import("../views/notify/notifyCommentList.vue");
 const notifyInvitationList = () => import("../views/notify/notifyInvitationList.vue");
 const createNotePage = () => import("../views/wall/createNotePage.vue");
+const replyNotePage = () => import("../views/wall/replyNotePage.vue");
 
 const asyncRouterMap = [{
         path: '/newCollection',
@@ -161,5 +162,13 @@ const asyncRouterMap = [{
         },
         component: createNotePage
     },
+    {
+        path: '/replyNotePage',
+        meta: {
+            title: '回复帖子',
+            permission: ["USER", "ADMIN"]
+        },
+        component: replyNotePage
+    }
 ];
 export default asyncRouterMap;

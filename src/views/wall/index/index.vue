@@ -66,7 +66,7 @@
         <v-card
             class="mx-auto mb-4"
             style="border-radius: 10px; background-color: white;"
-            @click="goToDetail(item)"
+            @click="goToDetail(item, $event)"
         >
           <v-card-title style="padding: 25px 20px 15px;">
             <span class="wall__card__type text-h6">{{ getValueLabel(tags, item.tag) }}</span>
@@ -377,11 +377,22 @@ const clearFilter = () => {
   wallInfo.value = originalWallInfo.value;
 };
 
-const goToDetail = (item) => {
+const goToDetail = (item, event) => {
+  event.preventDefault();
   router.push({
     path: '/wall/detail',
     query: {
-      id: item.noteID
+      noteID: item.noteID,
+      tag: item.tag,
+      content: item.content,
+      likeNum: item.likeNum,
+      commentNum: item.commentNum,
+      readNum: item.readNum,
+      buildDate: item.buildDate,
+      buildUsername: item.buildUsername,
+      isAnon:item.isAnon,
+      isAllowComment: item.isAllowComment,
+      isDeleted: item.isDeleted,
     }
   });
 };

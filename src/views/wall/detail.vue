@@ -13,327 +13,232 @@
     </v-app-bar>
 
     <!-- 问题卡片 -->
-    <v-card class="mx-auto mb-4 mt-4" style="border-radius: 20px; background-color: white;">
+    <v-card v-if="note" class="mx-auto mb-4 mt-4" style="border-radius: 20px; background-color: white;" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID } })">
       <v-card-title style="padding: 30px 30px;" class="text-center">
-        <span class="text-h4 font-weight-bold">{{ wallInfo.tag }}</span>
+        <span class="text-h4 font-weight-bold">{{ note.tag }}</span>
       </v-card-title>
 
       <v-card-text class="wall__card__content">
-        {{ wallInfo.content }}
+        {{ note.content }}
       </v-card-text>
 
       <v-card-actions>
         <div class="d-flex align-center justify-space-between w-100">
           <div class="d-flex align-center">
-            <v-avatar size="32" color="primary" class="mr-2">
-              <span class="text-h6">{{ wallInfo.buildUsername.charAt(0) }}</span>
-            </v-avatar>
-            <span class="text-subtitle-1">{{ wallInfo.isAnon ? "匿名纸条" : wallInfo.buildUsername }}</span>
+            <span class="text-subtitle-1">{{ note.isAnon ? "匿名纸条" : note.buildUsername }}</span>
           </div>
           <div class="d-flex align-center">
-            <v-btn icon @click="toggleLike" :color="isLiked ? 'red' : ''" variant="text">
+            <v-btn icon :color="isLiked ? 'red' : ''" variant="text">
               <v-icon>{{ isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline' }}</v-icon>
-              <span class="ml-1">{{ wallInfo.likeNum }}</span>
-            </v-btn>
-            <v-btn icon @click="toggleDislike" :color="isDisliked ? 'grey' : ''" variant="text">
-              <v-icon>{{ isDisliked ? 'mdi-thumb-down' : 'mdi-thumb-down-outline' }}</v-icon>
-              <span class="ml-1">{{ wallInfo.dislikeNum }}</span>
+              <span class="ml-1">{{ note.likeNum }}</span>
             </v-btn>
             <v-btn icon variant="text">
               <v-icon>mdi-comment-eye</v-icon>
-              <span class="ml-1">{{ wallInfo.readNum }}</span>
+              <span class="ml-1">{{ note.readNum }}</span>
             </v-btn>
           </div>
         </div>
       </v-card-actions>
     </v-card>
 
-    <!-- 评论区 -->
-    <v-card class="mx-auto mb-4" style="border-radius: 20px; background-color: white;">
-      <v-card-title style="padding: 20px 30px;">
-        <span class="text-h5">评论 ({{ wallInfo.commentNum }})</span>
-      </v-card-title>
+    <!-- 评论区域 -->
+    <v-container v-if="wallContentInfo.length > 0" class="mt-6">
+      <h3 class="text-h6 mb-4">评论</h3>
+      <div v-for="(comment, index) in wallContentInfo" :key="index" class="mb-4">
+        <v-card style="border-radius: 12px; background-color: #fff; padding: 16px;">
 
-      <!-- 评论列表 -->
-      <v-card-text class="comment-list">
-        <div v-for="(comment, index) in comments" :key="index" class="comment-item mb-4">
-          <div class="d-flex align-center mb-2">
-            <v-avatar size="32" color="primary" class="mr-2">
-              <span class="text-h6">{{ comment.username.charAt(0) }}</span>
-            </v-avatar>
-            <span class="text-subtitle-1">{{ comment.username }}</span>
-            <span class="text-caption ml-2 text-grey">{{ comment.createTime }}</span>
+          <!-- 用户名和时间 -->
+          <div class="text-caption mt-2">
+            {{ comment.noteCommentBuildUsername }} · {{ formatDate(comment.createTime) }}
           </div>
-          <div class="comment-content pl-8">
-            {{ comment.content }}
-          </div>
-          <div class="d-flex align-center pl-8 mt-2">
-            <v-btn icon size="small" @click="likeComment(index)" :color="comment.isLiked ? 'red' : ''" variant="text">
-              <v-icon>{{ comment.isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline' }}</v-icon>
-              <span class="ml-1">{{ comment.likeNum }}</span>
-            </v-btn>
-            <v-btn icon size="small" @click="dislikeComment(index)" :color="comment.isDisliked ? 'grey' : ''" variant="text">
-              <v-icon>{{ comment.isDisliked ? 'mdi-thumb-down' : 'mdi-thumb-down-outline' }}</v-icon>
-              <span class="ml-1">{{ comment.dislikeNum }}</span>
-            </v-btn>
-            <v-btn icon size="small" @click="showReplyInput(index)" variant="text">
-              <v-icon>mdi-reply</v-icon>
-              <span class="ml-1">回复</span>
-            </v-btn>
-          </div>
-          
-          <!-- 回复列表 -->
-          <div v-if="comment.replies && comment.replies.length > 0" class="replies-section pl-8 mt-2">
-            <div v-for="(reply, replyIndex) in comment.replies" :key="replyIndex" class="reply-item mb-2">
-              <div class="d-flex align-center">
-                <v-avatar size="24" color="primary" class="mr-2">
-                  <span class="text-caption">{{ reply.username.charAt(0) }}</span>
-                </v-avatar>
-                <span class="text-subtitle-2">{{ reply.username }}</span>
-                <span class="text-caption ml-2 text-grey">{{ reply.createTime }}</span>
-              </div>
-              <div class="reply-content pl-6">
-                {{ reply.content }}
-              </div>
+
+          <!-- 回复内容（如果有） -->
+          <div v-if="comment.replyTo" class="replies-section mt-2">
+            <div class="reply-item">
+              <span class="font-weight-bold">@{{ comment.replyTo }}</span>：
+              {{ comment.commentContent }}
             </div>
           </div>
+        </v-card>
+      </div>
+    </v-container>
 
-          <!-- 回复输入框 -->
-          <div v-if="activeReplyIndex === index" class="reply-input-section pl-8 mt-2">
-            <v-text-field
-              v-model="newReply"
-              label="写下你的回复..."
-              variant="outlined"
-              density="comfortable"
-              hide-details
-              class="mb-2"
-              @keyup.enter="submitReply(index)"
-            ></v-text-field>
-            <div class="d-flex justify-end">
-              <v-btn size="small" color="primary" @click="submitReply(index)" :disabled="!newReply.trim()">
-                回复
-              </v-btn>
-              <v-btn size="small" variant="text" @click="cancelReply" class="ml-2">
-                取消
-              </v-btn>
-            </div>
-          </div>
-        </div>
-      </v-card-text>
-    </v-card>
-
-    <!-- 固定在底部的评论输入框 -->
-    <div class="comment-input-container">
-      <v-card class="comment-input-card">
-        <v-card-actions class="pa-2">
-          <v-text-field
-            v-model="newComment"
-            label="写下你的评论..."
-            variant="outlined"
-            density="comfortable"
-            hide-details
-            class="mr-2"
-            @keyup.enter="submitComment"
-          ></v-text-field>
-          <v-btn color="primary" @click="submitComment" :disabled="!newComment.trim()">
-            发送
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+    <!-- 没有评论时的提示 -->
+    <div v-if="wallContentInfo.length === 0 && !isLoading" class="text-center mt-6">
+      <p>暂无评论，快来抢沙发吧～</p>
     </div>
 
-    <!-- 提示消息 -->
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      :timeout="2000"
-    >
-      {{ snackbar.text }}
-    </v-snackbar>
+    <!-- 加载提示 -->
+    <div v-if="isLoading" class="text-center my-4">
+      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  data() {
-    // 暂时写死，后续需要从后端获取
-    return {
-      wallInfo: {
-        tag: "问题",
-        content: "求计算机大佬帮孩子看看C++，可以请奶茶，留个QQ：1257477940",
-        readNum: 35,
-        commentNum: 25,
-        likeNum: 12,
-        dislikeNum: 3,
-        buildUsername: "Alpha测试",
-        isAnon: false
-      },
-      comments: [
-        {
-          username: "热心网友1",
-          content: "我可以帮你看看，加你QQ了",
-          createTime: "2024-03-20 10:30",
-          likeNum: 5,
-          dislikeNum: 1,
-          isLiked: false,
-          isDisliked: false,
-          replies: [
-            {
-              username: "热心网友2",
-              content: "好的，我加你了",
-              createTime: "2024-03-20 10:35"
-            }
-          ]
-        },
-        {
-          username: "热心网友2",
-          content: "C++哪个部分需要帮助？",
-          createTime: "2024-03-20 11:15",
-          likeNum: 3,
-          dislikeNum: 0,
-          isLiked: false,
-          isDisliked: false,
-          replies: []
-        }
-      ],
-      newComment: '',
-      newReply: '',
-      activeReplyIndex: -1,
-      isLiked: false,
-      isDisliked: false,
-      snackbar: {
-        show: false,
-        text: '',
-        color: 'success'
-      }
-    }
-  },
-  methods: {
-    showSnackbar(text, color = 'success') {
-      this.snackbar.text = text
-      this.snackbar.color = color
-      this.snackbar.show = true
-    },
-    sharePost() {
-      const shareText = `${this.wallInfo.tag}\n${this.wallInfo.content}\n\n来自互助墙：${window.location.href}`
-      
-      // 创建一个临时的textarea元素
-      const textarea = document.createElement('textarea')
-      textarea.value = shareText
-      textarea.style.position = 'fixed'
-      textarea.style.opacity = '0'
-      document.body.appendChild(textarea)
-      
-      try {
-        // 选择文本
-        textarea.select()
-        textarea.setSelectionRange(0, textarea.value.length)
-        
-        // 执行复制命令
-        const successful = document.execCommand('copy')
-        if (successful) {
-          this.showSnackbar('已复制到剪贴板')
-        } else {
-          this.showSnackbar('复制失败，请手动复制', 'error')
-        }
-      } catch (err) {
-        this.showSnackbar('复制失败，请手动复制', 'error')
-      }
-      
-      // 移除临时元素
-      document.body.removeChild(textarea)
-    },
-    submitComment() {
-      if (!this.newComment.trim()) return
-      
-      this.comments.unshift({
-        username: "我",
-        content: this.newComment,
-        createTime: new Date().toLocaleString(),
-        likeNum: 0,
-        dislikeNum: 0,
-        isLiked: false,
-        isDisliked: false
-      })
-      
-      this.wallInfo.commentNum++
-      this.newComment = ''
-    },
-    toggleLike() {
-      this.isLiked = !this.isLiked
-      if (this.isLiked) {
-        this.wallInfo.likeNum++
-        if (this.isDisliked) {
-          this.isDisliked = false
-          this.wallInfo.dislikeNum--
-        }
-      } else {
-        this.wallInfo.likeNum--
-      }
-    },
-    toggleDislike() {
-      this.isDisliked = !this.isDisliked
-      if (this.isDisliked) {
-        this.wallInfo.dislikeNum++
-        if (this.isLiked) {
-          this.isLiked = false
-          this.wallInfo.likeNum--
-        }
-      } else {
-        this.wallInfo.dislikeNum--
-      }
-    },
-    likeComment(index) {
-      const comment = this.comments[index]
-      comment.isLiked = !comment.isLiked
-      if (comment.isLiked) {
-        comment.likeNum++
-        if (comment.isDisliked) {
-          comment.isDisliked = false
-          comment.dislikeNum--
-        }
-      } else {
-        comment.likeNum--
-      }
-    },
-    dislikeComment(index) {
-      const comment = this.comments[index]
-      comment.isDisliked = !comment.isDisliked
-      if (comment.isDisliked) {
-        comment.dislikeNum++
-        if (comment.isLiked) {
-          comment.isLiked = false
-          comment.likeNum--
-        }
-      } else {
-        comment.dislikeNum--
-      }
-    },
-    showReplyInput(index) {
-      this.activeReplyIndex = index
-      this.newReply = ''
-    },
-    cancelReply() {
-      this.activeReplyIndex = -1
-      this.newReply = ''
-    },
-    submitReply(index) {
-      if (!this.newReply.trim()) return
-      
-      if (!this.comments[index].replies) {
-        this.comments[index].replies = []
-      }
-      
-      this.comments[index].replies.push({
-        username: "我",
-        content: this.newReply,
-        createTime: new Date().toLocaleString()
-      })
-      
-      this.newReply = ''
-      this.activeReplyIndex = -1
-    }
+<script setup>
+import {ref, reactive, onMounted, onUnmounted, getCurrentInstance} from 'vue'
+import {useRoute} from 'vue-router';
+
+// 新评论和回复输入
+const newComment = ref('')
+const newReply = ref('')
+const activeReplyIndex = ref(-1)
+
+const route = useRoute();
+const note = ref(null);
+
+// 点赞状态
+const isLiked = ref(false)
+
+// Snackbar 控制
+const snackbar = reactive({
+  show: false,
+  text: '',
+  color: 'success'
+});
+
+// 分页参数
+const pageNo = ref(1);
+const pageSize = ref(10);
+
+const wallContentInfo = ref([]);
+const { proxy } = getCurrentInstance();
+
+const isLoading = ref(false);
+const hasMore = ref(true);
+
+// 日期格式化
+const formatDate = (timestamp) => {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};
+
+const handleScroll = () => {
+  const scrollTop = window.scrollY || document.documentElement.scrollTop;
+  const windowHeight = window.innerHeight;
+  const scrollHeight = document.documentElement.scrollHeight;
+
+  const scrollBottom = scrollHeight - (scrollTop + windowHeight);
+
+  if (scrollBottom <= 50) {
+    fetchWallContentData(true);
   }
+};
+
+onMounted(() => {
+  note.value = {
+    noteID: route.query.noteID,
+    tag: route.query.tag,
+    content: route.query.content,
+    likeNum: route.query.likeNum,
+    commentNum: route.query.commentNum,
+    readNum:route.query.readNum,
+    buildDate: route.query.buildDate,
+    buildUsername: route.query.buildUsername,
+    isAnon: route.query.isAnon,
+    isAllowComment: route.query.isAllowComment,
+    isDeleted: route.query.isDeleted,
+  };
+
+  console.log(note.value.tag);
+
+  fetchWallContentData();
+  window.addEventListener('scroll', handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+
+const fetchWallContentData = async (isLoadMore = false) => {
+  if (isLoading.value || !hasMore.value) return;
+
+  isLoading.value = true;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/getNoteCommentByNoteId',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        noteId: note.value.noteID,
+        pageNo: pageNo.value,
+        pageSize: pageSize.value
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      const list = res.data.msg.list.map(note => ({
+        noteId: note.noteId,
+        commentContent: note.commentContent,
+        likeNum: note.likeNum || 0,
+        createTime: note.createTime,
+        noteCommentBuildUsername: note.noteCommentBuildUsername,
+        replyTo: note.replyTo
+      }));
+
+      wallContentInfo.value = isLoadMore ? [...wallContentInfo.value, ...list] : [...list];
+
+      // 判断是否还有下一页
+      if (list.length < pageSize.value) {
+        hasMore.value = false;
+      } else {
+        pageNo.value += 1; // 只有成功加载才自增页码
+      }
+    } else {
+      hasMore.value = false;
+    }
+  } catch (err) {
+    console.error("请求出错：", err);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+// 显示提示条
+function showSnackbar(text, color = 'success') {
+  snackbar.text = text
+  snackbar.color = color
+  snackbar.show = true
+  setTimeout(() => {
+    snackbar.show = false
+  }, 3000)
+}
+
+// 分享帖子
+function sharePost() {
+  if (!note.value) return;
+  
+  const shareText = `${note.value.tag}\n${note.value.content}\n\n来自互助墙：${window.location.href}`
+
+  const textarea = document.createElement('textarea')
+  textarea.value = shareText
+  textarea.style.position = 'fixed'
+  textarea.style.opacity = '0'
+  document.body.appendChild(textarea)
+
+  try {
+    textarea.select()
+    textarea.setSelectionRange(0, textarea.value.length)
+    const successful = document.execCommand('copy')
+    if (successful) {
+      showSnackbar('已复制到剪贴板')
+    } else {
+      showSnackbar('复制失败，请手动复制', 'error')
+    }
+  } catch (err) {
+    showSnackbar('复制失败，请手动复制', 'error')
+  }
+
+  document.body.removeChild(textarea)
 }
 </script>
 
@@ -405,4 +310,4 @@ export default {
   border-radius: 8px;
   padding: 8px;
 }
-</style> 
+</style>
