@@ -119,9 +119,7 @@ const submitComment = async () => {
 
     if (res.data && res.data.code === '1') {
       showSnackbar('评论发布成功')
-      setTimeout(() => {
-        router.back()
-      }, 1500)
+      await router.push('/wall')
     } else {
       showSnackbar(res.data?.msg || '评论发布失败', 'error')
     }

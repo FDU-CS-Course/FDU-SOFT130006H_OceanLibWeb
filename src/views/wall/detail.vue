@@ -47,7 +47,7 @@
       <!-- 回复列表 -->
       <div v-for="(reply, index) in wallContentInfo" :key="index" class="mb-4">
         <v-card class="post-card" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: reply.id, replyToUsername: reply.noteCommentBuildUsername, replyToContent: reply.commentContent,
-         isAnon: note.buildUsername === replyTo.replyToUsername && note.isAnon } })">
+         isAnon: note.buildUsername === reply.replyToUsername && note.isAnon } })">
           <div class="post-header">
             <span class="floor-number">{{ index + 2 }}楼</span>
             <span class="username">{{ reply.noteCommentBuildUsername }}</span>
@@ -145,8 +145,6 @@ onMounted(() => {
     isAllowComment: route.query.isAllowComment,
     isDeleted: route.query.isDeleted,
   };
-
-  console.log(note.value.tag);
 
   fetchWallContentData();
   window.addEventListener('scroll', handleScroll);
