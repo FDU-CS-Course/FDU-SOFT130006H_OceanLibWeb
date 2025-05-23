@@ -9,6 +9,17 @@
     </v-app-bar>
 
     <div class="reply-content pa-4">
+      <!-- 回复对象信息 -->
+      <v-card class="mb-4 reply-to-card" variant="outlined">
+        <v-card-text>
+          <div class="d-flex align-center">
+            <v-icon class="mr-2">mdi-reply</v-icon>
+            <span class="text-body-1">回复 {{ isAnon ? "匿名纸条" : replyToUsername }}</span>
+          </div>
+          <div class="original-content mt-2">{{ originalContent }}</div>
+        </v-card-text>
+      </v-card>
+
       <!-- 评论输入区 -->
       <v-textarea
         v-model="commentContent"
@@ -18,6 +29,20 @@
         rows="4"
         class="mb-4"
       ></v-textarea>
+
+      <!-- 预览区域 -->
+      <v-card v-if="commentContent && username" class="mb-4 preview-card">
+        <div class="post-header">
+          <span class="username">{{ username }}</span>
+          <span class="post-time">预览</span>
+        </div>
+        <v-card-text class="post-content">
+          <div v-if="replyToUsername" class="reply-reference mb-2">
+            <span class="font-weight-bold">@{{ isAnon ? "匿名纸条" : replyToUsername }}</span>
+          </div>
+          {{ commentContent }}
+        </v-card-text>
+      </v-card>
 
       <v-btn
         block
@@ -43,7 +68,7 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
+import {ref, reactive, onMounted} from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getCurrentInstance } from 'vue'
 
@@ -54,6 +79,8 @@ const { proxy } = getCurrentInstance()
 // 评论内容
 const commentContent = ref('')
 const isSubmitting = ref(false)
+const username = ref('')  // 新增用户名ref
+const isAnon = ref(false)
 
 // 提示消息控制
 const snackbar = reactive({
@@ -85,7 +112,8 @@ const submitComment = async () => {
         noteId: route.query.noteId,
         userName: sessionStorage.getItem('username'),
         commentContent: commentContent.value.trim(),
-        replyTo: route.query.noteId
+        replyTo: route.query.noteId,
+        replyToUsername: route.query.replyToUsername
       }
     })
 
@@ -104,6 +132,19 @@ const submitComment = async () => {
     isSubmitting.value = false
   }
 }
+
+// 回复对象信息
+const replyToUsername = ref('')
+const originalContent = ref('')
+
+onMounted(async () => {
+  const noteId = route.query.noteId
+  const replyToId = route.query.replyToId || noteId
+  replyToUsername.value = route.query.replyToUsername || ''
+  originalContent.value = route.query.replyToContent || ''
+  username.value = sessionStorage.getItem('username') || ''  // 在onMounted中获取用户名
+  isAnon.value = route.query.isAnon
+})
 </script>
 
 <style scoped>
@@ -116,5 +157,51 @@ const submitComment = async () => {
   max-width: 800px;
   margin: 0 auto;
   padding-top: 20px;
+}
+
+.reply-to-card {
+  background-color: white;
+  border-radius: 12px;
+}
+
+.original-content {
+  color: #666;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.preview-card {
+  border-radius: 12px;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 8px;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.post-time {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.post-content {
+  padding: 0 16px 16px;
+  line-height: 1.6;
+}
+
+.reply-reference {
+  margin-bottom: 8px;
+  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 </style>

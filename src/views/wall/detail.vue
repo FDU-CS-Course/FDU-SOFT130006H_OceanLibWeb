@@ -5,29 +5,33 @@
       <v-btn icon @click="$router.push('/wall')">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title class="text-h6">问题详情</v-toolbar-title>
+      <v-toolbar-title class="text-h6">帖子详情</v-toolbar-title>
       <v-spacer></v-spacer>
+      <v-btn icon @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content } })">
+        <v-icon>mdi-reply</v-icon>
+      </v-btn>
       <v-btn icon @click="sharePost">
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
     </v-app-bar>
 
-    <!-- 问题卡片 -->
-    <v-card v-if="note" class="mx-auto mb-4 mt-4" style="border-radius: 20px; background-color: white;" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID } })">
-      <v-card-title style="padding: 30px 30px;" class="text-center">
-        <span class="text-h4 font-weight-bold">{{ note.tag }}</span>
-      </v-card-title>
+    <!-- 帖子列表 -->
+    <div class="post-list">
+      <!-- 主帖 -->
+      <v-card v-if="note" class="post-card mb-4 mt-4" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content
+      , isAnon: note.isAnon } })">
+        <div class="post-header">
+          <span class="floor-number">1楼</span>
+          <span class="username">{{ note.isAnon ? "匿名纸条" : note.buildUsername }}</span>
+          <span class="post-time">{{ formatDate(note.buildDate) }}</span>
+        </div>
 
-      <v-card-text class="wall__card__content">
-        {{ note.content }}
-      </v-card-text>
+        <v-card-text class="post-content">
+          {{ note.content }}
+        </v-card-text>
 
-      <v-card-actions>
-        <div class="d-flex align-center justify-space-between w-100">
-          <div class="d-flex align-center">
-            <span class="text-subtitle-1">{{ note.isAnon ? "匿名纸条" : note.buildUsername }}</span>
-          </div>
-          <div class="d-flex align-center">
+        <v-card-actions>
+          <div class="d-flex align-center justify-end w-100">
             <v-btn icon :color="isLiked ? 'red' : ''" variant="text">
               <v-icon>{{ isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline' }}</v-icon>
               <span class="ml-1">{{ note.likeNum }}</span>
@@ -37,35 +41,36 @@
               <span class="ml-1">{{ note.readNum }}</span>
             </v-btn>
           </div>
-        </div>
-      </v-card-actions>
-    </v-card>
+        </v-card-actions>
+      </v-card>
 
-    <!-- 评论区域 -->
-    <v-container v-if="wallContentInfo.length > 0" class="mt-6">
-      <h3 class="text-h6 mb-4">评论</h3>
-      <div v-for="(comment, index) in wallContentInfo" :key="index" class="mb-4">
-        <v-card style="border-radius: 12px; background-color: #fff; padding: 16px;">
-
-          <!-- 用户名和时间 -->
-          <div class="text-caption mt-2">
-            {{ comment.noteCommentBuildUsername }} · {{ formatDate(comment.createTime) }}
+      <!-- 回复列表 -->
+      <div v-for="(reply, index) in wallContentInfo" :key="index" class="mb-4">
+        <v-card class="post-card" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: reply.id, replyToUsername: reply.noteCommentBuildUsername, replyToContent: reply.commentContent,
+         isAnon: note.buildUsername === replyTo.replyToUsername && note.isAnon } })">
+          <div class="post-header">
+            <span class="floor-number">{{ index + 2 }}楼</span>
+            <span class="username">{{ reply.noteCommentBuildUsername }}</span>
+            <span class="post-time">{{ formatDate(reply.createTime) }}</span>
           </div>
 
-          <!-- 回复内容（如果有） -->
-          <div v-if="comment.replyTo" class="replies-section mt-2">
-            <div class="reply-item">
-              <span class="font-weight-bold">@{{ comment.replyTo }}</span>：
-              {{ comment.commentContent }}
+          <v-card-text class="post-content">
+            <div v-if="reply.replyTo" class="reply-reference">
+              <span class="font-weight-bold">@{{ reply.replyToUsername === note.buildUsername && note.isAnon ? "匿名纸条" : reply.replyToUsername }}</span>
             </div>
-          </div>
+            {{ reply.commentContent }}
+          </v-card-text>
+
+          <v-card-actions>
+            <div class="d-flex align-center justify-end w-100">
+              <v-btn icon variant="text">
+                <v-icon>mdi-thumb-up-outline</v-icon>
+                <span class="ml-1">{{ reply.likeNum }}</span>
+              </v-btn>
+            </div>
+          </v-card-actions>
         </v-card>
       </div>
-    </v-container>
-
-    <!-- 没有评论时的提示 -->
-    <div v-if="wallContentInfo.length === 0 && !isLoading" class="text-center mt-6">
-      <p>暂无评论，快来抢沙发吧～</p>
     </div>
 
     <!-- 加载提示 -->
@@ -78,11 +83,6 @@
 <script setup>
 import {ref, reactive, onMounted, onUnmounted, getCurrentInstance} from 'vue'
 import {useRoute} from 'vue-router';
-
-// 新评论和回复输入
-const newComment = ref('')
-const newReply = ref('')
-const activeReplyIndex = ref(-1)
 
 const route = useRoute();
 const note = ref(null);
@@ -182,7 +182,9 @@ const fetchWallContentData = async (isLoadMore = false) => {
         likeNum: note.likeNum || 0,
         createTime: note.createTime,
         noteCommentBuildUsername: note.noteCommentBuildUsername,
-        replyTo: note.replyTo
+        replyTo: note.replyTo,
+        id: note._id,
+        replyToUsername: note.replyToUsername
       }));
 
       wallContentInfo.value = isLoadMore ? [...wallContentInfo.value, ...list] : [...list];
@@ -250,64 +252,43 @@ function sharePost() {
   min-height: 100vh;
 }
 
-.comment-item {
-  border-bottom: 1px solid #eee;
-  padding-bottom: 16px;
-}
-
-.comment-content {
-  color: #333;
-  line-height: 1.5;
-}
-
-.comment-list {
-  max-height: calc(100vh - 400px);
-  overflow-y: auto;
-}
-
-.comment-input-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 8px 16px;
-  background-color: #f5f5f5;
-  z-index: 100;
-}
-
-.comment-input-card {
-  border-radius: 20px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.v-card {
+.post-card {
+  border-radius: 12px;
+  background-color: white;
   transition: all 0.3s ease;
 }
 
-.v-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+.post-header {
+  padding: 16px 16px 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
-.replies-section {
-  background-color: #f5f8ff;
-  border-radius: 8px;
+.floor-number {
+  color: #1976d2;
+  font-weight: bold;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.post-time {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.post-content {
+  padding: 0 16px 16px;
+  line-height: 1.6;
+}
+
+.reply-reference {
+  margin-bottom: 8px;
   padding: 8px;
-}
-
-.reply-item {
-  padding: 4px 0;
-}
-
-.reply-content {
-  color: #333;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.reply-input-section {
-  background-color: #f5f8ff;
-  border-radius: 8px;
-  padding: 8px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  font-size: 0.9em;
 }
 </style>
