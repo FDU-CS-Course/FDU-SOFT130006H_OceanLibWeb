@@ -5,36 +5,25 @@
       <div class="wall__search">
         <v-toolbar color="black">
           <v-text-field hide-details v-model="searchString" prepend-icon="mdi-magnify" single-line
-                        style="padding-left: 20px;" @keyup.enter="toggleSearch"></v-text-field>
+            style="padding-left: 20px;" @keyup.enter="toggleSearch"></v-text-field>
           <v-btn ref="filterBtn" icon>
             <v-icon>mdi-filter</v-icon>
           </v-btn>
 
           <!-- 筛选下拉菜单 -->
-          <v-menu
-              v-model="isFilterMenuOpen"
-              :activator="filterBtn"
-              location="bottom center"
-              transition="slide-y-transition"
-          >
+          <v-menu v-model="isFilterMenuOpen" :activator="filterBtn" location="bottom center"
+            transition="slide-y-transition">
             <v-list dense style="width: 75px;">
-              <!-- “全部”选项 -->
-              <v-list-item
-                  @click="clearFilter"
-                  :class="{ 'selected-item': selectedTag === null }"
-              >
+              <!-- "全部"选项 -->
+              <v-list-item @click="clearFilter" :class="{ 'selected-item': selectedTag === null }">
                 <v-list-item-title>全部</v-list-item-title>
               </v-list-item>
 
               <v-divider></v-divider>
 
               <!-- tag 列表 -->
-              <v-list-item
-                  v-for="tag in tags"
-                  :key="tag.value"
-                  @click="applyTagFilter(tag.value)"
-                  :class="{ 'selected-item': selectedTag === tag.value }"
-              >
+              <v-list-item v-for="tag in tags" :key="tag.value" @click="applyTagFilter(tag.value)"
+                :class="{ 'selected-item': selectedTag === tag.value }">
                 <v-list-item-title>{{ tag.label }}</v-list-item-title>
               </v-list-item>
             </v-list>
@@ -63,22 +52,25 @@
     <div>
       <div v-for="(item, index) in wallInfo" :key="index">
 
-        <v-card
-            class="mx-auto mb-4"
-            style="border-radius: 10px; background-color: white;"
-            @click="goToDetail(item, $event)"
-        >
+        <v-card class="mx-auto mb-4" style="border-radius: 10px; background-color: white;"
+          @click="goToDetail(item, $event)">
           <v-card-title style="padding: 25px 20px 15px;">
             <span class="wall__card__type text-h6">{{ getValueLabel(tags, item.tag) }}</span>
           </v-card-title>
 
           <v-card-text class="wall__card__content">
-            {{ item.content }}
+            <span v-if="searchMode && searchString" v-html="highlightSearchTerm(item.content, searchString)"></span>
+            <span v-else>{{ item.content }}</span>
           </v-card-text>
 
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
-              <div class="text-h6" style="padding-left: 30px;"></div>
+              <div class="d-flex align-center" style="padding-left: 20px;">
+                <v-icon small class="mr-1" color="grey">mdi-account-circle</v-icon>
+                <span class="text-caption text--secondary">
+                  {{ item.isAnon === true ? '匿名纸条' : item.buildUsername }}
+                </span>
+              </div>
 
               <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
                 <v-icon small class="mr-1">mdi-comment-eye</v-icon>
@@ -114,46 +106,21 @@
 
   <!-- 发布按钮 -->
   <div style="position: fixed; bottom: 80px; right: 20px;">
-    <v-btn
-        v-model="fab"
-        :color="fab ? 'white' : 'orange'"
-        location="bottom end"
-        icon
-        size="small"
-        fab
-    >
+    <v-btn v-model="fab" :color="fab ? 'white' : 'orange'" location="bottom end" icon size="small" fab>
       <v-icon :icon="fab ? 'mdi-close' : 'mdi-fountain-pen-tip'"></v-icon>
 
-      <v-menu
-          v-model="fab"
-          activator="parent"
-          location="top"
-          transition="slide-y-reverse-transition"
-      >
-        <v-btn
-            style="background-color:green; margin-bottom: 20px;"
-            color="white"
-            variant="text"
-            icon="mdi-pencil"
-            size="small"
-            fab
-            to="/createNotePage"
-        ></v-btn>
-        <v-btn
-            style="background-color:red; margin-bottom: 20px;"
-            color="white"
-            variant="text"
-            icon="mdi-delete"
-            size="small"
-            fab
-        ></v-btn>
+      <v-menu v-model="fab" activator="parent" location="top" transition="slide-y-reverse-transition">
+        <v-btn style="background-color:green; margin-bottom: 20px;" color="white" variant="text" icon="mdi-pencil"
+          size="small" fab to="/createNotePage"></v-btn>
+        <v-btn style="background-color:red; margin-bottom: 20px;" color="white" variant="text" icon="mdi-delete"
+          size="small" fab></v-btn>
       </v-menu>
     </v-btn>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted, onUnmounted} from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentInstance } from 'vue';
 
@@ -390,11 +357,16 @@ const goToDetail = (item, event) => {
       readNum: item.readNum,
       buildDate: item.buildDate,
       buildUsername: item.buildUsername,
-      isAnon:item.isAnon,
+      isAnon: item.isAnon,
       isAllowComment: item.isAllowComment,
       isDeleted: item.isDeleted,
     }
   });
+};
+
+const highlightSearchTerm = (text, searchString) => {
+  const regex = new RegExp(`(${searchString})`, 'gi');
+  return text.replace(regex, '<span class="highlight">$1</span>');
 };
 </script>
 
@@ -422,10 +394,12 @@ const goToDetail = (item, event) => {
     &__title {
       margin: 10px;
     }
+
     &__type {
       font-size: 16px;
       padding-left: 5px;
     }
+
     &__content {
       font-size: 15px;
       padding: 0 22px 20px;

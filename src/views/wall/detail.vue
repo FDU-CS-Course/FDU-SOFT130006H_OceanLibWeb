@@ -7,22 +7,45 @@
       </v-btn>
       <v-toolbar-title class="text-h6">帖子详情</v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn icon @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content } })">
+      <v-btn icon
+        @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content } })">
         <v-icon>mdi-reply</v-icon>
       </v-btn>
       <v-btn icon @click="sharePost">
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
+
+      <!-- 设置菜单按钮 -->
+      <v-btn ref="settingsBtn" icon>
+        <v-icon>mdi-dots-vertical</v-icon>
+      </v-btn>
+
+      <!-- 设置下拉菜单 -->
+      <v-menu v-model="isSettingsMenuOpen" :activator="settingsBtn" location="bottom end"
+        transition="slide-y-transition">
+        <v-list dense style="min-width: 120px;">
+          <v-list-item @click="confirmDeletePost" class="delete-item">
+            <v-list-item-title class="text-red">
+              <v-icon small class="mr-2" color="red">mdi-delete</v-icon>
+              删除帖子
+            </v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
     </v-app-bar>
 
     <!-- 帖子列表 -->
     <div class="post-list">
       <!-- 主帖 -->
-      <v-card v-if="note" class="post-card mb-4 mt-4" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content
-      , isAnon: note.isAnon } })">
+      <v-card v-if="note" class="post-card mb-4 mt-4" @click="$router.push({
+        path: '/replyNotePage', query: {
+          noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content
+          , isAnon: note.isAnon
+        }
+      })">
         <div class="post-header">
           <span class="floor-number">1楼</span>
-          <span class="username">{{ note.isAnon ? "匿名纸条" : note.buildUsername }}</span>
+          <span class="username">{{ note.isAnon === 'true' ? "匿名纸条" : note.buildUsername }}</span>
           <span class="post-time">{{ formatDate(note.buildDate) }}</span>
         </div>
 
@@ -46,27 +69,43 @@
 
       <!-- 回复列表 -->
       <div v-for="(reply, index) in wallContentInfo" :key="index" class="mb-4">
-        <v-card class="post-card" @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: reply.id, replyToUsername: reply.noteCommentBuildUsername, replyToContent: reply.commentContent,
-         isAnon: note.buildUsername === reply.replyToUsername && note.isAnon } })">
+        <v-card class="post-card" @click="$router.push({
+          path: '/replyNotePage', query: {
+            noteId: note.noteID, replyToId: reply.id, replyToUsername: reply.noteCommentBuildUsername, replyToContent: reply.commentContent,
+            isAnon: note.buildUsername === reply.replyToUsername && note.isAnon
+          }
+        })">
           <div class="post-header">
             <span class="floor-number">{{ index + 2 }}楼</span>
-            <span class="username">{{ reply.noteCommentBuildUsername }}</span>
+            <span class="username">{{
+              (reply.noteCommentBuildUsername === note.buildUsername && note.isAnon === 'true') ? "匿名纸条" :
+                reply.noteCommentBuildUsername
+            }}</span>
             <span class="post-time">{{ formatDate(reply.createTime) }}</span>
           </div>
 
           <v-card-text class="post-content">
             <div v-if="reply.replyTo" class="reply-reference">
-              <span class="font-weight-bold">@{{ reply.replyToUsername === note.buildUsername && note.isAnon ? "匿名纸条" : reply.replyToUsername }}</span>
+              <span class="font-weight-bold">@{{
+                (reply.replyToUsername === note.buildUsername && note.isAnon === 'true') ? "匿名纸条" :
+                  reply.replyToUsername
+              }}</span>
             </div>
             {{ reply.commentContent }}
           </v-card-text>
 
           <v-card-actions>
-            <div class="d-flex align-center justify-end w-100">
-              <v-btn icon variant="text">
-                <v-icon>mdi-thumb-up-outline</v-icon>
-                <span class="ml-1">{{ reply.likeNum }}</span>
-              </v-btn>
+            <div class="d-flex align-center justify-space-between w-100">
+              <div></div>
+              <div class="d-flex align-center">
+                <v-btn icon variant="text">
+                  <v-icon>mdi-thumb-up-outline</v-icon>
+                  <span class="ml-1">{{ reply.likeNum }}</span>
+                </v-btn>
+                <v-btn icon variant="text" @click.stop="deleteComment(reply.id)" color="red">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </div>
             </div>
           </v-card-actions>
         </v-card>
@@ -77,12 +116,43 @@
     <div v-if="isLoading" class="text-center my-4">
       <v-progress-circular indeterminate color="primary"></v-progress-circular>
     </div>
+
+    <!-- Snackbar 提示 -->
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" timeout="3000" location="bottom">
+      {{ snackbar.text }}
+    </v-snackbar>
+
+    <!-- 删除确认对话框 -->
+    <v-dialog v-model="deleteDialog" max-width="420" persistent>
+      <v-card class="delete-dialog">
+        <div class="dialog-header">
+          <v-icon color="red" size="48" class="mb-3">mdi-alert-circle</v-icon>
+          <v-card-title class="text-h5 text-center pa-0 mb-2">
+            确认删除
+          </v-card-title>
+        </div>
+
+        <v-card-text class="text-center pb-4">
+          <p class="text-body-1 mb-2">确定要删除这个帖子吗？</p>
+          <p class="text-caption text-grey">删除后无法恢复，请谨慎操作</p>
+        </v-card-text>
+
+        <v-card-actions class="pa-4 pt-0 dialog-actions">
+          <v-btn variant="outlined" color="grey" block class="mr-2" @click="deleteDialog = false">
+            取消
+          </v-btn>
+          <v-btn variant="flat" color="red" block class="mr-2" @click="confirmDelete">
+            确认删除
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, onUnmounted, getCurrentInstance} from 'vue'
-import {useRoute} from 'vue-router';
+import { ref, reactive, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const note = ref(null);
@@ -96,6 +166,13 @@ const snackbar = reactive({
   text: '',
   color: 'success'
 });
+
+// 设置菜单控制
+const settingsBtn = ref(null);
+const isSettingsMenuOpen = ref(false);
+
+// 删除确认对话框
+const deleteDialog = ref(false);
 
 // 分页参数
 const pageNo = ref(1);
@@ -138,7 +215,7 @@ onMounted(() => {
     content: route.query.content,
     likeNum: route.query.likeNum,
     commentNum: route.query.commentNum,
-    readNum:route.query.readNum,
+    readNum: route.query.readNum,
     buildDate: route.query.buildDate,
     buildUsername: route.query.buildUsername,
     isAnon: route.query.isAnon,
@@ -216,7 +293,7 @@ function showSnackbar(text, color = 'success') {
 // 分享帖子
 function sharePost() {
   if (!note.value) return;
-  
+
   const shareText = `${note.value.tag}\n${note.value.content}\n\n来自互助墙：${window.location.href}`
 
   const textarea = document.createElement('textarea')
@@ -239,6 +316,76 @@ function sharePost() {
   }
 
   document.body.removeChild(textarea)
+}
+
+// 确认删除帖子
+function confirmDeletePost() {
+  isSettingsMenuOpen.value = false;
+  deleteDialog.value = true;
+}
+
+// 确认删除操作
+function confirmDelete() {
+  deleteDialog.value = false;
+  deletePost();
+}
+
+// 删除评论
+async function deleteComment(commentID) {
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/deleteNoteComment',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        _id: commentID
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      showSnackbar('评论删除成功', 'success');
+      // 从列表中移除已删除的评论
+      wallContentInfo.value = wallContentInfo.value.filter(item => item.id !== commentID);
+    } else {
+      showSnackbar('删除失败：' + (res.data.msg || '未知错误'), 'error');
+    }
+  } catch (err) {
+    console.error("删除评论出错：", err);
+    showSnackbar('删除失败，请稍后重试', 'error');
+  }
+}
+
+// 删除帖子
+async function deletePost() {
+  if (!note.value) return;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/deleteNote',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        noteID: note.value.noteID
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      showSnackbar('帖子删除成功', 'success');
+      // 延迟跳转回列表页
+      setTimeout(() => {
+        proxy.$router.push('/wall');
+      }, 1500);
+    } else {
+      showSnackbar('删除失败：' + (res.data.msg || '未知错误'), 'error');
+    }
+  } catch (err) {
+    console.error("删除帖子出错：", err);
+    showSnackbar('删除失败，请稍后重试', 'error');
+  }
 }
 </script>
 
@@ -288,5 +435,46 @@ function sharePost() {
   background-color: #f5f5f5;
   border-radius: 4px;
   font-size: 0.9em;
+}
+
+.delete-item:hover {
+  background-color: #ffebee !important;
+}
+
+.text-red {
+  color: #f44336 !important;
+}
+
+.delete-dialog {
+  border-radius: 16px !important;
+  overflow: hidden;
+}
+
+.dialog-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 24px 0;
+  background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+}
+
+.delete-dialog .v-card-text {
+  padding: 16px 24px;
+}
+
+.delete-dialog .v-card-actions {
+  /* 使按钮垂直排列 */
+  flex-direction: column;
+  align-items: stretch;
+  background-color: #fafafa;
+  gap: 12px;
+  /* 上下间距 */
+}
+
+.delete-dialog .v-btn {
+  height: 44px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.5px;
 }
 </style>
