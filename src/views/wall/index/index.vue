@@ -31,6 +31,9 @@
           <v-btn icon @click="refreshList">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
+          <v-btn icon @click="goToFavorites">
+            <v-icon>mdi-star</v-icon>
+          </v-btn>
         </v-toolbar>
       </div>
     </van-sticky>
@@ -364,9 +367,21 @@ const goToDetail = (item, event) => {
   });
 };
 
-const highlightSearchTerm = (text, searchString) => {
-  const regex = new RegExp(`(${searchString})`, 'gi');
-  return text.replace(regex, '<span class="highlight">$1</span>');
+const goToFavorites = () => {
+  router.push('/wall/favorites');
+};
+
+const highlightSearchTerm = (text, searchTerm) => {
+  if (!searchTerm || !text) return text;
+
+  // 转义特殊字符以避免正则表达式错误
+  const escapedSearchTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+  // 创建正则表达式，使用全局和忽略大小写标志
+  const regex = new RegExp(`(${escapedSearchTerm})`, 'gi');
+
+  // 替换匹配的文本为带有高亮样式的HTML
+  return text.replace(regex, '<span class="highlight-text">$1</span>');
 };
 </script>
 

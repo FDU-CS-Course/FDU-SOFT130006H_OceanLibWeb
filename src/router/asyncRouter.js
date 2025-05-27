@@ -17,158 +17,167 @@ const notifyCommentList = () => import("../views/notify/notifyCommentList.vue");
 const notifyInvitationList = () => import("../views/notify/notifyInvitationList.vue");
 const createNotePage = () => import("../views/wall/createNotePage.vue");
 const replyNotePage = () => import("../views/wall/replyNotePage.vue");
+const favorites = () => import("../views/wall/favorites.vue");
 
 const asyncRouterMap = [{
-        path: '/newCollection',
-        meta: {
-            title: '新建收藏夹',
-            permission: ["USER", "ADMIN"]
-        },
-        component: newCollection
+    path: '/newCollection',
+    meta: {
+        title: '新建收藏夹',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/mine',
-        meta: {
-            title: '我的',
-            permission: ["USER", "ADMIN"]
-        },
-        component: mine
+    component: newCollection
+},
+{
+    path: '/mine',
+    meta: {
+        title: '我的',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/uploadFile',
-        meta: {
-            title: '文件上传 - 选择文件',
-            permission: ["USER", "ADMIN"]
-        },
-        component: uploadFile
+    component: mine
+},
+{
+    path: '/uploadFile',
+    meta: {
+        title: '文件上传 - 选择文件',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/uploadInfo',
-        meta: {
-            title: '文件上传 - 补全信息',
-            permission: ["USER", "ADMIN"]
-        },
-        component: uploadInfo
+    component: uploadFile
+},
+{
+    path: '/uploadInfo',
+    meta: {
+        title: '文件上传 - 补全信息',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/myCollectionList',
-        meta: {
-            title: '我的收藏',
-            permission: ["USER", "ADMIN"]
-        },
-        component: myCollectionList
+    component: uploadInfo
+},
+{
+    path: '/myCollectionList',
+    meta: {
+        title: '我的收藏',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/myCollectionItem',
-        meta: {
-            title: '我的收藏',
-            permission: ["USER", "ADMIN"]
-        },
-        component: myCollectionItem
+    component: myCollectionList
+},
+{
+    path: '/myCollectionItem',
+    meta: {
+        title: '我的收藏',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/myUpload',
-        meta: {
-            title: '我的贡献',
-            permission: ["USER", "ADMIN"]
-        },
-        component: myContent
+    component: myCollectionItem
+},
+{
+    path: '/myUpload',
+    meta: {
+        title: '我的贡献',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/indexResult',
-        meta: {
-            title: '索引结果',
-            permission: ["USER", "ADMIN"]
-        },
-        component: indexResult
+    component: myContent
+},
+{
+    path: '/indexResult',
+    meta: {
+        title: '索引结果',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/search',
-        meta: {
-            title: '搜索结果',
-            permission: ["USER", "ADMIN"]
-        },
-        component: search
+    component: indexResult
+},
+{
+    path: '/search',
+    meta: {
+        title: '搜索结果',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/myRecentlyReadList',
-        meta: {
-            title: '最近浏览',
-            permission: ["USER", "ADMIN"]
-        },
-        component: myRecentlyReadList
+    component: search
+},
+{
+    path: '/myRecentlyReadList',
+    meta: {
+        title: '最近浏览',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/myDownloadList',
-        meta: {
-            title: '最近下载',
-            permission: ["USER", "ADMIN"]
-        },
-        component: myDownloadList
+    component: myRecentlyReadList
+},
+{
+    path: '/myDownloadList',
+    meta: {
+        title: '最近下载',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/walletChangeRecordList',
-        meta: {
-            title: '钱包变动',
-            permission: ["USER", "ADMIN"]
-        },
-        component: walletChangeRecordList
+    component: myDownloadList
+},
+{
+    path: '/walletChangeRecordList',
+    meta: {
+        title: '钱包变动',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/notify',
-        meta: {
-            title: '消息',
-            permission: ["USER", "ADMIN"]
-        },
-        component: notify
+    component: walletChangeRecordList
+},
+{
+    path: '/notify',
+    meta: {
+        title: '消息',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/notifyLikeList',
-        meta: {
-            title: '赞同',
-            permission: ["USER", "ADMIN"]
-        },
-        component: notifyLikeList
+    component: notify
+},
+{
+    path: '/notifyLikeList',
+    meta: {
+        title: '赞同',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/notifyDownloadAndScoreList',
-        meta: {
-            title: '下载与评价',
-            permission: ["USER", "ADMIN"]
-        },
-        component: notifyDownloadAndScoreList
+    component: notifyLikeList
+},
+{
+    path: '/notifyDownloadAndScoreList',
+    meta: {
+        title: '下载与评价',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/notifyCommentList',
-        meta: {
-            title: '评论与回复',
-            permission: ["USER", "ADMIN"]
-        },
-        component: notifyCommentList
+    component: notifyDownloadAndScoreList
+},
+{
+    path: '/notifyCommentList',
+    meta: {
+        title: '评论与回复',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/notifyInvitationList',
-        meta: {
-            title: '帮帮求助',
-            permission: ["USER", "ADMIN"]
-        },
-        component: notifyInvitationList
+    component: notifyCommentList
+},
+{
+    path: '/notifyInvitationList',
+    meta: {
+        title: '帮帮求助',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/createNotePage',
-        meta: {
-            title: '帮帮求助',
-            permission: ["USER", "ADMIN"]
-        },
-        component: createNotePage
+    component: notifyInvitationList
+},
+{
+    path: '/createNotePage',
+    meta: {
+        title: '帮帮求助',
+        permission: ["USER", "ADMIN"]
     },
-    {
-        path: '/replyNotePage',
-        meta: {
-            title: '回复帖子',
-            permission: ["USER", "ADMIN"]
-        },
-        component: replyNotePage
-    }
+    component: createNotePage
+},
+{
+    path: '/replyNotePage',
+    meta: {
+        title: '回复帖子',
+        permission: ["USER", "ADMIN"]
+    },
+    component: replyNotePage
+},
+{
+    path: '/wall/favorites',
+    meta: {
+        title: '收藏夹',
+        permission: ["USER", "ADMIN"]
+    },
+    component: favorites
+}
 ];
 export default asyncRouterMap;

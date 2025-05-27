@@ -14,6 +14,9 @@
       <v-btn icon @click="sharePost">
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
+      <v-btn icon @click="toggleFavorite" :color="isFavorited ? 'orange' : ''">
+        <v-icon>{{ isFavorited ? 'mdi-star' : 'mdi-star-outline' }}</v-icon>
+      </v-btn>
 
       <!-- 设置菜单按钮 -->
       <v-btn ref="settingsBtn" icon>
@@ -160,6 +163,9 @@ const note = ref(null);
 // 点赞状态
 const isLiked = ref(false)
 
+// 收藏状态
+const isFavorited = ref(false)
+
 // Snackbar 控制
 const snackbar = reactive({
   show: false,
@@ -177,6 +183,8 @@ const deleteDialog = ref(false);
 // 分页参数
 const pageNo = ref(1);
 const pageSize = ref(10);
+
+let collectionId = ref(null);
 
 const wallContentInfo = ref([]);
 const { proxy } = getCurrentInstance();
@@ -278,6 +286,26 @@ const fetchWallContentData = async (isLoadMore = false) => {
   } finally {
     isLoading.value = false;
   }
+
+  const res = await proxy.$Axios({
+    method: 'post',
+    url: '/noteService/getBehaviourByUsernameAndNoteId',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    params: {
+      username: sessionStorage.getItem('username'),
+      noteId: note.value.noteID,
+    }
+  });
+
+  console.log(note.value.noteID);
+  if (res.data && res.data.code === "1" && res.data.msg.noteId == note.value.noteID) {
+    collectionId.value = res.data.msg.id;
+    isFavorited.value = true;
+  } else {
+    isFavorited.value = false;
+  }
 };
 
 // 显示提示条
@@ -354,6 +382,40 @@ async function deleteComment(commentID) {
   } catch (err) {
     console.error("删除评论出错：", err);
     showSnackbar('删除失败，请稍后重试', 'error');
+  }
+}
+
+// 切换收藏状态
+async function toggleFavorite() {
+  if (!note.value) return;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/favoriteNote',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        username: sessionStorage.getItem('username'),
+        noteId: note.value.noteID,
+        isFavor: isFavorited.value ? false : true,
+        id: collectionId.value
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      isFavorited.value = !isFavorited.value;
+      if (isFavorited.value) {
+        collectionId.value = res.data.msg.id;
+      }
+      showSnackbar(isFavorited.value ? '收藏成功' : '取消收藏成功', 'success');
+    } else {
+      showSnackbar('操作失败：' + (res.data.msg || '未知错误'), 'error');
+    }
+  } catch (err) {
+    console.error("收藏操作出错：", err);
+    showSnackbar('操作失败，请稍后重试', 'error');
   }
 }
 
