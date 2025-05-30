@@ -32,6 +32,14 @@
       border: 2px solid white !important;
       font-size: 36px;
     }
+    &--edit-mode {
+      .mine__userinfo {
+        margin-top: 120px;
+      }
+      .mine__userinfo-box__avatar-box {
+        top: 40px;
+      }
+    }
   }
   &__userinfo {
     margin-top: 150px;
@@ -69,12 +77,39 @@
       margin-top: 5px;
       color: #bbb;
     }
+    &__edit-form {
+      margin-top: 20px;
+      padding-top: 20px;
+      .v-text-field, .v-select, .v-textarea {
+        margin-bottom: 8px;
+      }
+      &__buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+        .v-btn {
+          min-width: 80px;
+        }
+      }
+      &__section {
+        margin-bottom: 20px;
+        &-title {
+          font-size: 16px;
+          font-weight: 500;
+          color: #333;
+          margin-bottom: 15px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #e0e0e0;
+        }
+      }
+    }
   }
 }
 </style>
 <template>
   <div class="mine">
-    <div class="mine__userinfo-box" :style="newBackground">
+    <div class="mine__userinfo-box" :class="{ 'mine__userinfo-box--edit-mode': editMode }" :style="newBackground">
       <div class="mine__userinfo-box__tools">
         <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
           <v-icon>mdi-bell-outline</v-icon>
@@ -141,64 +176,150 @@
         </template>
         <template v-else>
           <!-- Edit mode -->
-          <v-form ref="editForm" lazy-validation>
-            <v-text-field v-model="editUserInfo.nickname" label="Nickname" :rules="[v => !!v || 'Required']" />
-            <v-text-field v-model="editUserInfo.email" label="Email" type="email" />
-            <v-text-field v-model="editUserInfo.phoneNum" label="Phone Number" />
-            <v-text-field v-model="editUserInfo.realname" label="Real Name" />
-            <v-text-field v-model="editUserInfo.avatar" label="Avatar URL" />
-            <v-text-field v-model="editUserInfo.college" label="College" />
-            <v-text-field v-model="editUserInfo.major" label="Major" />
-            <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field v-model="editUserInfo.birthday" label="Birthday" readonly v-bind="attrs" v-on="on" />
-              </template>
-              <v-date-picker v-model="editUserInfo.birthday" @input="menu = false"></v-date-picker>
-            </v-menu>
-            <v-select v-model="editUserInfo.sex" :items="sexOptions" label="Sex" />
-            <v-textarea v-model="editUserInfo.personalSignature" label="Personal Signature" />
-            <v-btn color="primary" @click="saveEdit">Save</v-btn>
-            <v-btn color="secondary" @click="cancelEdit">Cancel</v-btn>
-          </v-form>
+          <div class="mine__userinfo__edit-form">
+            <v-form ref="editForm" lazy-validation>
+              <!-- Basic Information Section -->
+              <div class="mine__userinfo__edit-form__section">
+                <div class="mine__userinfo__edit-form__section-title">Basic Information</div>
+                <v-text-field 
+                  v-model="editUserInfo.nickname" 
+                  label="Nickname" 
+                  :rules="[v => !!v || 'Required']" 
+                  dense
+                  outlined
+                />
+                <v-text-field 
+                  v-model="editUserInfo.email" 
+                  label="Email" 
+                  type="email" 
+                  dense
+                  outlined
+                />
+                <v-text-field 
+                  v-model="editUserInfo.phoneNum" 
+                  label="Phone Number" 
+                  dense
+                  outlined
+                />
+                <v-text-field 
+                  v-model="editUserInfo.realname" 
+                  label="Real Name" 
+                  dense
+                  outlined
+                />
+              </div>
+
+              <!-- Personal Details Section -->
+              <div class="mine__userinfo__edit-form__section">
+                <div class="mine__userinfo__edit-form__section-title">Personal Details</div>
+                <v-text-field 
+                  v-model="editUserInfo.college" 
+                  label="College" 
+                  dense
+                  outlined
+                />
+                <v-text-field 
+                  v-model="editUserInfo.major" 
+                  label="Major" 
+                  dense
+                  outlined
+                />
+                <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-text-field 
+                      v-model="editUserInfo.birthday" 
+                      label="Birthday" 
+                      readonly 
+                      v-bind="attrs" 
+                      v-on="on" 
+                      dense
+                      outlined
+                    />
+                  </template>
+                  <v-date-picker v-model="editUserInfo.birthday" @input="menu = false"></v-date-picker>
+                </v-menu>
+                <v-select 
+                  v-model="editUserInfo.sex" 
+                  :items="sexOptions" 
+                  label="Sex" 
+                  dense
+                  outlined
+                />
+              </div>
+
+              <!-- Profile Section -->
+              <div class="mine__userinfo__edit-form__section">
+                <div class="mine__userinfo__edit-form__section-title">Profile</div>
+                <v-text-field 
+                  v-model="editUserInfo.avatar" 
+                  label="Avatar URL" 
+                  dense
+                  outlined
+                />
+                <v-textarea 
+                  v-model="editUserInfo.personalSignature" 
+                  label="Personal Signature" 
+                  rows="3"
+                  dense
+                  outlined
+                />
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="mine__userinfo__edit-form__buttons">
+                <v-btn color="secondary" outlined @click="cancelEdit">
+                  <v-icon left>mdi-close</v-icon>
+                  Cancel
+                </v-btn>
+                <v-btn color="primary" @click="saveEdit">
+                  <v-icon left>mdi-check</v-icon>
+                  Save
+                </v-btn>
+              </div>
+            </v-form>
+          </div>
         </template>
       </div>
     </div>
-    <van-grid style="margin-bottom: 10px">
-      <van-grid-item text="我的收藏" to="/myCollectionList">
-        <template #icon>
-          <img :src="require('../../images/module-icon/icon_collection.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-      <van-grid-item text="我的下载" to="/myDownloadList">
-        <template #icon>
-          <img :src="require('../../images/module-icon/icon_download.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-      <van-grid-item text="最近浏览" to="/myRecentlyReadList">
-        <template #icon>
-          <img :src="require('../../images/module-icon/icon_look.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-      <van-grid-item text="我的贡献" to="/myUpload">
-        <template #icon>
-          <img :src="require('../../images/module-icon/icon_contribution.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-      <van-grid-item text="上传文档" to="/uploadFile">
-        <template #icon>
-          <img :src="require('../../images/module-icon/icon_upload.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-      <van-grid-item text="申请VIP" to="/vip">
-        <template #icon>
-          <img :src="require('../../images/main-icon/icon_VIP.svg')" width="30" style="margin-bottom: 5px" />
-        </template>
-      </van-grid-item>
-    </van-grid>
-    <van-cell title="我的订单" is-link />
-    <van-cell title="我的钱包变动" is-link to="/walletChangeRecordList" />
-    <van-cell title="关于Lib4Univ文库" is-link style="margin-top: 5px" to="/about" />
-    <van-cell title="退出登录" style="color: var(--van-danger-color);" is-link @click="handleLogout" />
+    <!-- Grid items and menu - only show when not in edit mode -->
+    <template v-if="!editMode">
+      <van-grid style="margin-bottom: 10px">
+        <van-grid-item text="我的收藏" to="/myCollectionList">
+          <template #icon>
+            <img :src="require('../../images/module-icon/icon_collection.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+        <van-grid-item text="我的下载" to="/myDownloadList">
+          <template #icon>
+            <img :src="require('../../images/module-icon/icon_download.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+        <van-grid-item text="最近浏览" to="/myRecentlyReadList">
+          <template #icon>
+            <img :src="require('../../images/module-icon/icon_look.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+        <van-grid-item text="我的贡献" to="/myUpload">
+          <template #icon>
+            <img :src="require('../../images/module-icon/icon_contribution.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+        <van-grid-item text="上传文档" to="/uploadFile">
+          <template #icon>
+            <img :src="require('../../images/module-icon/icon_upload.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+        <van-grid-item text="申请VIP" to="/vip">
+          <template #icon>
+            <img :src="require('../../images/main-icon/icon_VIP.svg')" width="30" style="margin-bottom: 5px" />
+          </template>
+        </van-grid-item>
+      </van-grid>
+      <van-cell title="我的订单" is-link />
+      <van-cell title="我的钱包变动" is-link to="/walletChangeRecordList" />
+      <van-cell title="关于Lib4Univ文库" is-link style="margin-top: 5px" to="/about" />
+      <van-cell title="退出登录" style="color: var(--van-danger-color);" is-link @click="handleLogout" />
+    </template>
     <div style="position: fixed;bottom: 0;left: 0;right: 0;">
       <v-bottom-navigation shift color="primary" grow class="index__bottom__navigation" v-model="navigation">
         <v-btn link to="/index">
@@ -222,6 +343,22 @@
 </template>
 
 <script>
+/**
+ * Mine/Profile Page Component
+ * 
+ * Features:
+ * - User profile display with avatar, stats, and personal information
+ * - Edit mode with organized form sections (Basic Info, Personal Details, Profile)
+ * - Responsive layout that adapts between display and edit modes
+ * - Form validation and error handling
+ * - Clean UI that hides navigation elements during editing
+ * 
+ * Recent Updates:
+ * - Fixed edit mode layout with proper spacing and organization
+ * - Added section-based form layout for better UX
+ * - Improved button styling and positioning
+ * - Added form validation and defensive coding practices
+ */
 export default {
   data() {
     return {
@@ -289,13 +426,36 @@ export default {
       this.editMode = false;
       this.editUserInfo = {};
     },
+    /**
+     * Save user edit information after validation
+     * Validates form, filters empty values, and submits to server
+     */
     saveEdit() {
+      // Validate form before submission
+      if (!this.$refs.editForm.validate()) {
+        this.snackbarMsg = 'Please fix validation errors before saving';
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+        return;
+      }
+
+      // Filter out empty/null values for cleaner payload
       const payload = {};
       for (const key in this.editUserInfo) {
-        if (this.editUserInfo[key] !== undefined && this.editUserInfo[key] !== null && this.editUserInfo[key] !== '') {
-          payload[key] = this.editUserInfo[key];
+        const value = this.editUserInfo[key];
+        if (value !== undefined && value !== null && value !== '') {
+          payload[key] = value;
         }
       }
+
+      // Check if there are any changes to save
+      if (Object.keys(payload).length === 0) {
+        this.snackbarMsg = 'No changes to save';
+        this.snackbarColor = 'warning';
+        this.snackbar = true;
+        return;
+      }
+
       this.$Axios({
         method: 'post',
         url: '/userInfoService/updateUserInfo',
@@ -303,8 +463,8 @@ export default {
       }).then((response) => {
         console.log(response.data);
         this.editMode = false;
-        this.getUserAllInfo();
-        this.snackbarMsg = 'User info updated successfully';
+        this.getUserAllInfo(); // Refresh user data
+        this.snackbarMsg = 'User information updated successfully';
         this.snackbarColor = 'success';
         this.snackbar = true;
       }).catch((error) => {
@@ -316,7 +476,7 @@ export default {
         } else {
           msg += 'Unknown error';
         }
-        console.log(msg);
+        console.error('Update error:', error);
         this.snackbarMsg = msg;
         this.snackbarColor = 'error';
         this.snackbar = true;
