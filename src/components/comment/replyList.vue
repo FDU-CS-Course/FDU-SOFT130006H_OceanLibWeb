@@ -175,7 +175,7 @@ export default {
         comment.isDislike = false;
 
         this.commentUserBehavior.map((record) => {
-          let commentID = record.extraInfo.commentID;
+          let commentID = record.extraInfo.COMMENT_ID;
           if (commentID.indexOf(comment.id) != -1) {
             if (commentID == comment.id) {
               //是评论

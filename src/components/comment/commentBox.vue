@@ -84,11 +84,13 @@
       padding: unset !important;
       width: 25px;
       margin-right: 15px;
+      box-shadow: none;
     }
     &__likeButton {
       min-width: unset !important;
       padding: unset !important;
       width: 50px;
+      box-shadow: none;
     }
     &__likeNum {
       text-decoration: none !important;
@@ -101,6 +103,7 @@
     &__moreButton {
       min-width: unset !important;
       padding: unset !important;
+      box-shadow: none;
     }
   }
   &__replyBox {
