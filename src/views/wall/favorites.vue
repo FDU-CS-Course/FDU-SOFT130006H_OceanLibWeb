@@ -230,14 +230,16 @@ const fetchFavorites = async () => {
                 'Content-Type': 'application/json'
             },
             params: {
+                username: sessionStorage.getItem('username'),
                 pageNo: 1,
                 pageSize: 10
             }
         });
 
         if (behaviorRes.data && behaviorRes.data.code === "1") {
-            const favoriteNoteIds = behaviorRes.data.msg.list.map(behavior => ({
-                noteId: behavior.noteId
+            const favoriteNoteIds = behaviorRes.data.msg.map(behavior => ({
+                noteId: behavior.noteId,
+                favoriteDate: behavior.createTime
             }));
 
             // 第二步：根据每个noteId获取帖子详细信息

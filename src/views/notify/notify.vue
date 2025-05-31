@@ -4,7 +4,13 @@
 
     <!-- 使用 van-tabs 替代 van-grid -->
     <van-tabs v-model="activeTab" sticky>
-      <van-tab title="帮帮求助">
+      <van-tab>
+        <template #title>
+          <span class="tab-title">
+            帮帮求助
+            <span v-if="invitationHasUnread" class="tab-badge"></span>
+          </span>
+        </template>
         <div class="page">
           <div v-for="(item, index) in invitationList" :key="index" class="notifyBox">
             <div class="notifyBox__top">
@@ -19,13 +25,19 @@
                 </div>
                 <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
-              <div v-if="item.isRead === 48" class = "red_dot"></div>
+              <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
           </div>
         </div>
       </van-tab>
 
-      <van-tab title="赞同">
+      <van-tab>
+        <template #title>
+          <span class="tab-title">
+            赞同
+            <span v-if="likeHasUnread" class="tab-badge"></span>
+          </span>
+        </template>
         <div class="page">
           <div v-for="(item, index) in likeList" :key="index" class="notifyBox">
             <div class="notifyBox__top">
@@ -40,13 +52,19 @@
                 </div>
                 <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
-              <div v-if="item.isRead === 48" class = "red_dot"></div>
+              <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
           </div>
         </div>
       </van-tab>
 
-      <van-tab title="下载与评价">
+      <van-tab>
+        <template #title>
+          <span class="tab-title">
+            下载与评价
+            <span v-if="downloadAndScoreHasUnread" class="tab-badge"></span>
+          </span>
+        </template>
         <div class="page">
           <div v-for="(item, index) in downloadAndScoreList" :key="index" class="notifyBox">
             <div class="notifyBox__top">
@@ -61,13 +79,19 @@
                 </div>
                 <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
-              <div v-if="item.isRead === 48" class = "red_dot"></div>
+              <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
           </div>
         </div>
       </van-tab>
 
-      <van-tab title="评论与回复">
+      <van-tab>
+        <template #title>
+          <span class="tab-title">
+            评论与回复
+            <span v-if="commentHasUnread" class="tab-badge"></span>
+          </span>
+        </template>
         <div class="page">
           <div v-for="(item, index) in commentList" :key="index" class="notifyBox">
             <div class="notifyBox__top">
@@ -82,7 +106,7 @@
                 </div>
                 <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
-              <div v-if="item.isRead === 48" class = "red_dot"></div>
+              <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
           </div>
         </div>
@@ -110,6 +134,10 @@ export default {
       this.likeList.reverse();
       this.downloadAndScoreList.reverse();
       this.commentList.reverse();
+      if (this.invitationList.length > 0 && this.invitationList[0].isRead === 48) this.invitationHasUnread = 1;
+      if (this.likeList.length > 0 && this.likeList[0].isRead === 48) this.likeHasUnread = 1;
+      if (this.downloadAndScoreList.length > 0 && this.downloadAndScoreList[0].isRead === 48) this.downloadAndScoreHasUnread = 1;
+      if (this.commentList.length > 0 && this.commentList[0].isRead === 48) this.commentHasUnread = 1;
     });
   },
   data() {
@@ -119,6 +147,10 @@ export default {
       likeList: [],
       downloadAndScoreList: [],
       commentList: [],
+      invitationHasUnread: 0,
+      likeHasUnread: 0,
+      downloadAndScoreHasUnread: 0,
+      commentHasUnread: 0,
     };
   },
   methods: {
@@ -131,6 +163,22 @@ export default {
 
 <style lang="less" scoped>
 @import '~@/vant-variables.less';
+
+.tab-title {
+  position: relative;
+  padding-right: 12px;
+  /* 为小红点留出空间 */
+}
+
+.tab-badge {
+  position: absolute;
+  top: 0px;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background-color: red;
+  border-radius: 50%;
+}
 
 .page {
   background-color: @gray-1;
