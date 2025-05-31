@@ -48,6 +48,14 @@ export default {
             });
             localStorage.setItem("userNotifyList", JSON.stringify(userNotifyList));
             localStorage.setItem("notifyLastPullDate", new Date().toLocaleString());
+            self.$Axios({
+                method: 'post',
+                url: '/notify/readNotifications',
+                params: {
+                    username: sessionStorage.getItem("username"),
+                    latestPullDate: lastPullDate
+                }
+            })
             successCallback();
         }).catch((e) => {
             console.log(e)
