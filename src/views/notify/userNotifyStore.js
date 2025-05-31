@@ -29,18 +29,18 @@ export default {
                 switch (element.notifyEntity.action) {
                     case "LIKE":
                     case "LIKE_COMMENT":
-                        userNotifyList.likeList.push(element.notifyEntity);
+                        userNotifyList.likeList.push(element);
                         break;
                     case "DOWNLOAD":
                     case "SCORED":
-                        userNotifyList.downloadAndScoreList.push(element.notifyEntity);
+                        userNotifyList.downloadAndScoreList.push(element);
                         break;
                     case "NEW_COMMENT":
                     case "NEW_REPLY":
-                        userNotifyList.commentList.push(element.notifyEntity);
+                        userNotifyList.commentList.push(element);
                         break;
                     case "INVITATION":
-                        userNotifyList.invitationList.push(element.notifyEntity);
+                        userNotifyList.invitationList.push(element);
                         break;
                     default:
                         break;
@@ -48,6 +48,14 @@ export default {
             });
             localStorage.setItem("userNotifyList", JSON.stringify(userNotifyList));
             localStorage.setItem("notifyLastPullDate", new Date().toLocaleString());
+            self.$Axios({
+                method: 'post',
+                url: '/notify/readNotifications',
+                params: {
+                    username: sessionStorage.getItem("username"),
+                    latestPullDate: lastPullDate
+                }
+            })
             successCallback();
         }).catch((e) => {
             console.log(e)
