@@ -58,9 +58,16 @@
 
         <v-card-actions>
           <div class="d-flex align-center justify-end w-100">
-            <v-btn icon :color="isLiked ? 'red' : ''" variant="text">
-              <v-icon>{{ isLiked ? 'mdi-thumb-up' : 'mdi-thumb-up-outline' }}</v-icon>
-              <span class="ml-1">{{ note.likeNum }}</span>
+            <!-- 点赞按钮 -->
+            <v-btn 
+              icon 
+              @click.stop="toggleLike"
+              :disabled="isLiking"
+              :color="isLiked ? 'red' : ''"
+              variant="text"
+            >
+              <v-icon>{{ isLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+              <span class="ml-1">{{ note.likeNum || 0 }}</span>
             </v-btn>
             <v-btn icon variant="text">
               <v-icon>mdi-comment-eye</v-icon>
@@ -102,7 +109,7 @@
               <div></div>
               <div class="d-flex align-center">
                 <v-btn icon variant="text">
-                  <v-icon>mdi-thumb-up-outline</v-icon>
+                  <v-icon>mdi-heart-outline</v-icon>
                   <span class="ml-1">{{ reply.likeNum }}</span>
                 </v-btn>
                 <v-btn icon variant="text" @click.stop="deleteComment(reply.id)" color="red">
@@ -161,7 +168,8 @@ const route = useRoute();
 const note = ref(null);
 
 // 点赞状态
-const isLiked = ref(false)
+const isLiked = ref(false);
+const isLiking = ref(false);
 
 // 收藏状态
 const isFavorited = ref(false)
@@ -192,6 +200,52 @@ const { proxy } = getCurrentInstance();
 const isLoading = ref(false);
 const hasMore = ref(true);
 
+/**
+ * 切换点赞状态
+ */
+const toggleLike = async () => {
+  if (!note.value || isLiking.value) return;
+  
+  try {
+    isLiking.value = true;
+    
+    const newLikeStatus = !isLiked.value;
+    
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/likeNote',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        noteId: note.value.noteID,
+        isLike: newLikeStatus
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      // 更新本地状态
+      isLiked.value = newLikeStatus;
+      
+      // 更新点赞数
+      if (newLikeStatus) {
+        note.value.likeNum = (parseInt(note.value.likeNum) || 0) + 1;
+      } else {
+        note.value.likeNum = Math.max((parseInt(note.value.likeNum) || 0) - 1, 0);
+      }
+      
+      showSnackbar(newLikeStatus ? '点赞成功' : '取消点赞成功', 'success');
+    } else {
+      showSnackbar('点赞操作失败，请重试', 'error');
+    }
+  } catch (err) {
+    console.error("点赞请求出错：", err);
+    showSnackbar('网络错误，请重试', 'error');
+  } finally {
+    isLiking.value = false;
+  }
+};
+
 // 日期格式化
 const formatDate = (timestamp) => {
   const date = new Date(timestamp);
@@ -216,6 +270,32 @@ const handleScroll = () => {
   }
 };
 
+/**
+ * 获取点赞状态
+ */
+const checkLikeStatus = async () => {
+  if (!note.value?.noteID) return;
+  
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/checkNoteLikeStatus',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        noteId: note.value.noteID
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      isLiked.value = res.data.msg === true;
+    }
+  } catch (err) {
+    console.error("获取点赞状态出错：", err);
+  }
+};
+
 onMounted(() => {
   note.value = {
     noteID: route.query.noteID,
@@ -230,6 +310,14 @@ onMounted(() => {
     isAllowComment: route.query.isAllowComment,
     isDeleted: route.query.isDeleted,
   };
+  
+  // 如果从列表页传递了点赞状态，直接使用
+  if (route.query.isLikedByCurrentUser !== undefined) {
+    isLiked.value = route.query.isLikedByCurrentUser === 'true' || route.query.isLikedByCurrentUser === true;
+  } else {
+    // 否则从服务器获取点赞状态
+    checkLikeStatus();
+  }
 
   fetchWallContentData();
   window.addEventListener('scroll', handleScroll);

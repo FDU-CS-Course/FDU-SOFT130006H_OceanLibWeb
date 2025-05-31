@@ -76,8 +76,28 @@
               </div>
 
               <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
+                <!-- 点赞按钮 -->
+                <v-btn 
+                  icon 
+                  small 
+                  @click.stop="toggleLike(item, index)"
+                  :disabled="item.isLiking"
+                  class="like-btn"
+                >
+                  <v-icon 
+                    small 
+                    :color="item.isLikedByCurrentUser ? 'red' : 'grey'"
+                    class="mr-1"
+                  >
+                    {{ item.isLikedByCurrentUser ? 'mdi-heart' : 'mdi-heart-outline' }}
+                  </v-icon>
+                </v-btn>
+                <span class="text-caption mr-2">{{ item.likeNum || 0 }}</span>
+                
+                <span class="mr-1">·</span>
                 <v-icon small class="mr-1">mdi-comment-eye</v-icon>
                 <span class="text-caption mr-2">{{ item.readNum }}</span>
+                
                 <span class="mr-1">·</span>
                 <v-icon small class="mr-1">mdi-comment</v-icon>
                 <span class="text-caption">{{ item.commentNum }}</span>
@@ -162,6 +182,70 @@ const filterBtn = ref(null);
 const isFilterMenuOpen = ref(false);
 const selectedTag = ref(null);
 
+/**
+ * 切换点赞状态
+ * @param {Object} item - 笔记项
+ * @param {Number} index - 项目索引
+ */
+const toggleLike = async (item, index) => {
+  // 防止重复点击
+  if (item.isLiking) return;
+  
+  try {
+    // 设置loading状态
+    item.isLiking = true;
+    
+    // 获取当前点赞状态
+    const isCurrentlyLiked = item.isLikedByCurrentUser;
+    const newLikeStatus = !isCurrentlyLiked;
+    
+    // 调用后端API
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/likeNote',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        noteId: item.noteID,
+        isLike: newLikeStatus
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      // 更新本地状态
+      item.isLikedByCurrentUser = newLikeStatus;
+      
+      // 更新点赞数
+      if (newLikeStatus) {
+        item.likeNum = (item.likeNum || 0) + 1;
+      } else {
+        item.likeNum = Math.max((item.likeNum || 0) - 1, 0);
+      }
+      
+      // 更新对应的原始数据
+      const originalIndex = originalWallInfo.value.findIndex(
+        originalItem => originalItem.noteID === item.noteID
+      );
+      if (originalIndex !== -1) {
+        originalWallInfo.value[originalIndex].isLikedByCurrentUser = newLikeStatus;
+        originalWallInfo.value[originalIndex].likeNum = item.likeNum;
+      }
+      
+    } else {
+      console.error("点赞操作失败：", res.data?.msg || "未知错误");
+      // 可以添加用户提示
+      proxy.$toast.error("点赞操作失败，请重试");
+    }
+  } catch (err) {
+    console.error("点赞请求出错：", err);
+    proxy.$toast.error("网络错误，请重试");
+  } finally {
+    // 清除loading状态
+    item.isLiking = false;
+  }
+};
+
 const handleScroll = () => {
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
   const windowHeight = window.innerHeight;
@@ -214,6 +298,27 @@ const toggleSearch = () => {
   }
 }
 
+/**
+ * 处理笔记数据，包括点赞状态
+ * @param {Object} note - 后端返回的笔记数据
+ * @returns {Object} 处理后的笔记数据
+ */
+const processNoteData = (note) => ({
+  noteID: note.id,
+  tag: note.tag,
+  content: note.content,
+  likeNum: note.likeNum || 0,
+  commentNum: note.commentNum || 0,
+  readNum: note.readNum || 0,
+  buildDate: note.buildDate,
+  buildUsername: note.buildUsername,
+  isAnon: note.isAnon === 1,
+  isAllowComment: note.isAllowComment === 1,
+  isDeleted: note.isDeleted === 1,
+  isLikedByCurrentUser: note.isLikedByCurrentUser === 1 || note.isLikedByCurrentUser === true,
+  isLiking: false // 用于控制点赞按钮loading状态
+});
+
 const searchList = async (isLoadMore = false, searchString) => {
   if (isLoading.value || !hasMore.value) return;
 
@@ -234,19 +339,7 @@ const searchList = async (isLoadMore = false, searchString) => {
     });
 
     if (res.data && res.data.code === "1") {
-      const list = res.data.msg.list.map(note => ({
-        noteID: note.id,
-        tag: note.tag,
-        content: note.content,
-        likeNum: note.likeNum || 0,
-        commentNum: note.commentNum || 0,
-        readNum: note.readNum || 0,
-        buildDate: note.buildDate,
-        buildUsername: note.buildUsername,
-        isAnon: note.isAnon === 1,
-        isAllowComment: note.isAllowComment === 1,
-        isDeleted: note.isDeleted === 1,
-      }));
+      const list = res.data.msg.list.map(processNoteData);
 
       originalWallInfo.value = isLoadMore ? [...originalWallInfo.value, ...list] : [...list];
 
@@ -293,19 +386,7 @@ const fetchWallData = async (isLoadMore = false) => {
     });
 
     if (res.data && res.data.code === "1") {
-      const list = res.data.msg.list.map(note => ({
-        noteID: note.id,
-        tag: note.tag,
-        content: note.content,
-        likeNum: note.likeNum || 0,
-        commentNum: note.commentNum || 0,
-        readNum: note.readNum || 0,
-        buildDate: note.buildDate,
-        buildUsername: note.buildUsername,
-        isAnon: note.isAnon === 1,
-        isAllowComment: note.isAllowComment === 1,
-        isDeleted: note.isDeleted === 1,
-      }));
+      const list = res.data.msg.list.map(processNoteData);
 
       originalWallInfo.value = isLoadMore ? [...originalWallInfo.value, ...list] : [...list];
 
@@ -363,6 +444,7 @@ const goToDetail = (item, event) => {
       isAnon: item.isAnon,
       isAllowComment: item.isAllowComment,
       isDeleted: item.isDeleted,
+      isLikedByCurrentUser: item.isLikedByCurrentUser,
     }
   });
 };
@@ -435,5 +517,22 @@ const highlightSearchTerm = (text, searchTerm) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+/* 点赞按钮样式 */
+.like-btn {
+  min-width: auto !important;
+  padding: 0 !important;
+  margin-right: 4px !important;
+  
+  &:hover {
+    background-color: rgba(255, 0, 0, 0.04) !important;
+  }
+}
+
+/* 高亮搜索词样式 */
+.highlight-text {
+  background-color: yellow;
+  font-weight: bold;
 }
 </style>
