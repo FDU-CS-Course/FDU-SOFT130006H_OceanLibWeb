@@ -10,15 +10,16 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.buildUsername"></v-username>
+                  :username="item.notifyEntity.buildUsername"></v-username>
               </div>
               <div>
                 <div>
-                  <v-username type="username" :username="item.buildUsername"></v-username>
+                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
                   向你发出了帮帮求助邀请
                 </div>
-                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
+                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
+              <div v-if="item.isRead === 48" class = "red_dot"></div>
             </div>
           </div>
         </div>
@@ -30,15 +31,16 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.buildUsername"></v-username>
+                  :username="item.notifyEntity.buildUsername"></v-username>
               </div>
               <div>
                 <div>
-                  <v-username type="username" :username="item.buildUsername"></v-username>
-                  点赞了你的{{ item.action == 'LIKE_COMMENT' ? '评论' : '文章' }}
+                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
+                  点赞了你的{{ item.notifyEntity.action == 'LIKE_COMMENT' ? '评论' : '文章' }}
                 </div>
-                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
+                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
+              <div v-if="item.isRead === 48" class = "red_dot"></div>
             </div>
           </div>
         </div>
@@ -50,15 +52,16 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.buildUsername"></v-username>
+                  :username="item.notifyEntity.buildUsername"></v-username>
               </div>
               <div>
                 <div>
-                  <v-username type="username" :username="item.buildUsername"></v-username>
-                  {{ item.action == "DOWNLOAD" ? '下载' : '评价' }}了你的文章
+                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
+                  {{ item.notifyEntity.action == "DOWNLOAD" ? '下载' : '评价' }}了你的文章
                 </div>
-                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
+                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
+              <div v-if="item.isRead === 48" class = "red_dot"></div>
             </div>
           </div>
         </div>
@@ -70,15 +73,16 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.buildUsername"></v-username>
+                  :username="item.notifyEntity.buildUsername"></v-username>
               </div>
               <div>
                 <div>
-                  <v-username type="username" :username="item.buildUsername"></v-username>
-                  {{ item.action == 'NEW_COMMENT' ? '评论' : '回复' }}了你的评论
+                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
+                  {{ item.notifyEntity.action == 'NEW_COMMENT' ? '评论' : '回复' }}了你的评论
                 </div>
-                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
+                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
               </div>
+              <div v-if="item.isRead === 48" class = "red_dot"></div>
             </div>
           </div>
         </div>
@@ -102,6 +106,10 @@ export default {
       this.likeList = notifyData.likeList || [];
       this.downloadAndScoreList = notifyData.downloadAndScoreList || [];
       this.commentList = notifyData.commentList || [];
+      this.invitationList.reverse();
+      this.likeList.reverse();
+      this.downloadAndScoreList.reverse();
+      this.commentList.reverse();
     });
   },
   data() {
@@ -148,5 +156,15 @@ export default {
       color: @gray-4;
     }
   }
+}
+
+.red_dot {
+  position: absolute;
+  right: 20px;
+  width: 8px;
+  height: 8px;
+  transform: translateY(15px);
+  background-color: red;
+  border-radius: 50%;
 }
 </style>
