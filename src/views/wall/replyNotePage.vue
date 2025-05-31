@@ -110,7 +110,6 @@ const submitComment = async () => {
       },
       params: {
         noteId: route.query.noteId,
-        userName: sessionStorage.getItem('username'),
         commentContent: commentContent.value.trim(),
         replyTo: route.query.replyToId,
         replyToUsername: route.query.replyToUsername

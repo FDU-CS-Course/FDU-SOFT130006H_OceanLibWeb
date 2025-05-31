@@ -1,3 +1,34 @@
+<!--
+/**
+ * Favorites Page Component
+ * 
+ * Features:
+ * - Display user's favorited notes with authentication-aware loading
+ * - Pull-to-refresh functionality with visual feedback
+ * - Tag-based filtering and categorization
+ * - Responsive card layout with note details
+ * - Navigation to detailed note view
+ * - Empty state handling with user guidance
+ * 
+ * Authentication Updates (2024-12-19):
+ * - Updated to work with new authentication API
+ * - Removed manual username parameter - backend now uses @AuthUser annotation
+ * - Enhanced error handling with proper user feedback
+ * - Added defensive coding practices
+ * - Improved data loading consistency
+ * 
+ * API Endpoints:
+ * - POST /noteService/getBehaviourByUsername (updated for authentication)
+ * - POST /noteService/getNoteById
+ * 
+ * Dependencies:
+ * - Vue 3 Composition API
+ * - Vue Router
+ * - Vuetify components
+ * - Vant UI components
+ * - Axios for API calls
+ */
+-->
 <template>
     <div class="favorites-page">
         <!-- 顶部导航栏 -->
@@ -199,7 +230,6 @@ const fetchFavorites = async () => {
                 'Content-Type': 'application/json'
             },
             params: {
-                username: sessionStorage.getItem('username'),
                 pageNo: 1,
                 pageSize: 10
             }

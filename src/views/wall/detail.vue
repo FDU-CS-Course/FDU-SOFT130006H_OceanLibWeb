@@ -294,7 +294,6 @@ const fetchWallContentData = async (isLoadMore = false) => {
       'Content-Type': 'application/json'
     },
     params: {
-      username: sessionStorage.getItem('username'),
       noteId: note.value.noteID,
     }
   });
@@ -397,7 +396,6 @@ async function toggleFavorite() {
         'Content-Type': 'application/json'
       },
       params: {
-        username: sessionStorage.getItem('username'),
         noteId: note.value.noteID,
         isFavor: isFavorited.value ? false : true,
         id: collectionId.value

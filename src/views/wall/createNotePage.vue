@@ -88,8 +88,7 @@ const submitPost = () => {
       content: content.value,
       tag: selectedTag.value,
       isAnon: isAnonymous.value === false ? 0 : 1,
-      isAllowComment: allowComment.value === false ? 0 : 1,
-      buildUsername: sessionStorage.getItem('username')
+      isAllowComment: allowComment.value === false ? 0 : 1
     },
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
