@@ -12,7 +12,7 @@
   }
 }
 .inputbox {
-  height: 200px;
+  height: 185px;
   &__textarea {
     font-size: 14px;
   }
@@ -31,7 +31,6 @@
 <style scoped lang="less">
 :deep(.v-textarea textarea) {
   line-height: 1.2rem;
-  margin-top: 35px !important;
   font-size: 14px;
 }
 </style>

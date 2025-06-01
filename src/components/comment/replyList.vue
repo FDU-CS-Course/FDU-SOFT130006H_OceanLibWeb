@@ -164,7 +164,7 @@ export default {
         this.initLoading = false;
         return;
       }
-      userBehaviorStore.getUserBehaviorList(this.mainType, this.bindID, this).then((userBehaviorList) => {
+      userBehaviorStore.getUserBehaviorList(this.mainType, this.bindID, this, true).then((userBehaviorList) => {
         userBehaviorList.forEach((data) => {
           //需要获取behaviorType为DO_COMMENT_LIKE或DO_COMMENT_DISLIKE的两类行为记录
           if (data.behaviorType == 'DO_COMMENT_LIKE' || data.behaviorType == 'DO_COMMENT_DISLIKE') {

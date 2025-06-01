@@ -6,7 +6,6 @@
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title class="text-h6">帖子详情</v-toolbar-title>
-      <v-spacer></v-spacer>
       <v-btn icon
         @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content } })">
         <v-icon>mdi-reply</v-icon>
