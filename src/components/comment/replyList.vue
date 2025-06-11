@@ -167,7 +167,7 @@ export default {
       userBehaviorStore.getUserBehaviorList(this.mainType, this.bindID, this, true).then((userBehaviorList) => {
         userBehaviorList.forEach((data) => {
           //需要获取behaviorType为DO_COMMENT_LIKE或DO_COMMENT_DISLIKE的两类行为记录
-          if (data.behaviorType == 'DO_COMMENT_LIKE' || data.behaviorType == 'DO_COMMENT_DISLIKE') {
+          if (data.behaviorType === 'DO_COMMENT_LIKE' || data.behaviorType === 'DO_COMMENT_DISLIKE') {
             this.commentUserBehavior.push(data);
           }
         });
@@ -176,17 +176,17 @@ export default {
 
         this.commentUserBehavior.map((record) => {
           let commentID = record.extraInfo.COMMENT_ID;
-          if (commentID.indexOf(comment.id) != -1) {
-            if (commentID == comment.id) {
+          if (commentID.indexOf(comment.id) !== -1) {
+            if (commentID === comment.id) {
               //是评论
-              comment.isLike = record.behaviorType == 'DO_COMMENT_LIKE';
-              comment.isDislike = record.behaviorType == 'DO_COMMENT_DISLIKE';
+              comment.isLike = record.behaviorType === 'DO_COMMENT_LIKE' && record.doUsername === sessionStorage.getItem('username');
+              comment.isDislike = record.behaviorType === 'DO_COMMENT_DISLIKE' && record.doUsername === sessionStorage.getItem('username');
             } else {
               //是回复
               comment.replyCommentList.map((reply) => {
-                if (commentID == reply.id) {
-                  reply.isLike = record.behaviorType == 'DO_COMMENT_LIKE';
-                  reply.isDislike = record.behaviorType == 'DO_COMMENT_DISLIKE';
+                if (commentID === reply.id) {
+                  reply.isLike = record.behaviorType === 'DO_COMMENT_LIKE' && record.doUsername === sessionStorage.getItem('username');
+                  reply.isDislike = record.behaviorType === 'DO_COMMENT_DISLIKE' && record.doUsername === sessionStorage.getItem('username');
                 }
               });
             }

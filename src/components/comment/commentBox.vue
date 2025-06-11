@@ -248,8 +248,9 @@ export default {
         },
       }).then((response) => {
         if (response.data.code == 1) {
-          Notify({ type: 'danger', message: '已成功删除评论' });
+          Notify({ type: 'success', message: '已成功删除评论' });
         }
+      }).catch((error) => {
       });
     },
     doReply() {

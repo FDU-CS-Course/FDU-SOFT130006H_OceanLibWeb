@@ -26,24 +26,26 @@ export default {
         }).then((response) => {
             let notifyList = response.data.msg;
             notifyList.forEach(element => {
-                switch (element.notifyEntity.action) {
-                    case "LIKE":
-                    case "LIKE_COMMENT":
-                        userNotifyList.likeList.push(element);
-                        break;
-                    case "DOWNLOAD":
-                    case "SCORED":
-                        userNotifyList.downloadAndScoreList.push(element);
-                        break;
-                    case "NEW_COMMENT":
-                    case "NEW_REPLY":
-                        userNotifyList.commentList.push(element);
-                        break;
-                    case "INVITATION":
-                        userNotifyList.invitationList.push(element);
-                        break;
-                    default:
-                        break;
+                if (element.username !== element.notifyEntity.buildUsername) {
+                    switch (element.notifyEntity.action) {
+                        case "LIKE":
+                        case "LIKE_COMMENT":
+                            userNotifyList.likeList.push(element);
+                            break;
+                        case "DOWNLOAD":
+                        case "SCORED":
+                            userNotifyList.downloadAndScoreList.push(element);
+                            break;
+                        case "NEW_COMMENT":
+                        case "NEW_REPLY":
+                            userNotifyList.commentList.push(element);
+                            break;
+                        case "INVITATION":
+                            userNotifyList.invitationList.push(element);
+                            break;
+                        default:
+                            break;
+                    }
                 }
             });
             localStorage.setItem("userNotifyList", JSON.stringify(userNotifyList));
