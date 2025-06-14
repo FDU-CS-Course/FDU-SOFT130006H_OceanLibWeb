@@ -107,10 +107,6 @@
             <div class="d-flex align-center justify-space-between w-100">
               <div></div>
               <div class="d-flex align-center">
-                <v-btn icon variant="text">
-                  <v-icon>mdi-heart-outline</v-icon>
-                  <span class="ml-1">{{ reply.likeNum }}</span>
-                </v-btn>
                 <v-btn icon variant="text" @click.stop="deleteComment(reply.id)" color="red">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
