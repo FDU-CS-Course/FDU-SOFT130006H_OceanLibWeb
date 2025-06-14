@@ -17,10 +17,27 @@
       top: 0px;
       right: 0px;
       padding: 10px;
+      display: flex;
+      align-items: center;
       &__icon {
-        margin-left: 10px;
-        padding: 0px !important;
+        margin-left: 8px;
+        padding: 0 12px !important;
         min-width: unset !important;
+        height: 32px !important;
+        color: white !important;
+        border-radius: 16px;
+        background-color: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        &.v-btn--text::before {
+          opacity: 0.1 !important;
+        }
+
+        .v-icon {
+          font-size: 18px;
+        }
       }
     }
     &__avatar-box {
