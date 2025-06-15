@@ -135,8 +135,6 @@
       <v-menu v-model="fab" activator="parent" location="top" transition="slide-y-reverse-transition">
         <v-btn style="background-color:green; margin-bottom: 20px;" color="white" variant="text" icon="mdi-pencil"
           size="small" fab to="/createNotePage"></v-btn>
-        <v-btn style="background-color:red; margin-bottom: 20px;" color="white" variant="text" icon="mdi-delete"
-          size="small" fab></v-btn>
       </v-menu>
     </v-btn>
   </div>

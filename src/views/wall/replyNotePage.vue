@@ -14,7 +14,7 @@
         <v-card-text>
           <div class="d-flex align-center">
             <v-icon class="mr-2">mdi-reply</v-icon>
-            <span class="text-body-1">回复 {{ isAnon ? "匿名纸条" : replyToUsername }}</span>
+            <span class="text-body-1">回复 {{ (isAnon === 'true') ? "匿名纸条" : replyToUsername }}</span>
           </div>
           <div class="original-content mt-2">{{ originalContent }}</div>
         </v-card-text>
@@ -38,7 +38,7 @@
         </div>
         <v-card-text class="post-content">
           <div v-if="replyToUsername" class="reply-reference mb-2">
-            <span class="font-weight-bold">@{{ isAnon ? "匿名纸条" : replyToUsername }}</span>
+            <span class="font-weight-bold">@{{ (isAnon === 'true') ? "匿名纸条" : replyToUsername }}</span>
           </div>
           {{ commentContent }}
         </v-card-text>
@@ -135,8 +135,6 @@ const replyToUsername = ref('')
 const originalContent = ref('')
 
 onMounted(async () => {
-  const noteId = route.query.noteId
-  const replyToId = route.query.replyToId || noteId
   replyToUsername.value = route.query.replyToUsername || ''
   originalContent.value = route.query.replyToContent || ''
   username.value = sessionStorage.getItem('username') || ''  // 在onMounted中获取用户名

@@ -7,7 +7,7 @@
       </v-btn>
       <v-toolbar-title class="text-h6">帖子详情</v-toolbar-title>
       <v-btn icon
-        @click="$router.push({ path: '/replyNotePage', query: { noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content } })">
+             @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
         <v-icon>mdi-reply</v-icon>
       </v-btn>
       <v-btn icon @click="sharePost">
@@ -39,12 +39,8 @@
     <!-- 帖子列表 -->
     <div class="post-list">
       <!-- 主帖 -->
-      <v-card v-if="note" class="post-card mb-4 mt-4" @click="$router.push({
-        path: '/replyNotePage', query: {
-          noteId: note.noteID, replyToId: note.noteID, replyToUsername: note.buildUsername, replyToContent: note.content
-          , isAnon: note.isAnon
-        }
-      })">
+      <v-card v-if="note" class="post-card mb-4 mt-4"
+              @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
         <div class="post-header">
           <span class="floor-number">1楼</span>
           <span class="username">{{ note.isAnon === 'true' ? "匿名纸条" : note.buildUsername }}</span>
@@ -78,12 +74,9 @@
 
       <!-- 回复列表 -->
       <div v-for="(reply, index) in wallContentInfo" :key="index" class="mb-4">
-        <v-card class="post-card" @click="$router.push({
-          path: '/replyNotePage', query: {
-            noteId: note.noteID, replyToId: reply.id, replyToUsername: reply.noteCommentBuildUsername, replyToContent: reply.commentContent,
-            isAnon: note.buildUsername === reply.replyToUsername && note.isAnon
-          }
-        })">
+        <v-card class="post-card"
+                @click="goToReplyPage(reply.id, reply.noteCommentBuildUsername, reply.commentContent,
+          reply.replyToUsername === note.buildUsername && note.isAnon)">
           <div class="post-header">
             <span class="floor-number">{{ index + 2 }}楼</span>
             <span class="username">{{
@@ -194,6 +187,26 @@ const { proxy } = getCurrentInstance();
 
 const isLoading = ref(false);
 const hasMore = ref(true);
+
+const goToReplyPage = (replyToId, replyToUsername, replyToContent, isAnon) => {
+  if (!note.value?.isAllowComment) return;
+
+  if (note.value.isAllowComment === 'false') {
+    showSnackbar('楼主已经关闭评论功能~', 'success');
+    return;
+  }
+
+  proxy.$router.push({
+    path: '/replyNotePage',
+    query: {
+      noteId: note.value.noteID,
+      replyToId,
+      replyToUsername,
+      replyToContent,
+      isAnon
+    }
+  });
+};
 
 /**
  * 切换点赞状态
@@ -381,7 +394,6 @@ const fetchWallContentData = async (isLoadMore = false) => {
     }
   });
 
-  console.log(note.value.noteID);
   if (res.data && res.data.code === "1" && res.data.msg.noteId == note.value.noteID) {
     collectionId.value = res.data.msg.id;
     isFavorited.value = true;

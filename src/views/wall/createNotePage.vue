@@ -2,14 +2,14 @@
   <div class="post-container">
     <!-- 标题区域（含返回按钮） -->
     <div class="header-bar">
-      <v-btn icon style="height: 0px;" @click="$router.back()" variant="text">
+      <v-btn icon style="margin-left: -5px;" @click="$router.back()" variant="text">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <h1 style="margin-top: 20px;" class="text-h4">发布新帖子</h1>
+      <h1 style="" class="text-h5">发布新帖子</h1>
     </div>
 
     <div class="form-group">
-      <label class="text-h5">选择标签</label>
+      <label class="text-h6" style = "margin-bottom: 20px;">选择标签</label>
       <div class="tag-selector">
         <button
             v-for="tag in tags"
@@ -23,29 +23,28 @@
     </div>
 
     <div class="form-group">
-      <label class="text-h5">发布设置</label>
-      <div class="settings-options text-h6">
+      <label class="text-h6" style="margin-bottom: 20px;">发布设置</label>
+      <div class="text-h7">
         <label>
-          <input type="checkbox" v-model="isAnonymous" style="width: 18px; height: 18px;">
-          匿名发布
+          <input type="checkbox" v-model="isAnonymous" style="width: 18px; height: 18px; vertical-align: middle;">
+          <span style="margin-left: 15px;">匿名发布</span>
         </label>
         <label>
-          <input type="checkbox" v-model="allowComment" style="width: 18px; height: 18px;">
-          允许评论
+          <input type="checkbox" v-model="allowComment" style="width: 18px; height: 18px; vertical-align: middle;">
+          <span style="margin-left: 15px;">允许评论</span>
         </label>
       </div>
     </div>
 
     <div class="content-editor">
-      <textarea v-model="content" placeholder="请在正确的分区发帖"></textarea>
+      <textarea v-model="content" placeholder="请在正确的分区发帖" style="font-size: 16px;"></textarea>
     </div>
 
-    <div class="preview-section text-h5">
-      <h3 style="margin-bottom: 20px;">预览</h3>
+    <div class="preview-section">
+      <span style="font-size: 20px;">预览</span>
       <div class="preview-content">{{ content }}</div>
     </div>
 
-    <!-- 禁用条件：content 为空 -->
     <button class="submit-button" :disabled="!content.trim()" @click="submitPost">
       发布
     </button>
@@ -111,15 +110,6 @@ const submitPost = () => {
   margin-bottom: 20px;
 }
 
-.back-button {
-  font-size: 20px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-right: 10px;
-  color: #4CAF50;
-}
-
 .post-container {
   max-width: 800px;
   margin: 0 auto;
@@ -128,13 +118,12 @@ const submitPost = () => {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 30px;
 }
 
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-weight: bold;
 }
 
 .tag-selector {
@@ -181,6 +170,7 @@ const submitPost = () => {
 
 .submit-button {
   padding: 10px 20px;
+  width: 100%;
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -196,5 +186,9 @@ const submitPost = () => {
 .submit-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
+}
+
+.preview-content {
+  margin-top: 15px;
 }
 </style>
