@@ -17,7 +17,7 @@
       </v-btn>
 
       <!-- 设置菜单按钮 -->
-      <v-btn ref="settingsBtn" icon color="white">
+      <v-btn ref="settingsBtn" icon color="white" v-if="canDelete">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
 
@@ -198,6 +198,8 @@ const deleteDialog = ref(false);
 const pageNo = ref(1);
 const pageSize = ref(10);
 
+const canDelete = ref(false);
+
 let collectionId = ref(null);
 
 const wallContentInfo = ref([]);
@@ -322,7 +324,7 @@ const checkLikeStatus = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(async () => {
   note.value = {
     noteID: route.query.noteID,
     tag: route.query.tag,
@@ -336,6 +338,20 @@ onMounted(() => {
     isAllowComment: route.query.isAllowComment,
     isDeleted: route.query.isDeleted,
   };
+
+  const res = await proxy.$Axios({
+    method: 'post',
+    url: '/noteService/canDeleteNote',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    params: {
+      noteID: note.value.noteID,
+    }
+  });
+
+  if (res.data.msg === "true") canDelete.value = true;
+  else canDelete.value = false;
 
   // 如果从列表页传递了点赞状态，直接使用
   if (route.query.isLikedByCurrentUser !== undefined) {

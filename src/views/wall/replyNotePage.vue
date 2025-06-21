@@ -94,9 +94,9 @@ const submitComment = async () => {
       },
       params: {
         noteId: route.query.noteId,
-        commentContent: commentContent.value.trim(),
-        replyTo: route.query.replyToId,
-        replyToUsername: route.query.replyToUsername
+        content: commentContent.value.trim(),
+        replyId: route.query.replyToId,
+        replyUsername: route.query.replyToUsername
       }
     })
 
