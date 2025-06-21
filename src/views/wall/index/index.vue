@@ -38,6 +38,9 @@
           <v-btn icon @click="goToFavorites" color="white">
             <v-icon>mdi-star</v-icon>
           </v-btn>
+          <v-btn icon @click="toggleMyNotes" :color="showMyNotesOnly ? 'orange' : 'white'">
+            <v-icon>mdi-account-edit</v-icon>
+          </v-btn>
         </v-toolbar>
       </div>
     </van-sticky>
@@ -62,8 +65,9 @@
         <v-card class="mx-auto mb-4" style="border-radius: 10px; background-color: white;"
           @click="goToDetail(item, $event)">
           <v-card-title style="padding: 25px 20px 15px;">
-            <span class="wall__card__type text-h6" style="color: rgb(var(--v-theme-primary));">{{ getValueLabel(tags,
-              item.tag) }}</span>
+            <span class="wall__card__type text-h6" style="color: rgb(var(--v-theme-primary));">{{
+              getValueLabel(tags,
+                item.tag) }}</span>
           </v-card-title>
 
           <v-card-text class="wall__card__content">
@@ -74,7 +78,8 @@
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
               <div class="d-flex align-center" v-if="item.isAnon === true">
-                <v-icon style="color: rgb(var(--v-theme-primary)); font-size: 25px; margin-left: 14px;">mdi-account-circle</v-icon>
+                <v-icon
+                  style="color: rgb(var(--v-theme-primary)); font-size: 25px; margin-left: 14px;">mdi-account-circle</v-icon>
                 <span class="avatarname">匿名纸条</span>
               </div>
 
@@ -179,6 +184,7 @@ const filterBtn = ref(null);
 
 const isFilterMenuOpen = ref(false);
 const selectedTag = ref(null);
+const showMyNotesOnly = ref(false);
 
 /**
  * 切换点赞状态
@@ -245,6 +251,9 @@ const toggleLike = async (item, index) => {
 };
 
 const handleScroll = () => {
+  // 如果正在显示我的帖子，则不进行滚动加载
+  if (showMyNotesOnly.value) return;
+
   const scrollTop = window.scrollY || document.documentElement.scrollTop;
   const windowHeight = window.innerHeight;
   const scrollHeight = document.documentElement.scrollHeight;
@@ -277,8 +286,15 @@ const refreshList = () => {
   pageNo.value = 1;
   hasMore.value = true;
   window.scrollTo(0, 0);
-  if (searchMode.value) searchList(true, searchString.value);
-  else fetchWallData(false);
+
+  if (showMyNotesOnly.value) {
+    // 如果正在显示我的帖子，重新获取我的帖子
+    fetchMyNotes();
+  } else if (searchMode.value) {
+    searchList(true, searchString.value);
+  } else {
+    fetchWallData(false);
+  }
 }
 
 const toggleSearch = () => {
@@ -452,6 +468,59 @@ const goToFavorites = () => {
     path: '/myCollectionList',
     query: { tab: 1 } // 1 表示"帖子"标签页
   });
+};
+
+const toggleMyNotes = async () => {
+  showMyNotesOnly.value = !showMyNotesOnly.value;
+
+  if (showMyNotesOnly.value) {
+    // 显示我的帖子
+    await fetchMyNotes();
+  } else {
+    // 显示所有帖子
+    pageNo.value = 1;
+    hasMore.value = true;
+    selectedTag.value = null; // 清除标签筛选
+    await fetchWallData(false);
+  }
+};
+
+// 获取我的帖子
+const fetchMyNotes = async () => {
+  isLoading.value = true;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/getMyNotes',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        pageNO: 1,
+        pageSize: 100 // 获取更多数据，避免分页
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      const list = res.data.msg.list.map(processNoteData);
+
+      originalWallInfo.value = [...list];
+      wallInfo.value = [...list];
+
+      hasMore.value = false; // 我的帖子不需要分页加载
+    } else {
+      console.error("获取我的帖子失败！");
+      originalWallInfo.value = [];
+      wallInfo.value = [];
+    }
+  } catch (err) {
+    console.error("请求我的帖子出错：", err);
+    originalWallInfo.value = [];
+    wallInfo.value = [];
+  } finally {
+    isLoading.value = false;
+  }
 };
 
 const highlightSearchTerm = (text, searchTerm) => {
