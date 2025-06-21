@@ -237,7 +237,7 @@ const fetchFavorites = async () => {
         });
 
         if (behaviorRes.data && behaviorRes.data.code === "1") {
-            const favoriteNoteIds = behaviorRes.data.msg.map(behavior => ({
+            const favoriteNoteIds = behaviorRes.data.msg.list.map(behavior => ({
                 noteId: behavior.noteId,
                 favoriteDate: behavior.createTime
             }));

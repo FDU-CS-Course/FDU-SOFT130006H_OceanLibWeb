@@ -54,6 +54,7 @@
 
 <script>
 import qs from 'qs';
+import {reactive} from "vue";
 export default {
   name: 'sendBox',
   components: {},
@@ -91,6 +92,9 @@ export default {
       this.notice = params.replyToUsername != null ? '回复用户: ' + params.replyToUsername : '评论千万条，文明第一条';
     },
     sendCommentOrReply() {
+      if (this.commentContent === null) {
+        return;
+      }
       this.$Axios({
         method: 'post',
         url: '/comment/addComment',

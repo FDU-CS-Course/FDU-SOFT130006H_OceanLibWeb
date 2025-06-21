@@ -140,7 +140,7 @@
       </div>
     </div>
 
-    <iframe ref="contentDoc" width="100%" fullscreen="yes" :src="url" v-show="!isFolder" style="display: block;"></iframe>
+    <iframe ref="contentDoc" width="100%" height="580px" fullscreen="yes" :src="url" v-show="!isFolder" style="display: block;"></iframe>
 
     <div ref="contentFileList" v-show="isFolder" class="preview__folder">
       <!--若无合适的文件则显示空提示-->
