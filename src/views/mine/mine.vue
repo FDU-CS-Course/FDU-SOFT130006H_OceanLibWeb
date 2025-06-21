@@ -131,9 +131,6 @@
         <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
           <v-icon>mdi-bell-outline</v-icon>
         </v-btn>
-        <v-btn link to="/notify" class="mine__userinfo-box__tools__icon" text>
-          <v-icon>mdi-cog-outline</v-icon>
-        </v-btn>
         <v-btn class="mine__userinfo-box__tools__icon" text @click="enterEditMode" v-if="!editMode">
           <v-icon>mdi-pencil</v-icon> Edit
         </v-btn>
@@ -201,7 +198,7 @@
                 <v-text-field 
                   v-model="editUserInfo.nickname" 
                   label="Nickname" 
-                  :rules="[v => !!v || 'Required']" 
+                  :rules="nicknameRules" 
                   dense
                   outlined
                 />
@@ -209,18 +206,21 @@
                   v-model="editUserInfo.email" 
                   label="Email" 
                   type="email" 
+                  :rules="emailRules"
                   dense
                   outlined
                 />
                 <v-text-field 
                   v-model="editUserInfo.phoneNum" 
                   label="Phone Number" 
+                  :rules="phoneRules"
                   dense
                   outlined
                 />
                 <v-text-field 
                   v-model="editUserInfo.realname" 
                   label="Real Name" 
+                  :rules="nameRules"
                   dense
                   outlined
                 />
@@ -232,51 +232,44 @@
                 <v-text-field 
                   v-model="editUserInfo.college" 
                   label="College" 
+                  :rules="textRules"
                   dense
                   outlined
                 />
                 <v-text-field 
                   v-model="editUserInfo.major" 
                   label="Major" 
+                  :rules="textRules"
                   dense
                   outlined
                 />
-                <v-menu ref="menu" v-model="menu" :close-on-content-click="false" :nudge-right="40" transition="scale-transition" offset-y min-width="290px">
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-text-field 
-                      v-model="editUserInfo.birthday" 
-                      label="Birthday" 
-                      readonly 
-                      v-bind="attrs" 
-                      v-on="on" 
-                      dense
-                      outlined
-                    />
-                  </template>
-                  <v-date-picker v-model="editUserInfo.birthday" @input="menu = false"></v-date-picker>
-                </v-menu>
-                <v-select 
-                  v-model="editUserInfo.sex" 
-                  :items="sexOptions" 
-                  label="Sex" 
+                <v-text-field 
+                  v-model="editUserInfo.birthday" 
+                  label="Birthday (YYYY-MM-DD)" 
+                  placeholder="e.g. 1990-01-15"
+                  :rules="birthdayRules"
                   dense
                   outlined
+                  append-icon="mdi-calendar"
+                />
+                <v-select
+                  v-model="editUserInfo.sex"
+                  label="Sex"
+                  :items="sexOptions"
+                  dense
+                  outlined
+                  clearable
                 />
               </div>
 
               <!-- Profile Section -->
               <div class="mine__userinfo__edit-form__section">
                 <div class="mine__userinfo__edit-form__section-title">Profile</div>
-                <v-text-field 
-                  v-model="editUserInfo.avatar" 
-                  label="Avatar URL" 
-                  dense
-                  outlined
-                />
                 <v-textarea 
                   v-model="editUserInfo.personalSignature" 
                   label="Personal Signature" 
                   rows="3"
+                  :rules="signatureRules"
                   dense
                   outlined
                 />
@@ -367,14 +360,18 @@
  * - User profile display with avatar, stats, and personal information
  * - Edit mode with organized form sections (Basic Info, Personal Details, Profile)
  * - Responsive layout that adapts between display and edit modes
- * - Form validation and error handling
+ * - Form validation and error handling with security measures
  * - Clean UI that hides navigation elements during editing
  * 
  * Recent Updates:
- * - Fixed edit mode layout with proper spacing and organization
- * - Added section-based form layout for better UX
- * - Improved button styling and positioning
- * - Added form validation and defensive coding practices
+ * - Simplified birthday field to text input with YYYY-MM-DD format validation
+ * - Replaced sex dialog with intuitive select dropdown using string options
+ * - Added string/integer conversion methods for sex field (UI uses strings, API uses integers)
+ * - Added comprehensive date validation (format, range, and safety checks)
+ * - Enhanced defensive coding practices with comprehensive input validation
+ * 
+ * Note: Database schema stores birthday as VARCHAR and sex as VARCHAR, but Java entities 
+ * expect Date and Integer respectively. Spring Boot handles the conversion automatically.
  */
 export default {
   data() {
@@ -396,21 +393,232 @@ export default {
       },
       editMode: false,
       editUserInfo: {},
-      menu: false,
-      sexOptions: [
-        { text: 'Unknown', value: null },
-        { text: 'Male', value: 1 },
-        { text: 'Female', value: 2 },
-      ],
       snackbar: false,
       snackbarMsg: '',
       snackbarColor: 'success',
+      sexOptions: ['Unknown', 'Male', 'Female'],
     };
   },
+  computed: {
+
+    /**
+     * Validation rules for nickname field
+     * Prevents HTML tags, SQL injection, and ensures reasonable length
+     */
+    nicknameRules() {
+      return [
+        v => !!v || 'Nickname is required',
+        v => (v && v.length >= 2) || 'Nickname must be at least 2 characters',
+        v => (v && v.length <= 20) || 'Nickname must be less than 20 characters',
+        v => this.validateSafeInput(v) || 'Nickname contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for email field
+     * Ensures valid email format and prevents malicious input
+     */
+    emailRules() {
+      return [
+        v => !v || this.validateEmail(v) || 'Must be a valid email address',
+        v => !v || this.validateSafeInput(v) || 'Email contains invalid characters',
+        v => !v || (v.length <= 100) || 'Email must be less than 100 characters',
+      ];
+    },
+    /**
+     * Validation rules for phone number field
+     */
+    phoneRules() {
+      return [
+        v => !v || /^[\d\s\-\+\(\)]{0,20}$/.test(v) || 'Invalid phone number format',
+        v => this.validateSafeInput(v) || 'Phone number contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for name fields (realname)
+     */
+    nameRules() {
+      return [
+        v => !v || (v.length <= 50) || 'Name must be less than 50 characters',
+        v => this.validateSafeInput(v) || 'Name contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for general text fields (college, major)
+     */
+    textRules() {
+      return [
+        v => !v || (v.length <= 100) || 'Text must be less than 100 characters',
+        v => this.validateSafeInput(v) || 'Text contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for personal signature
+     */
+    signatureRules() {
+      return [
+        v => !v || (v.length <= 200) || 'Signature must be less than 200 characters',
+        v => this.validateSafeInput(v) || 'Signature contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for birthday field
+     * Validates YYYY-MM-DD format and reasonable date ranges
+     * Note: Database stores birthday as VARCHAR, backend converts to Date
+     */
+    birthdayRules() {
+      return [
+        v => !v || this.validateDateFormat(v) || 'Birthday must be in YYYY-MM-DD format (e.g. 1990-01-15)',
+        v => !v || this.validateDateRange(v) || 'Birthday must be between 1900 and current year',
+        v => !v || (v.length <= 10) || 'Birthday must be 10 characters or less',
+        v => this.validateSafeInput(v) || 'Birthday contains invalid characters',
+      ];
+    },
+  },
+
   mounted() {
     this.getUserAllInfo();
   },
   methods: {
+    /**
+     * Validates email format using comprehensive regex
+     * @param {string} email - Email to validate
+     * @returns {boolean} - True if valid email format
+     */
+    validateEmail(email) {
+      if (!email) return true; // Optional field
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      return emailRegex.test(email);
+    },
+    /**
+     * Validates input for security threats (HTML tags, SQL injection, XSS)
+     * @param {string} input - Input to validate
+     * @returns {boolean} - True if input is safe
+     */
+    validateSafeInput(input) {
+      if (!input) return true; // Allow empty values
+      
+      // Check for HTML tags
+      const htmlRegex = /<[^>]*>/;
+      if (htmlRegex.test(input)) return false;
+      
+      // Check for SQL injection patterns
+      const sqlPatterns = [
+        /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION|SCRIPT)\b)/i,
+        /(--|\/\*|\*\/|;|'|"|`)/,
+        /(\bOR\b|\bAND\b).*[=<>]/i,
+      ];
+      for (const pattern of sqlPatterns) {
+        if (pattern.test(input)) return false;
+      }
+      
+      // Check for XSS patterns
+      const xssPatterns = [
+        /javascript:/i,
+        /on\w+\s*=/i,
+        /data:text\/html/i,
+        /vbscript:/i,
+      ];
+      for (const pattern of xssPatterns) {
+        if (pattern.test(input)) return false;
+      }
+      
+      return true;
+    },
+    /**
+     * Validates date format (YYYY-MM-DD)
+     * @param {string} dateString - Date string to validate
+     * @returns {boolean} - True if valid format
+     */
+    validateDateFormat(dateString) {
+      if (!dateString) return true; // Optional field
+      
+      // Trim whitespace
+      dateString = dateString.trim();
+      
+      // Check basic format with regex (YYYY-MM-DD)
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+      if (!dateRegex.test(dateString)) return false;
+      
+      // Split and validate components
+      const [year, month, day] = dateString.split('-').map(Number);
+      
+      // Basic range checks
+      if (year < 1000 || year > 9999) return false;
+      if (month < 1 || month > 12) return false;
+      if (day < 1 || day > 31) return false;
+      
+      // Check if it's a valid date using Date constructor
+      const date = new Date(year, month - 1, day); // month is 0-indexed in Date constructor
+      
+      // Verify the date components match (catches invalid dates like 2023-02-30)
+      return date.getFullYear() === year && 
+             date.getMonth() === month - 1 && 
+             date.getDate() === day;
+    },
+    /**
+     * Validates date is within reasonable range (1900 to current year)
+     * @param {string} dateString - Date string to validate
+     * @returns {boolean} - True if within valid range
+     */
+    validateDateRange(dateString) {
+      if (!dateString) return true; // Optional field
+      
+      // Trim whitespace
+      dateString = dateString.trim();
+      
+      // Extract year from YYYY-MM-DD format
+      const year = parseInt(dateString.substring(0, 4), 10);
+      const currentYear = new Date().getFullYear();
+      
+      // Check reasonable range for birthdays
+      return year >= 1900 && year <= currentYear;
+    },
+    /**
+     * Sanitizes input by removing potentially dangerous characters
+     * @param {string} input - Input to sanitize
+     * @returns {string} - Sanitized input
+     */
+    sanitizeInput(input) {
+      if (!input) return input;
+      return input
+        .replace(/[<>]/g, '') // Remove angle brackets
+        .replace(/['"]/g, '') // Remove quotes
+        .replace(/[;&]/g, '') // Remove semicolons and ampersands
+        .trim();
+    },
+    /**
+     * Convert sex integer value to string for display
+     * @param {number|null} sexValue - Sex value from API (1=Male, 2=Female, null=Unknown)
+     * @returns {string} - String representation for UI
+     */
+    sexIntToString(sexValue) {
+      switch (sexValue) {
+        case 1:
+          return 'Male';
+        case 2:
+          return 'Female';
+        case null:
+        case undefined:
+        default:
+          return 'Unknown';
+      }
+    },
+    /**
+     * Convert sex string value to integer for API submission
+     * @param {string} sexString - Sex string from UI ('Male', 'Female', 'Unknown')
+     * @returns {number|null} - Integer value for API (1=Male, 2=Female, null=Unknown)
+     */
+    sexStringToInt(sexString) {
+      switch (sexString) {
+        case 'Male':
+          return 1;
+        case 'Female':
+          return 2;
+        case 'Unknown':
+        default:
+          return null;
+      }
+    },
     getUserAllInfo() {
       this.$Axios({
         method: 'get',
@@ -418,34 +626,46 @@ export default {
         params: {},
       }).then((response) => {
         this.userInfo = response.data.msg;
+      }).catch((error) => {
+        console.error('Failed to get user info:', error);
+        this.snackbarMsg = 'Failed to load user information';
+        this.snackbarColor = 'error';
+        this.snackbar = true;
       });
     },
+
     handleLogout() {
       localStorage.removeItem("token");
       this.$router.push("/login");
     },
     enterEditMode() {
+      const sexValue = this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.sex : null;
+      
       this.editUserInfo = {
-        nickname: this.userInfo.nickname,
-        email: this.userInfo.email,
-        phoneNum: this.userInfo.phoneNum,
-        realname: this.userInfo.realname,
-        avatar: this.userInfo.avatar,
-        college: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.college : '',
-        major: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.major : '',
-        birthday: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.birthday : '',
-        sex: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.sex : null,
-        personalSignature: this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.personalSignature : '',
+        nickname: this.userInfo.nickname || '',
+        email: this.userInfo.email || '',
+        phoneNum: this.userInfo.phoneNum || '',
+        realname: this.userInfo.realname || '',
+        college: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.college || '') : '',
+        major: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.major || '') : '',
+        birthday: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.birthday || '') : '',
+        sex: this.sexIntToString(sexValue),
+        personalSignature: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.personalSignature || '') : '',
       };
+      
       this.editMode = true;
     },
     cancelEdit() {
       this.editMode = false;
       this.editUserInfo = {};
+      // Reset form validation
+      if (this.$refs.editForm) {
+        this.$refs.editForm.resetValidation();
+      }
     },
     /**
-     * Save user edit information after validation
-     * Validates form, filters empty values, and submits to server
+     * Save user edit information after validation and sanitization
+     * Validates form, sanitizes input, filters empty values, and submits to server
      */
     saveEdit() {
       // Validate form before submission
@@ -456,19 +676,41 @@ export default {
         return;
       }
 
-      // Filter out empty/null values for cleaner payload
+      // Sanitize and filter payload
       const payload = {};
       for (const key in this.editUserInfo) {
-        const value = this.editUserInfo[key];
-        if (value !== undefined && value !== null && value !== '') {
-          payload[key] = value;
+        let value = this.editUserInfo[key];
+        
+        // Skip undefined, null, or empty string values
+        if (value === undefined || value === null || value === '') {
+          continue;
         }
+        
+        // Handle sex field conversion from string to integer
+        if (key === 'sex') {
+          value = this.sexStringToInt(value);
+        } else if (typeof value === 'string') {
+          // Sanitize other string values
+          value = this.sanitizeInput(value);
+          // Skip if sanitization resulted in empty string
+          if (value === '') continue;
+        }
+        
+        payload[key] = value;
       }
 
       // Check if there are any changes to save
       if (Object.keys(payload).length === 0) {
         this.snackbarMsg = 'No changes to save';
         this.snackbarColor = 'warning';
+        this.snackbar = true;
+        return;
+      }
+
+      // Additional validation for email if present
+      if (payload.email && !this.validateEmail(payload.email)) {
+        this.snackbarMsg = 'Please enter a valid email address';
+        this.snackbarColor = 'error';
         this.snackbar = true;
         return;
       }
