@@ -67,7 +67,7 @@
 <script>
 import dialog from '@/components/dialog/dialog.vue';
 import addScoreModel from './addScoreModel.vue';
-import { Toast } from 'vant';
+import { showLoadingToast } from 'vant';
 export default {
   name: 'docDownloadModel',
   props: {
@@ -108,7 +108,7 @@ export default {
       })
         .then((response) => {
           this.downloadConfirmModel = false;
-          Toast.loading({
+          showLoadingToast({
             message: '正在准备下载',
             forbidClick: true,
           });
