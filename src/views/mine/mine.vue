@@ -697,13 +697,123 @@ export default {
       }
     },
     /**
+     * Validates all form fields manually using computed validation rules
+     * @returns {Object} - { isValid: boolean, errors: string[] }
+     */
+    validateAllFields() {
+      const errors = [];
+      const data = this.editUserInfo;
+
+      // Validate nickname
+      if (data.nickname !== undefined && data.nickname !== null) {
+        for (const rule of this.nicknameRules) {
+          const result = rule(data.nickname);
+          if (result !== true) {
+            errors.push(`Nickname: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate email
+      if (data.email !== undefined && data.email !== null && data.email !== '') {
+        for (const rule of this.emailRules) {
+          const result = rule(data.email);
+          if (result !== true) {
+            errors.push(`Email: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate phone number
+      if (data.phoneNum !== undefined && data.phoneNum !== null && data.phoneNum !== '') {
+        for (const rule of this.phoneRules) {
+          const result = rule(data.phoneNum);
+          if (result !== true) {
+            errors.push(`Phone: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate real name
+      if (data.realname !== undefined && data.realname !== null && data.realname !== '') {
+        for (const rule of this.nameRules) {
+          const result = rule(data.realname);
+          if (result !== true) {
+            errors.push(`Real Name: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate college
+      if (data.college !== undefined && data.college !== null && data.college !== '') {
+        for (const rule of this.textRules) {
+          const result = rule(data.college);
+          if (result !== true) {
+            errors.push(`College: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate major
+      if (data.major !== undefined && data.major !== null && data.major !== '') {
+        for (const rule of this.textRules) {
+          const result = rule(data.major);
+          if (result !== true) {
+            errors.push(`Major: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate birthday
+      if (data.birthday !== undefined && data.birthday !== null && data.birthday !== '') {
+        for (const rule of this.birthdayRules) {
+          const result = rule(data.birthday);
+          if (result !== true) {
+            errors.push(`Birthday: ${result}`);
+            break;
+          }
+        }
+      }
+
+      // Validate personal signature
+      if (data.personalSignature !== undefined && data.personalSignature !== null && data.personalSignature !== '') {
+        for (const rule of this.signatureRules) {
+          const result = rule(data.personalSignature);
+          if (result !== true) {
+            errors.push(`Personal Signature: ${result}`);
+            break;
+          }
+        }
+      }
+
+      return {
+        isValid: errors.length === 0,
+        errors: errors
+      };
+    },
+    /**
      * Save user edit information after validation and sanitization
      * Validates form, sanitizes input, filters empty values, and submits to server
      */
     saveEdit() {
-      // Validate form before submission
+      // First, validate using Vue form validation
       if (!this.$refs.editForm.validate()) {
         this.snackbarMsg = 'Please fix validation errors before saving';
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+        return;
+      }
+
+      // Second, perform comprehensive manual validation
+      const validationResult = this.validateAllFields();
+      if (!validationResult.isValid) {
+        this.snackbarMsg = `Validation failed: ${validationResult.errors.join('; ')}`;
         this.snackbarColor = 'error';
         this.snackbar = true;
         return;
@@ -740,12 +850,30 @@ export default {
         return;
       }
 
-      // Additional validation for email if present
+      // Final validation after sanitization
+      // Re-validate critical fields that might have been affected by sanitization
       if (payload.email && !this.validateEmail(payload.email)) {
-        this.snackbarMsg = 'Please enter a valid email address';
+        this.snackbarMsg = 'Email format is invalid after sanitization';
         this.snackbarColor = 'error';
         this.snackbar = true;
         return;
+      }
+
+      if (payload.birthday && (!this.validateDateFormat(payload.birthday) || !this.validateDateRange(payload.birthday))) {
+        this.snackbarMsg = 'Birthday format is invalid';
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+        return;
+      }
+
+      // Final safety check for all payload values
+      for (const [key, value] of Object.entries(payload)) {
+        if (typeof value === 'string' && !this.validateSafeInput(value)) {
+          this.snackbarMsg = `Invalid characters detected in ${key} field`;
+          this.snackbarColor = 'error';
+          this.snackbar = true;
+          return;
+        }
       }
 
       this.$Axios({
