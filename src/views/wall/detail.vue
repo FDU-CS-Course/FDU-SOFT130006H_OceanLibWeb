@@ -323,7 +323,16 @@ onMounted(() => {
   fetchWallContentData();
   window.addEventListener('scroll', handleScroll);
 
-  console.log("mounted");
+  proxy.$Axios({
+    method: 'post',
+    url: '/noteService/readNote',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    params: {
+      noteId: note.value.noteID,
+    }
+  });
 });
 
 onUnmounted(() => {
