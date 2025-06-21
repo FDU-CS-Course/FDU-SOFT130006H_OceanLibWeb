@@ -84,7 +84,7 @@
                 <v-username type="username" :username="item.buildUsername" class="avatarname"></v-username>
               </div>
 
-              <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
+              <div class="d-flex align-center" style="font-size: 12px;">
                 <!-- 点赞按钮 -->
                 <v-btn icon small @click.stop="toggleLike(item, index)" :disabled="item.isLiking" class="like-btn">
                   <v-icon small :color="item.isLikedByCurrentUser ? 'red' : 'grey'" class="mr-1">
@@ -99,7 +99,7 @@
 
                 <span class="mr-1">·</span>
                 <v-icon small class="mr-1" color="black">mdi-comment</v-icon>
-                <span class="text-caption">{{ item.commentNum }}</span>
+                <span class="text-caption mr-2">{{ item.commentNum }}</span>
               </div>
             </div>
           </v-card-actions>
@@ -529,7 +529,8 @@ const highlightSearchTerm = (text, searchTerm) => {
 .like-btn {
   min-width: auto !important;
   padding: 0 !important;
-  margin-right: 4px !important;
+  margin-right: -10px !important;
+  font-size: 12px !important;
 
   &:hover {
     background-color: rgba(255, 0, 0, 0.04) !important;
