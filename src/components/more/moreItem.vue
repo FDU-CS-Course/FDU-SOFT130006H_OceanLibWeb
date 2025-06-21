@@ -8,7 +8,7 @@
 </style>
 <template>
   <div>
-    <van-cell class="cell" :title="title" @click="$emit('click')">
+    <van-cell class="cell" :title="title" @click.stop="$emit('click')">
       <template #right-icon>
         <v-icon color="secondary-darken5" size="22">{{icon}}</v-icon>
       </template>
