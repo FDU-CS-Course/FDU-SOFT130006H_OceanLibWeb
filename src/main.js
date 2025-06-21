@@ -11,9 +11,10 @@ window.__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
 
 import axiosPlugin from '@/axios/axiosPlugin';
 import {
-  baseURL
+    baseURL
 } from '@/config.js';
 import Vant from "vant";
+import Toast from "vant";
 
 const app = createApp(App);
 
@@ -21,6 +22,7 @@ app.use(axiosPlugin);
 app.use(vuetify);
 app.use(router);
 app.use(Vant);
+app.use(Toast);
 
 app.config.productionTip = false;
 app.config.globalProperties.businessServer = baseURL + "/";

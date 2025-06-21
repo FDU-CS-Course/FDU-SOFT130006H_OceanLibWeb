@@ -443,7 +443,10 @@ const goToDetail = (item, event) => {
 };
 
 const goToFavorites = () => {
-  router.push('/wall/favorites');
+  router.push({
+    path: '/myCollectionList',
+    query: { tab: 1 } // 1 表示"帖子"标签页
+  });
 };
 
 const highlightSearchTerm = (text, searchTerm) => {
