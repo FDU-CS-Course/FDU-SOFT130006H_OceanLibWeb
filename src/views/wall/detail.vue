@@ -42,7 +42,20 @@
         @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
         <div class="post-header">
           <span class="floor-number">1楼</span>
-          <span class="username">{{ note.isAnon === 'true' ? "匿名纸条" : note.buildUsername }}</span>
+
+          <!-- 匿名用户显示 -->
+          <div class="d-flex align-center" v-if="note.isAnon === 'true'">
+            <v-icon
+              style="color: rgb(var(--v-theme-primary)); font-size: 20px; margin-right: 8px;">mdi-account-circle</v-icon>
+            <span class="username">匿名纸条</span>
+          </div>
+
+          <!-- 实名用户显示 -->
+          <div class="d-flex align-center" v-else>
+            <v-username type="avater" :avatarSize="20" :username="note.buildUsername"></v-username>
+            <v-username type="username" :username="note.buildUsername" class="username ml-2"></v-username>
+          </div>
+
           <span class="post-time">{{ formatDate(note.buildDate) }}</span>
         </div>
 
@@ -72,10 +85,21 @@
           reply.replyToUsername === note.buildUsername && note.isAnon)">
           <div class="post-header">
             <span class="floor-number">{{ index + 2 }}楼</span>
-            <span class="username">{{
-              (reply.noteCommentBuildUsername === note.buildUsername && note.isAnon === 'true') ? "匿名纸条" :
-                reply.noteCommentBuildUsername
-            }}</span>
+
+            <!-- 匿名用户显示 -->
+            <div class="d-flex align-center"
+              v-if="(reply.noteCommentBuildUsername === note.buildUsername && note.isAnon === 'true')">
+              <v-icon
+                style="color: rgb(var(--v-theme-primary)); font-size: 20px; margin-right: 8px;">mdi-account-circle</v-icon>
+              <span class="username">匿名纸条</span>
+            </div>
+
+            <!-- 实名用户显示 -->
+            <div class="d-flex align-center" v-else>
+              <v-username type="avater" :avatarSize="20" :username="reply.noteCommentBuildUsername"></v-username>
+              <v-username type="username" :username="reply.noteCommentBuildUsername" class="username ml-2"></v-username>
+            </div>
+
             <span class="post-time">{{ formatDate(reply.createTime) }}</span>
           </div>
 
@@ -142,8 +166,9 @@
 </template>
 
 <script setup>
-import {ref, reactive, onMounted, onUnmounted, getCurrentInstance, watch} from 'vue'
+import { ref, reactive, onMounted, onUnmounted, getCurrentInstance, watch } from 'vue'
 import { useRoute } from 'vue-router';
+import VUsername from "@/components/common/username/username.vue";
 
 const route = useRoute();
 const note = ref(null);
@@ -567,6 +592,7 @@ async function deletePost() {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .floor-number {
@@ -576,11 +602,13 @@ async function deletePost() {
 
 .username {
   font-weight: 500;
+  font-size: 0.9rem;
 }
 
 .post-time {
   color: #666;
   font-size: 0.9em;
+  margin-left: auto;
 }
 
 .post-content {
