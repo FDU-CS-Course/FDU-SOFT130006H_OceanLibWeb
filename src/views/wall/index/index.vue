@@ -73,11 +73,15 @@
 
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
-              <div class="d-flex align-center" style="padding-left: 20px;">
-                <v-icon small class="mr-1" style="color: rgb(var(--v-theme-primary));">mdi-account-circle</v-icon>
-                <span class="text-caption text--secondary">
-                  {{ item.isAnon === true ? '匿名纸条' : item.buildUsername }}
-                </span>
+              <div class="d-flex align-center" v-if="item.isAnon === true">
+                <v-icon style="color: rgb(var(--v-theme-primary)); font-size: 25px; margin-left: 14px;">mdi-account-circle</v-icon>
+                <span class="avatarname">匿名纸条</span>
+              </div>
+
+
+              <div style="margin-left: 14px;" v-if="item.isAnon === false">
+                <v-username type="avater" :avatarSize="25" :username="item.buildUsername"></v-username>
+                <v-username type="username" :username="item.buildUsername" class="avatarname"></v-username>
               </div>
 
               <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
@@ -139,6 +143,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentInstance } from 'vue';
+import VUsername from "@/components/common/username/username.vue";
 
 const tags = [
   { value: 'question', label: '问题' },
@@ -502,6 +507,11 @@ const highlightSearchTerm = (text, searchTerm) => {
 
 .title {
   margin-bottom: 20px;
+}
+
+.avatarname {
+  font-size: 12px;
+  margin-left: 10px;
 }
 
 .selected-item {
