@@ -45,7 +45,7 @@
     </div>
 
     <!-- 提示消息 -->
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="1500">
       {{ snackbar.text }}
     </v-snackbar>
   </div>
@@ -102,7 +102,10 @@ const submitComment = async () => {
 
     if (res.data && res.data.code === '1') {
       showSnackbar('评论发布成功')
-      await router.push('/wall')
+      // 延迟1.5秒后返回，让用户看到成功提示
+      setTimeout(() => {
+        router.back()
+      }, 2000)
     } else {
       showSnackbar(res.data?.msg || '评论发布失败', 'error')
     }
@@ -128,7 +131,7 @@ onMounted(async () => {
 
 <style scoped>
 .reply-note {
-  min-height: 100vh;
+  min-height: 93vh;
   background-color: #f5f5f5;
 }
 

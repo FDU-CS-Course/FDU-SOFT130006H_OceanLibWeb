@@ -142,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted, getCurrentInstance } from 'vue'
+import {ref, reactive, onMounted, onUnmounted, getCurrentInstance, watch} from 'vue'
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -322,6 +322,8 @@ onMounted(() => {
 
   fetchWallContentData();
   window.addEventListener('scroll', handleScroll);
+
+  console.log("mounted");
 });
 
 onUnmounted(() => {
