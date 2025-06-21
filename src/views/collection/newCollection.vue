@@ -1,12 +1,15 @@
 <style lang="less" scoped>
 @import '~@/vant-variables.less';
+
 .newcollection {
   display: flex;
   flex-direction: column;
   margin: 20px;
+
   &__input {
     margin-bottom: 15px !important;
     margin-top: 0px !important;
+
     &__label {
       font-size: 14px;
     }
@@ -16,14 +19,13 @@
 <template>
   <div>
     <van-nav-bar id="toolbar" :title="moduleTitle" left-text="返回" left-arrow @click-left="back">
-      <template #right>
-        <van-icon name="more-o" size="18" @click="$refs['moreModel'].open()" v-if="$route.query.isChange" />
-      </template>
     </van-nav-bar>
     <div class="newcollection">
-      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称" :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
+      <v-text-field class="newcollection__input small" v-model="collectionName" placeholder="请填写合适的名称"
+        :rules="[titleRule.required]" outlined density="compact" hide-details="auto">
       </v-text-field>
-      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined density="compact" hide-details></v-textarea>
+      <v-textarea class="newcollection__input " v-model="collectionDesc" placeholder="收藏夹描述(可选)" outlined
+        density="compact" hide-details></v-textarea>
       <v-switch class="newcollection__input" v-model="isPublic" hide-details>
         <template v-slot:label>
           <div class="newcollection__input__label">设为公开</div>
@@ -37,25 +39,19 @@
         保存
       </v-btn>
 
-      <v-more ref="moreModel">
-        <v-moreItem title="删除收藏夹" icon="mdi-delete" @click="deleteCollection"></v-moreItem>
-      </v-more>
+      <v-btn color="error" @click="deleteCollection" v-if="$route.query.isChange" class="mt-3" style="height: 50px;">
+        删除收藏夹
+      </v-btn>
 
     </div>
   </div>
 </template>
 
 <script>
-import moreItem from '@/components/more/moreItem';
-import more from '@/components/more/more';
 import { Notify } from '@vant/compat';
 import qs from 'qs';
 
 export default {
-  components: {
-    'v-more': more,
-    'v-moreItem': moreItem,
-  },
   data() {
     return {
       moduleTitle: this.$route.query.isChange ? '修改信息' : '新建收藏夹',
@@ -160,5 +156,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
