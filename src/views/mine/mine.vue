@@ -619,6 +619,38 @@ export default {
           return null;
       }
     },
+    /**
+     * Extract date part from ISO datetime string
+     * @param {string} isoDateString - ISO datetime string (e.g. "2022-11-12T00:00:00.000+00:00")
+     * @returns {string} - Date part only (e.g. "2022-11-12")
+     */
+    extractDateFromISO(isoDateString) {
+      if (!isoDateString) return '';
+      
+      // If it's already in YYYY-MM-DD format, return as is
+      if (/^\d{4}-\d{2}-\d{2}$/.test(isoDateString)) {
+        return isoDateString;
+      }
+      
+      // Extract date part from ISO datetime string
+      try {
+        const date = new Date(isoDateString);
+        if (isNaN(date.getTime())) {
+          console.warn('Invalid date string:', isoDateString);
+          return '';
+        }
+        
+        // Format as YYYY-MM-DD
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        
+        return `${year}-${month}-${day}`;
+      } catch (error) {
+        console.error('Error parsing date:', error);
+        return '';
+      }
+    },
     getUserAllInfo() {
       this.$Axios({
         method: 'get',
@@ -640,6 +672,7 @@ export default {
     },
     enterEditMode() {
       const sexValue = this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.sex : null;
+      const birthdayValue = this.userInfo.userExtraEntity ? this.userInfo.userExtraEntity.birthday : null;
       
       this.editUserInfo = {
         nickname: this.userInfo.nickname || '',
@@ -648,7 +681,7 @@ export default {
         realname: this.userInfo.realname || '',
         college: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.college || '') : '',
         major: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.major || '') : '',
-        birthday: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.birthday || '') : '',
+        birthday: this.extractDateFromISO(birthdayValue),
         sex: this.sexIntToString(sexValue),
         personalSignature: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.personalSignature || '') : '',
       };
