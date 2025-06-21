@@ -121,7 +121,8 @@ export default {
         url: '/collectionService/deleteCollectionItem',
         params: {
           collectionID: this.$route.query.collectionID,
-          fileID: fileID,
+          itemID: fileID,
+          mainType: 'DOCUMENT'
         },
       }).then((response) => {
         if (response.data.state == 'SUCCESS') {
