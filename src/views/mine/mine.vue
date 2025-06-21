@@ -429,7 +429,7 @@ export default {
      */
     phoneRules() {
       return [
-        v => !v || /^[\d\s\-\+\(\)]{0,20}$/.test(v) || 'Invalid phone number format',
+        v => !v || /^(?:\+?86)?1[3-9]\d{9}/.test(v) || 'Invalid phone number format',
         v => this.validateSafeInput(v) || 'Phone number contains invalid characters',
       ];
     },
@@ -854,6 +854,13 @@ export default {
       // Re-validate critical fields that might have been affected by sanitization
       if (payload.email && !this.validateEmail(payload.email)) {
         this.snackbarMsg = 'Email format is invalid after sanitization';
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+        return;
+      }
+
+      if (payload.phoneNum && !/^(?:\+?86)?1[3-9]\d{9}/.test(payload.phoneNum)) {
+        this.snackbarMsg = 'Phone number format is invalid after sanitization';
         this.snackbarColor = 'error';
         this.snackbar = true;
         return;
