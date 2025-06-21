@@ -144,6 +144,7 @@ import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCurrentInstance } from 'vue';
 import VUsername from "@/components/common/username/username.vue";
+import { showToast } from 'vant';
 
 const tags = [
   { value: 'question', label: '问题' },
@@ -233,11 +234,17 @@ const toggleLike = async (item, index) => {
     } else {
       console.error("点赞操作失败：", res.data?.msg || "未知错误");
       // 可以添加用户提示
-      proxy.$toast.error("点赞操作失败，请重试");
+      showToast({
+        message: '点赞操作失败，请重试',
+        type: 'fail'
+      });
     }
   } catch (err) {
     console.error("点赞请求出错：", err);
-    proxy.$toast.error("网络错误，请重试");
+    showToast({
+      message: '网络错误，请重试',
+      type: 'fail'
+    });
   } finally {
     // 清除loading状态
     item.isLiking = false;
