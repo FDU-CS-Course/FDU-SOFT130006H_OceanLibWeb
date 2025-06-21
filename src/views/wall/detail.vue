@@ -513,7 +513,8 @@ async function deleteComment(commentID) {
         'Content-Type': 'application/json'
       },
       params: {
-        _id: commentID
+        _id: commentID,
+        noteId: note.value.noteID
       }
     });
 
