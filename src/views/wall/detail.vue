@@ -55,8 +55,6 @@
             <v-username type="avater" :avatarSize="20" :username="note.buildUsername"></v-username>
             <v-username type="username" :username="note.buildUsername" class="username ml-2"></v-username>
           </div>
-
-          <span class="post-time">{{ formatDate(note.buildDate) }}</span>
         </div>
 
         <v-card-text class="post-content">
@@ -77,6 +75,11 @@
             </v-btn>
           </div>
         </v-card-actions>
+
+        <!-- 发帖时间 -->
+        <div class="post-time-footer">
+          <span class="post-time">{{ formatDate(note.buildDate) }}</span>
+        </div>
       </v-card>
 
       <!-- 回复列表 -->
@@ -99,12 +102,10 @@
               <v-username type="avater" :avatarSize="20" :username="reply.noteCommentBuildUsername"></v-username>
               <v-username type="username" :username="reply.noteCommentBuildUsername" class="username ml-2"></v-username>
             </div>
-
-            <span class="post-time">{{ formatDate(reply.createTime) }}</span>
           </div>
 
           <v-card-text class="post-content">
-            <div v-if="reply.replyTo" class="reply-reference">
+            <div v-if="reply.replyTo" class="reply-reference" style="margin-bottom: 15px;">
               <span class="font-weight-bold">@{{
                 (reply.replyToUsername === note.buildUsername && note.isAnon === 'true') ? "匿名纸条" :
                   reply.replyToUsername
@@ -123,6 +124,11 @@
               </div>
             </div>
           </v-card-actions>
+
+          <!-- 发帖时间 -->
+          <div class="post-time-footer">
+            <span class="post-time">{{ formatDate(reply.createTime) }}</span>
+          </div>
         </v-card>
       </div>
     </div>
@@ -627,8 +633,21 @@ async function deletePost() {
   margin-left: auto;
 }
 
+.post-time-footer {
+  padding: 8px 16px 12px;
+  border-top: 1px solid #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.post-time-footer .post-time {
+  margin-left: 0;
+  font-size: 0.85em;
+  color: #999;
+}
+
 .post-content {
-  padding: 0 16px 16px;
+  padding: 5px 16px 16px;
   line-height: 1.6;
 }
 
