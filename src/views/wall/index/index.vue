@@ -1,12 +1,16 @@
 <template>
   <div class="title">
-    <div class="text-h5" style="margin:30px 30px">互助集市 <v-icon color="orange">mdi-sticker</v-icon></div>
+    <div class="text-h5" style="margin:30px 30px">互助集市 <v-icon
+        style="color: rgb(var(--v-theme-primary));">mdi-sticker</v-icon></div>
     <van-sticky :offset-top="0">
       <div class="wall__search">
-        <v-toolbar color="black">
-          <v-text-field hide-details v-model="searchString" prepend-icon="mdi-magnify" single-line
-            style="padding-left: 20px;" @keyup.enter="toggleSearch"></v-text-field>
-          <v-btn ref="filterBtn" icon>
+        <v-toolbar style="background-color: rgb(var(--v-theme-primary));">
+          <v-btn icon color="white" @click="toggleSearch">
+            <v-icon>mdi-magnify</v-icon>
+          </v-btn>
+          <v-text-field hide-details v-model="searchString" single-line
+            style="padding-left: 10px; flex-grow: 1; color: white;" @keyup.enter="toggleSearch"></v-text-field>
+          <v-btn ref="filterBtn" icon color="white">
             <v-icon>mdi-filter</v-icon>
           </v-btn>
 
@@ -28,10 +32,10 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-btn icon @click="refreshList">
+          <v-btn icon @click="refreshList" color="white">
             <v-icon>mdi-refresh</v-icon>
           </v-btn>
-          <v-btn icon @click="goToFavorites">
+          <v-btn icon @click="goToFavorites" color="white">
             <v-icon>mdi-star</v-icon>
           </v-btn>
         </v-toolbar>
@@ -41,7 +45,7 @@
 
   <!-- 加载状态 -->
   <div v-if="isLoading" class="text-center mt-5">
-    <v-progress-circular indeterminate color="black"></v-progress-circular>
+    <v-progress-circular indeterminate style="color: rgb(var(--v-theme-primary));"></v-progress-circular>
   </div>
 
   <!-- 错误提示 -->
@@ -58,7 +62,8 @@
         <v-card class="mx-auto mb-4" style="border-radius: 10px; background-color: white;"
           @click="goToDetail(item, $event)">
           <v-card-title style="padding: 25px 20px 15px;">
-            <span class="wall__card__type text-h6">{{ getValueLabel(tags, item.tag) }}</span>
+            <span class="wall__card__type text-h6" style="color: rgb(var(--v-theme-primary));">{{ getValueLabel(tags,
+              item.tag) }}</span>
           </v-card-title>
 
           <v-card-text class="wall__card__content">
@@ -69,7 +74,7 @@
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
               <div class="d-flex align-center" style="padding-left: 20px;">
-                <v-icon small class="mr-1" color="grey">mdi-account-circle</v-icon>
+                <v-icon small class="mr-1" style="color: rgb(var(--v-theme-primary));">mdi-account-circle</v-icon>
                 <span class="text-caption text--secondary">
                   {{ item.isAnon === true ? '匿名纸条' : item.buildUsername }}
                 </span>
@@ -77,29 +82,19 @@
 
               <div class="d-flex align-center" style="padding-right: 20px; font-size: 12px;">
                 <!-- 点赞按钮 -->
-                <v-btn 
-                  icon 
-                  small 
-                  @click.stop="toggleLike(item, index)"
-                  :disabled="item.isLiking"
-                  class="like-btn"
-                >
-                  <v-icon 
-                    small 
-                    :color="item.isLikedByCurrentUser ? 'red' : 'grey'"
-                    class="mr-1"
-                  >
+                <v-btn icon small @click.stop="toggleLike(item, index)" :disabled="item.isLiking" class="like-btn">
+                  <v-icon small :color="item.isLikedByCurrentUser ? 'red' : 'grey'" class="mr-1">
                     {{ item.isLikedByCurrentUser ? 'mdi-heart' : 'mdi-heart-outline' }}
                   </v-icon>
                 </v-btn>
                 <span class="text-caption mr-2">{{ item.likeNum || 0 }}</span>
-                
+
                 <span class="mr-1">·</span>
-                <v-icon small class="mr-1">mdi-comment-eye</v-icon>
+                <v-icon small class="mr-1" color="black">mdi-comment-eye</v-icon>
                 <span class="text-caption mr-2">{{ item.readNum }}</span>
-                
+
                 <span class="mr-1">·</span>
-                <v-icon small class="mr-1">mdi-comment</v-icon>
+                <v-icon small class="mr-1" color="black">mdi-comment</v-icon>
                 <span class="text-caption">{{ item.commentNum }}</span>
               </div>
             </div>
@@ -129,12 +124,12 @@
 
   <!-- 发布按钮 -->
   <div style="position: fixed; bottom: 80px; right: 20px;">
-    <v-btn v-model="fab" :color="fab ? 'white' : 'orange'" location="bottom end" icon size="small" fab>
+    <v-btn v-model="fab" :color="fab ? 'white' : 'primary'" location="bottom end" icon size="small" fab>
       <v-icon :icon="fab ? 'mdi-close' : 'mdi-fountain-pen-tip'"></v-icon>
 
       <v-menu v-model="fab" activator="parent" location="top" transition="slide-y-reverse-transition">
-        <v-btn style="background-color:green; margin-bottom: 20px;" color="white" variant="text" icon="mdi-pencil"
-          size="small" fab to="/createNotePage"></v-btn>
+        <v-btn style="background-color: rgb(var(--v-theme-primary)); margin-bottom: 20px;" color="white" variant="text"
+          icon="mdi-pencil" size="small" fab to="/createNotePage"></v-btn>
       </v-menu>
     </v-btn>
   </div>
@@ -188,15 +183,15 @@ const selectedTag = ref(null);
 const toggleLike = async (item, index) => {
   // 防止重复点击
   if (item.isLiking) return;
-  
+
   try {
     // 设置loading状态
     item.isLiking = true;
-    
+
     // 获取当前点赞状态
     const isCurrentlyLiked = item.isLikedByCurrentUser;
     const newLikeStatus = !isCurrentlyLiked;
-    
+
     // 调用后端API
     const res = await proxy.$Axios({
       method: 'post',
@@ -213,14 +208,14 @@ const toggleLike = async (item, index) => {
     if (res.data && res.data.code === "1") {
       // 更新本地状态
       item.isLikedByCurrentUser = newLikeStatus;
-      
+
       // 更新点赞数
       if (newLikeStatus) {
         item.likeNum = (item.likeNum || 0) + 1;
       } else {
         item.likeNum = Math.max((item.likeNum || 0) - 1, 0);
       }
-      
+
       // 更新对应的原始数据
       const originalIndex = originalWallInfo.value.findIndex(
         originalItem => originalItem.noteID === item.noteID
@@ -229,7 +224,7 @@ const toggleLike = async (item, index) => {
         originalWallInfo.value[originalIndex].isLikedByCurrentUser = newLikeStatus;
         originalWallInfo.value[originalIndex].likeNum = item.likeNum;
       }
-      
+
     } else {
       console.error("点赞操作失败：", res.data?.msg || "未知错误");
       // 可以添加用户提示
@@ -510,7 +505,7 @@ const highlightSearchTerm = (text, searchTerm) => {
 }
 
 .selected-item {
-  background-color: #e8f5e9 !important; // 浅绿色背景
+  background-color: rgba(var(--v-theme-primary), 0.1) !important; // 浅蓝色背景
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -522,7 +517,7 @@ const highlightSearchTerm = (text, searchTerm) => {
   min-width: auto !important;
   padding: 0 !important;
   margin-right: 4px !important;
-  
+
   &:hover {
     background-color: rgba(255, 0, 0, 0.04) !important;
   }
@@ -530,7 +525,8 @@ const highlightSearchTerm = (text, searchTerm) => {
 
 /* 高亮搜索词样式 */
 .highlight-text {
-  background-color: yellow;
+  background-color: rgba(var(--v-theme-primary), 0.2);
+  color: rgb(var(--v-theme-primary));
   font-weight: bold;
 }
 </style>

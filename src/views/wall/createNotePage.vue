@@ -1,58 +1,57 @@
 <template>
   <div class="post-container">
-    <!-- 标题区域（含返回按钮） -->
-    <div class="header-bar">
-      <v-btn icon style="margin-left: -5px;" @click="$router.back()" variant="text">
+    <!-- 顶部导航栏 -->
+    <v-app-bar style="background-color: rgb(var(--v-theme-primary));" elevation="1">
+      <v-btn icon @click="$router.back()" color="white">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <h1 style="" class="text-h5">发布新帖子</h1>
-    </div>
+      <v-toolbar-title class="text-h6" style="color: white;">发布新帖子</v-toolbar-title>
+      <v-spacer></v-spacer>
+    </v-app-bar>
 
-    <div class="form-group">
-      <label class="text-h6" style = "margin-bottom: 20px;">选择标签</label>
-      <div class="tag-selector">
-        <button
-            v-for="tag in tags"
-            :key="tag.value"
-            :class="{ active: selectedTag === tag.value }"
-            @click="selectTag(tag.value)"
-        >
-          {{ tag.label }}
-        </button>
+    <div class="content-area">
+      <!-- 标签选择 -->
+      <div class="form-section">
+        <h3 class="section-title">选择标签</h3>
+        <div class="tag-selector">
+          <v-btn v-for="tag in tags" :key="tag.value" :variant="selectedTag === tag.value ? 'flat' : 'outlined'"
+            :color="selectedTag === tag.value ? 'primary' : 'default'" class="tag-btn" @click="selectTag(tag.value)">
+            {{ tag.label }}
+          </v-btn>
+        </div>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label class="text-h6" style="margin-bottom: 20px;">发布设置</label>
-      <div class="text-h7">
-        <label>
-          <input type="checkbox" v-model="isAnonymous" style="width: 18px; height: 18px; vertical-align: middle;">
-          <span style="margin-left: 15px;">匿名发布</span>
-        </label>
-        <label>
-          <input type="checkbox" v-model="allowComment" style="width: 18px; height: 18px; vertical-align: middle;">
-          <span style="margin-left: 15px;">允许评论</span>
-        </label>
+      <!-- 发布设置 -->
+      <div class="form-section">
+        <h3 class="section-title">发布设置</h3>
+        <div class="settings-group">
+          <v-checkbox v-model="isAnonymous" label="匿名发布" color="primary" class="setting-item"></v-checkbox>
+          <v-checkbox v-model="allowComment" label="允许评论" color="primary" class="setting-item"></v-checkbox>
+        </div>
       </div>
+
+      <!-- 内容编辑器 -->
+      <div class="form-section">
+        <v-textarea v-model="content" label="请在正确的分区发帖" variant="outlined" auto-grow rows="6" color="primary"
+          class="content-input"></v-textarea>
+      </div>
+
+      <!-- 发布按钮 -->
+      <v-btn block color="primary" size="large" :disabled="!content.trim() || isSubmitting" :loading="isSubmitting"
+        @click="submitPost" class="submit-btn">
+        发布
+      </v-btn>
     </div>
 
-    <div class="content-editor">
-      <textarea v-model="content" placeholder="请在正确的分区发帖" style="font-size: 16px;"></textarea>
-    </div>
-
-    <div class="preview-section">
-      <span style="font-size: 20px;">预览</span>
-      <div class="preview-content">{{ content }}</div>
-    </div>
-
-    <button class="submit-button" :disabled="!content.trim()" @click="submitPost">
-      发布
-    </button>
+    <!-- 提示消息 -->
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
+      {{ snackbar.text }}
+    </v-snackbar>
   </div>
 </template>
 
 <script setup>
-import { getCurrentInstance, ref } from 'vue';
+import { getCurrentInstance, ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -61,7 +60,15 @@ const { proxy } = getCurrentInstance();
 const content = ref('');
 const selectedTag = ref('question');
 const isAnonymous = ref(false);
-const allowComment = ref(true); // 默认允许评论
+const allowComment = ref(true);
+const isSubmitting = ref(false);
+
+// 提示消息控制
+const snackbar = reactive({
+  show: false,
+  text: '',
+  color: 'success'
+});
 
 const tags = [
   { value: 'question', label: '问题' },
@@ -70,125 +77,152 @@ const tags = [
   { value: 'findperson', label: '捞人' }
 ];
 
+// 显示提示消息
+const showSnackbar = (text, color = 'success') => {
+  snackbar.text = text;
+  snackbar.color = color;
+  snackbar.show = true;
+};
+
+const getUserName = () => {
+  return (sessionStorage.getItem('username') || '用户')
+}
+
 const selectTag = (tag) => {
   selectedTag.value = tag;
 };
 
-const submitPost = () => {
+const submitPost = async () => {
   if (!content.value.trim()) {
-    alert('内容不能为空，请输入内容后再发布。');
+    showSnackbar('内容不能为空，请输入内容后再发布', 'error');
     return;
   }
 
-  proxy.$Axios({
-    method: 'post',
-    url: '/noteService/createNote',
-    params: {
-      content: content.value,
-      tag: selectedTag.value,
-      isAnon: isAnonymous.value === false ? 0 : 1,
-      isAllowComment: allowComment.value === false ? 0 : 1
-    },
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-  })
-      .then(() => {
-        router.back(); // 发布成功后返回上一页
-      })
-      .catch((error) => {
-        console.error('发布失败:', error);
-        alert('发布失败，请重试');
-      });
+  isSubmitting.value = true;
+
+  try {
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/createNote',
+      params: {
+        content: content.value,
+        tag: selectedTag.value,
+        isAnon: isAnonymous.value === false ? 0 : 1,
+        isAllowComment: allowComment.value === false ? 0 : 1
+      },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    });
+
+    if (res.data && res.data.code === '1') {
+      showSnackbar('帖子发布成功，即将返回...');
+      setTimeout(() => {
+        router.push('/wall');
+      }, 2000);
+    } else {
+      showSnackbar(res.data?.msg || '发布失败，请重试', 'error');
+    }
+  } catch (error) {
+    console.error('发布失败:', error);
+    showSnackbar('发布失败，请重试', 'error');
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 
 <style scoped>
-.header-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+.post-container {
+  min-height: 93vh;
+  background-color: #f5f5f5;
 }
 
-.post-container {
+.content-area {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
 }
 
-.form-group {
-  margin-bottom: 30px;
+.form-section {
+  margin-bottom: 24px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
+.form-section:first-child {
+  margin-top: 0;
+}
+
+.section-title {
+  color: rgb(var(--v-theme-primary));
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .tag-selector {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.tag-selector button {
-  padding: 8px 15px;
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
+.tag-btn {
+  text-transform: none;
+  font-weight: 500;
 }
 
-.tag-selector button.active {
-  background-color: #e0e0ff;
-  border-color: #a0a0ff;
+.settings-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.content-editor textarea {
-  width: 100%;
-  min-height: 150px;
-  resize: vertical;
-  font-size: 13px;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.setting-item {
+  height: 40px;
+  margin: 0;
 }
 
-.preview-section {
-  margin: 20px 0;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  background-color: #f9f9f9;
-  overflow-wrap: break-word;
+.content-input {
+  margin-bottom: 16px;
 }
 
-.preview-section h3 {
-  margin-top: 0;
+.preview-card {
+  border-radius: 12px;
+  background-color: white;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 16px 8px;
+}
+
+.floor-number {
+  color: rgb(var(--v-theme-primary));
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.username {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.post-time {
   color: #666;
-}
-
-.submit-button {
-  padding: 10px 20px;
-  width: 100%;
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.submit-button:hover {
-  background-color: #45a049;
-}
-
-.submit-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  font-size: 0.8rem;
 }
 
 .preview-content {
-  margin-top: 15px;
+  padding: 0 16px 16px;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.submit-btn {
+  margin-top: 20px;
+  height: 48px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: none;
 }
 </style>

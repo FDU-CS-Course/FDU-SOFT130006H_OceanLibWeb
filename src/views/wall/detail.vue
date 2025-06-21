@@ -1,24 +1,23 @@
 <template>
   <div class="wall-detail">
     <!-- 顶部导航栏 -->
-    <v-app-bar color="white" elevation="1">
-      <v-btn icon @click="$router.push('/wall')">
+    <v-app-bar style="background-color: rgb(var(--v-theme-primary));" elevation="1">
+      <v-btn icon @click="$router.push('/wall')" color="white">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title class="text-h6">帖子详情</v-toolbar-title>
-      <v-btn icon
-             @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
+      <v-toolbar-title class="text-h6" style="color: white;">帖子详情</v-toolbar-title>
+      <v-btn icon @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)" color="white">
         <v-icon>mdi-reply</v-icon>
       </v-btn>
-      <v-btn icon @click="sharePost">
+      <v-btn icon @click="sharePost" color="white">
         <v-icon>mdi-share-variant</v-icon>
       </v-btn>
-      <v-btn icon @click="toggleFavorite" :color="isFavorited ? 'orange' : ''">
+      <v-btn icon @click="toggleFavorite" :color="isFavorited ? 'orange' : 'white'">
         <v-icon>{{ isFavorited ? 'mdi-star' : 'mdi-star-outline' }}</v-icon>
       </v-btn>
 
       <!-- 设置菜单按钮 -->
-      <v-btn ref="settingsBtn" icon>
+      <v-btn ref="settingsBtn" icon color="white">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
 
@@ -40,7 +39,7 @@
     <div class="post-list">
       <!-- 主帖 -->
       <v-card v-if="note" class="post-card mb-4 mt-4"
-              @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
+        @click="goToReplyPage(note.noteID, note.buildUsername, note.content, note.isAnon)">
         <div class="post-header">
           <span class="floor-number">1楼</span>
           <span class="username">{{ note.isAnon === 'true' ? "匿名纸条" : note.buildUsername }}</span>
@@ -54,18 +53,13 @@
         <v-card-actions>
           <div class="d-flex align-center justify-end w-100">
             <!-- 点赞按钮 -->
-            <v-btn 
-              icon 
-              @click.stop="toggleLike"
-              :disabled="isLiking"
-              :color="isLiked ? 'red' : ''"
-              variant="text"
-            >
-              <v-icon>{{ isLiked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+            <v-btn icon @click.stop="toggleLike" :disabled="isLiking" :color="isLiked ? 'red' : ''" variant="text">
+              <v-icon :color="isLiked ? 'red' : 'rgb(var(--v-theme-primary))'">{{ isLiked ? 'mdi-heart' :
+                'mdi-heart-outline' }}</v-icon>
               <span class="ml-1">{{ note.likeNum || 0 }}</span>
             </v-btn>
             <v-btn icon variant="text">
-              <v-icon>mdi-comment-eye</v-icon>
+              <v-icon style="color: rgb(var(--v-theme-primary));">mdi-comment-eye</v-icon>
               <span class="ml-1">{{ note.readNum }}</span>
             </v-btn>
           </div>
@@ -74,8 +68,7 @@
 
       <!-- 回复列表 -->
       <div v-for="(reply, index) in wallContentInfo" :key="index" class="mb-4">
-        <v-card class="post-card"
-                @click="goToReplyPage(reply.id, reply.noteCommentBuildUsername, reply.commentContent,
+        <v-card class="post-card" @click="goToReplyPage(reply.id, reply.noteCommentBuildUsername, reply.commentContent,
           reply.replyToUsername === note.buildUsername && note.isAnon)">
           <div class="post-header">
             <span class="floor-number">{{ index + 2 }}楼</span>
@@ -112,7 +105,7 @@
 
     <!-- 加载提示 -->
     <div v-if="isLoading" class="text-center my-4">
-      <v-progress-circular indeterminate color="primary"></v-progress-circular>
+      <v-progress-circular indeterminate style="color: rgb(var(--v-theme-primary));"></v-progress-circular>
     </div>
 
     <!-- Snackbar 提示 -->
@@ -213,12 +206,12 @@ const goToReplyPage = (replyToId, replyToUsername, replyToContent, isAnon) => {
  */
 const toggleLike = async () => {
   if (!note.value || isLiking.value) return;
-  
+
   try {
     isLiking.value = true;
-    
+
     const newLikeStatus = !isLiked.value;
-    
+
     const res = await proxy.$Axios({
       method: 'post',
       url: '/noteService/likeNote',
@@ -234,14 +227,14 @@ const toggleLike = async () => {
     if (res.data && res.data.code === "1") {
       // 更新本地状态
       isLiked.value = newLikeStatus;
-      
+
       // 更新点赞数
       if (newLikeStatus) {
         note.value.likeNum = (parseInt(note.value.likeNum) || 0) + 1;
       } else {
         note.value.likeNum = Math.max((parseInt(note.value.likeNum) || 0) - 1, 0);
       }
-      
+
       showSnackbar(newLikeStatus ? '点赞成功' : '取消点赞成功', 'success');
     } else {
       showSnackbar('点赞操作失败，请重试', 'error');
@@ -283,7 +276,7 @@ const handleScroll = () => {
  */
 const checkLikeStatus = async () => {
   if (!note.value?.noteID) return;
-  
+
   try {
     const res = await proxy.$Axios({
       method: 'post',
@@ -318,7 +311,7 @@ onMounted(() => {
     isAllowComment: route.query.isAllowComment,
     isDeleted: route.query.isDeleted,
   };
-  
+
   // 如果从列表页传递了点赞状态，直接使用
   if (route.query.isLikedByCurrentUser !== undefined) {
     isLiked.value = route.query.isLikedByCurrentUser === 'true' || route.query.isLikedByCurrentUser === true;
@@ -566,7 +559,7 @@ async function deletePost() {
 }
 
 .floor-number {
-  color: #1976d2;
+  color: rgb(var(--v-theme-primary));
   font-weight: bold;
 }
 
@@ -610,7 +603,7 @@ async function deletePost() {
   flex-direction: column;
   align-items: center;
   padding: 24px 24px 0;
-  background: linear-gradient(135deg, #ffebee 0%, #fce4ec 100%);
+  background: linear-gradient(135deg, rgba(var(--v-theme-primary), 0.1) 0%, rgba(var(--v-theme-primary), 0.05) 100%);
 }
 
 .delete-dialog .v-card-text {

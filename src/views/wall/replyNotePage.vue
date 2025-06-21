@@ -1,10 +1,10 @@
 <template>
   <div class="reply-note">
-    <v-app-bar color="white" elevation="1">
-      <v-btn icon @click="$router.back()">
+    <v-app-bar style="background-color: rgb(var(--v-theme-primary));" elevation="1">
+      <v-btn icon @click="$router.back()" color="white">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title class="text-h6">发表评论</v-toolbar-title>
+      <v-toolbar-title class="text-h6" style="color: white;">发表评论</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-app-bar>
 
@@ -13,7 +13,7 @@
       <v-card class="mb-4 reply-to-card" variant="outlined">
         <v-card-text>
           <div class="d-flex align-center">
-            <v-icon class="mr-2">mdi-reply</v-icon>
+            <v-icon class="mr-2" style="color: rgb(var(--v-theme-primary));">mdi-reply</v-icon>
             <span class="text-body-1">回复 {{ (isAnon === 'true') ? "匿名纸条" : replyToUsername }}</span>
           </div>
           <div class="original-content mt-2">{{ originalContent }}</div>
@@ -21,19 +21,13 @@
       </v-card>
 
       <!-- 评论输入区 -->
-      <v-textarea
-        v-model="commentContent"
-        label="写下你的评论..."
-        variant="outlined"
-        auto-grow
-        rows="4"
-        class="mb-4"
-      ></v-textarea>
+      <v-textarea v-model="commentContent" label="写下你的评论..." variant="outlined" auto-grow rows="4" class="mb-4"
+        color="primary"></v-textarea>
 
       <!-- 预览区域 -->
       <v-card v-if="commentContent && username" class="mb-4 preview-card">
         <div class="post-header">
-          <span class="username">{{ username }}</span>
+          <span class="username" style="color: rgb(var(--v-theme-primary));">{{ username }}</span>
           <span class="post-time">预览</span>
         </div>
         <v-card-text class="post-content">
@@ -44,31 +38,21 @@
         </v-card-text>
       </v-card>
 
-      <v-btn
-        block
-        color="primary"
-        size="large"
-        @click="submitComment"
-        :disabled="!commentContent.trim() || isSubmitting"
-        :loading="isSubmitting"
-      >
+      <v-btn block color="primary" size="large" @click="submitComment"
+        :disabled="!commentContent.trim() || isSubmitting" :loading="isSubmitting">
         发布
       </v-btn>
     </div>
 
     <!-- 提示消息 -->
-    <v-snackbar
-      v-model="snackbar.show"
-      :color="snackbar.color"
-      :timeout="3000"
-    >
+    <v-snackbar v-model="snackbar.show" :color="snackbar.color" :timeout="3000">
       {{ snackbar.text }}
     </v-snackbar>
   </div>
 </template>
 
 <script setup>
-import {ref, reactive, onMounted} from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getCurrentInstance } from 'vue'
 
@@ -195,7 +179,7 @@ onMounted(async () => {
 .reply-reference {
   margin-bottom: 8px;
   padding: 8px;
-  background-color: #f5f5f5;
+  background-color: rgba(var(--v-theme-primary), 0.1);
   border-radius: 4px;
   font-size: 0.9em;
 }
