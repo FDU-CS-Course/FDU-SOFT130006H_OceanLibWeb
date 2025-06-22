@@ -161,8 +161,8 @@ export default {
   },
   methods: {
     reg() {
-      this.tab = 'csulogin';
-      this.noticeShow = true;
+      console.log('reg called');
+      this.$router.push('/reg');
     },
     login() {
       this.$refs.loading.show('正在登录');

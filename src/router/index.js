@@ -4,9 +4,10 @@ import axios from 'axios'
 import {
     baseURL
 } from '@/config.js'
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
-const errorPage = () => import("../views/errorPage.vue");
+const errorPage = () =>
+    import ("../views/errorPage.vue");
 
 //import ViewUI from 'view-design';
 //Vue.use(ViewUI);
@@ -24,9 +25,9 @@ router.beforeEach((to, from, next) => {
     }
 
     const isAuthenticated = localStorage.getItem('token') !== null;
-    
+
     if (to.path === "/login") {
-        if(isAuthenticated) {
+        if (isAuthenticated) {
             // if authenticated user visits login, redirect to '/index'.
             next('/index');
             return;
@@ -35,8 +36,12 @@ router.beforeEach((to, from, next) => {
             next();
             return;
         }
+    } else if (to.path === "/reg") {
+        // Allow unauthenticated users to access registration page
+        next();
+        return;
     } else {
-        if(isAuthenticated) {
+        if (isAuthenticated) {
             // if authenticated user visits other pages, accept.
             if (sessionStorage.getItem("role") == null) {
                 // if lost session, fetch it from server.
@@ -86,7 +91,7 @@ function NewRouter() {
 }
 
 //向服务器请求用户基本信息并建立会话缓存
-function getUserInfo(callback = function () {}) {
+function getUserInfo(callback = function() {}) {
     //向服务器请求用户基本信息
     axios({
         method: 'get',
@@ -120,7 +125,7 @@ function getUserInfo(callback = function () {}) {
         callback();
     }).catch((error) => {
         console.log(error)
-        //返回登录页
+            //返回登录页
         localStorage.removeItem("token");
         router.push("/login");
         //执行回调

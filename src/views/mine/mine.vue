@@ -120,6 +120,35 @@
           border-bottom: 1px solid #e0e0e0;
         }
       }
+      &__avatar-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      &__avatar-preview {
+        display: flex;
+        justify-content: center;
+      }
+      &__avatar {
+        border: 2px solid #e0e0e0 !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      &__avatar-upload {
+        width: 100%;
+        max-width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      &__file-info {
+        display: flex;
+        justify-content: center;
+        margin: 8px 0;
+      }
+      &__progress {
+        margin: 10px 0;
+      }
     }
   }
 }
@@ -192,6 +221,75 @@
           <!-- Edit mode -->
           <div class="mine__userinfo__edit-form">
             <v-form ref="editForm" lazy-validation>
+              <!-- Avatar Section -->
+              <div class="mine__userinfo__edit-form__section">
+                <div class="mine__userinfo__edit-form__section-title">Avatar</div>
+                <div class="mine__userinfo__edit-form__avatar-section">
+                  <div class="mine__userinfo__edit-form__avatar-preview">
+                    <v-avatar color="primary" size="100" class="mine__userinfo__edit-form__avatar">
+                      <v-img :src="editUserInfo.avatar || userInfo.avatar" alt="Avatar" v-if="editUserInfo.avatar || userInfo.avatar" />
+                      <span class="white--text" v-else style="font-size: 40px;">{{userInfo.nickname.substring(0, 1)}}</span>
+                    </v-avatar>
+                  </div>
+                  <div class="mine__userinfo__edit-form__avatar-upload">
+                    <!-- Hidden file input -->
+                    <input
+                      type="file"
+                      ref="avatarInput"
+                      accept="image/*"
+                      @change="onAvatarChange"
+                      style="display: none;"
+                    />
+                    
+                    <!-- Upload button with better styling -->
+                    <v-btn 
+                      color="primary" 
+                      :disabled="avatarUploading" 
+                      :loading="avatarUploading"
+                      @click="selectAvatar"
+                      outlined
+                      block
+                    >
+                      <v-icon left>mdi-camera-plus</v-icon>
+                      {{ avatarFile ? 'Change Avatar' : 'Select Avatar' }}
+                    </v-btn>
+                    
+                    <!-- File info display -->
+                    <div v-if="avatarFile" class="mine__userinfo__edit-form__file-info">
+                      <v-chip small color="primary" outlined>
+                        <v-icon left small>mdi-file-image</v-icon>
+                        {{ avatarFile.name }}
+                        <span class="ml-2">({{ formatFileSize(avatarFile.size) }})</span>
+                      </v-chip>
+                    </div>
+                    
+                    <!-- Upload progress -->
+                    <div v-if="avatarUploading" class="mine__userinfo__edit-form__progress">
+                      <v-progress-linear
+                        :value="uploadProgress"
+                        color="primary"
+                        height="8"
+                        rounded
+                      />
+                      <div class="text-caption text-center mt-1">
+                        {{ uploadProgress }}% uploaded
+                      </div>
+                    </div>
+                    
+                    <!-- Upload button -->
+                    <v-btn 
+                      v-if="avatarFile && !avatarUploading"
+                      color="success" 
+                      @click="uploadAvatar"
+                      block
+                    >
+                      <v-icon left>mdi-upload</v-icon>
+                      Upload Avatar
+                    </v-btn>
+                  </div>
+                </div>
+              </div>
+
               <!-- Basic Information Section -->
               <div class="mine__userinfo__edit-form__section">
                 <div class="mine__userinfo__edit-form__section-title">Basic Information</div>
@@ -353,17 +451,27 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 /**
  * Mine/Profile Page Component
  * 
  * Features:
  * - User profile display with avatar, stats, and personal information
- * - Edit mode with organized form sections (Basic Info, Personal Details, Profile)
+ * - Edit mode with organized form sections (Avatar, Basic Info, Personal Details, Profile)
+ * - Avatar upload support with image preview and validation
  * - Responsive layout that adapts between display and edit modes
  * - Form validation and error handling with security measures
  * - Clean UI that hides navigation elements during editing
  * 
+ * Avatar Upload:
+ * - Supports JPEG, PNG, GIF, WebP formats up to 5MB
+ * - Uploads to http://seleixi_home.seleixi.com:8886/api/uploadImage
+ * - Provides immediate preview and validation feedback
+ * - Integrates with user profile update API
+ * 
  * Recent Updates:
+ * - Added avatar upload functionality with file validation and preview
  * - Simplified birthday field to text input with YYYY-MM-DD format validation
  * - Replaced sex dialog with intuitive select dropdown using string options
  * - Added string/integer conversion methods for sex field (UI uses strings, API uses integers)
@@ -397,6 +505,9 @@ export default {
       snackbarMsg: '',
       snackbarColor: 'success',
       sexOptions: ['Unknown', 'Male', 'Female'],
+      avatarFile: null,
+      avatarUploading: false,
+      uploadProgress: 0,
     };
   },
   computed: {
@@ -471,6 +582,16 @@ export default {
         v => !v || this.validateDateRange(v) || 'Birthday must be between 1900 and current year',
         v => !v || (v.length <= 10) || 'Birthday must be 10 characters or less',
         v => this.validateSafeInput(v) || 'Birthday contains invalid characters',
+      ];
+    },
+    /**
+     * Validation rules for avatar file upload
+     * Ensures file type and size constraints
+     */
+    avatarRules() {
+      return [
+        v => !v || v.size < 5000000 || 'Avatar size should be less than 5 MB',
+        v => !v || ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'].includes(v.type) || 'Avatar must be an image file (JPEG, PNG, GIF, WebP)',
       ];
     },
   },
@@ -684,6 +805,7 @@ export default {
         birthday: this.extractDateFromISO(birthdayValue),
         sex: this.sexIntToString(sexValue),
         personalSignature: this.userInfo.userExtraEntity ? (this.userInfo.userExtraEntity.personalSignature || '') : '',
+        avatar: this.userInfo.avatar || '',
       };
       
       this.editMode = true;
@@ -691,6 +813,13 @@ export default {
     cancelEdit() {
       this.editMode = false;
       this.editUserInfo = {};
+      this.avatarFile = null;
+      this.avatarUploading = false;
+      this.uploadProgress = 0;
+      // Clear file input
+      if (this.$refs.avatarInput) {
+        this.$refs.avatarInput.value = '';
+      }
       // Reset form validation
       if (this.$refs.editForm) {
         this.$refs.editForm.resetValidation();
@@ -832,6 +961,14 @@ export default {
         // Handle sex field conversion from string to integer
         if (key === 'sex') {
           value = this.sexStringToInt(value);
+        } else if (key === 'avatar') {
+          // Avatar URL should be used as-is (already validated during upload)
+          // Skip data URLs (base64 previews) and only include actual URLs
+          if (value.startsWith('data:')) {
+            continue;
+          }
+          payload[key] = value;
+          continue;
         } else if (typeof value === 'string') {
           // Sanitize other string values
           value = this.sanitizeInput(value);
@@ -908,6 +1045,162 @@ export default {
         this.snackbarColor = 'error';
         this.snackbar = true;
       });
+    },
+    /**
+     * Trigger file selection dialog
+     */
+    selectAvatar() {
+      this.$refs.avatarInput.click();
+    },
+    /**
+     * Format file size for display
+     * @param {number} bytes - File size in bytes
+     * @returns {string} - Formatted file size
+     */
+    formatFileSize(bytes) {
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    },
+    /**
+     * Handle avatar file selection and preview
+     * @param {Event} event - File input change event
+     */
+    onAvatarChange(event) {
+      const file = event.target.files[0];
+      this.avatarFile = file;
+      
+      console.log("onAvatarChange");
+      console.log("event: ", event);
+      console.log("avatarFile: ", this.avatarFile);
+      
+      if (file) {
+        console.log("file size: ", file.size);
+        console.log("file type: ", file.type);
+        console.log("file name: ", file.name);
+        console.log("file: ", file);
+
+        // Validate file
+        for (const rule of this.avatarRules) {
+          const result = rule(file);
+          if (result !== true) {
+            this.snackbarMsg = result;
+            this.snackbarColor = 'error';
+            this.snackbar = true;
+            this.avatarFile = null;
+            // Clear the input
+            this.$refs.avatarInput.value = '';
+            return;
+          }
+        }
+        
+        // Create preview URL for immediate display
+        if (file && file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            this.editUserInfo.avatar = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      } else {
+        // File was cleared
+        this.editUserInfo.avatar = this.userInfo.avatar || '';
+      }
+    },
+    /**
+     * Upload avatar to the specified API endpoint
+     * Uses direct axios (not this.$Axios) to avoid BaseURL and JWT Token
+     * Sends POST request to http://seleixi_home.seleixi.com:8886/api/uploadImage
+     */
+    async uploadAvatar() {
+      if (!this.avatarFile) {
+        this.snackbarMsg = 'Please select an avatar file first';
+        this.snackbarColor = 'warning';
+        this.snackbar = true;
+        return;
+      }
+
+      // Validate file again before upload
+      for (const rule of this.avatarRules) {
+        const result = rule(this.avatarFile);
+        if (result !== true) {
+          this.snackbarMsg = result;
+          this.snackbarColor = 'error';
+          this.snackbar = true;
+          return;
+        }
+      }
+
+      this.avatarUploading = true;
+      this.uploadProgress = 0;
+
+      try {
+        // Create FormData for file upload
+        const formData = new FormData();
+        formData.append('source', this.avatarFile);
+
+        // Upload to the specified endpoint using direct axios
+        const response = await axios.post(
+          'http://seleixi_home.seleixi.com:8886/api/uploadImage',
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            timeout: 30000, // 30 second timeout for file upload
+            onUploadProgress: (progressEvent) => {
+              // Calculate upload progress percentage
+              const progress = Math.round(
+                (progressEvent.loaded * 100) / progressEvent.total
+              );
+              this.uploadProgress = progress;
+              console.log(`Upload progress: ${progress}%`);
+            },
+          }
+        );
+
+        // Extract the public URL from response
+        if (response.data && response.data.image && response.data.image.url) {
+          const avatarUrl = response.data.image.url;
+          
+          // Update the edit form with the new avatar URL
+          this.editUserInfo.avatar = avatarUrl;
+          
+          this.snackbarMsg = 'Avatar uploaded successfully!';
+          this.snackbarColor = 'success';
+          this.snackbar = true;
+          
+          // Clear the file input and reset
+          this.avatarFile = null;
+          this.$refs.avatarInput.value = '';
+          this.uploadProgress = 0;
+        } else {
+          throw new Error('Invalid response format: missing image URL');
+        }
+      } catch (error) {
+        console.error('Avatar upload failed:', error);
+        
+        let errorMsg = 'Failed to upload avatar: ';
+        if (error.response && error.response.data && error.response.data.message) {
+          errorMsg += error.response.data.message;
+        } else if (error.message) {
+          errorMsg += error.message;
+        } else {
+          errorMsg += 'Unknown error occurred';
+        }
+        
+        this.snackbarMsg = errorMsg;
+        this.snackbarColor = 'error';
+        this.snackbar = true;
+        
+        // Reset avatar preview to original
+        this.editUserInfo.avatar = this.userInfo.avatar || '';
+      } finally {
+        this.avatarUploading = false;
+        this.uploadProgress = 0;
+      }
     },
   },
 };
