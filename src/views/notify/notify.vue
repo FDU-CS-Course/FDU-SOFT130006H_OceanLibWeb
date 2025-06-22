@@ -98,14 +98,20 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.notifyEntity.buildUsername"></v-username>
+                  :username="item.buildUsername"></v-username>
               </div>
-              <div>
+              <div class="notifyBox__content">
                 <div>
-                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
-                  {{ item.notifyEntity.action == 'NEW_COMMENT' ? '评论' : '回复' }}了你的评论
+                  <v-username type="username" :username="item.buildUsername"></v-username>
+                  {{ item.action == 'NEW_COMMENT' ? '评论' : '回复' }}了你的评论
                 </div>
-                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
+                <!-- 原评论内容（引用框） -->
+                <div v-if="item.originalComment" class="original-comment">
+                  "{{ item.originalComment }}"
+                </div>
+                <!-- 回复内容 -->
+                <div class="reply-content">{{ item.replyContent }}</div>
+                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
               </div>
               <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
@@ -215,5 +221,27 @@ export default {
   transform: translateY(15px);
   background-color: red;
   border-radius: 50%;
+}
+
+.notifyBox__content {
+  flex: 1;
+
+  .original-comment {
+    background-color: @gray-2;
+    border-left: 3px solid @gray-5;
+    padding: 8px 12px;
+    margin: 8px 0;
+    font-size: 13px;
+    color: @gray-6;
+    border-radius: 4px;
+    font-style: italic;
+  }
+
+  .reply-content {
+    font-size: 14px;
+    color: @text-color;
+    margin: 4px 0;
+    line-height: 1.4;
+  }
 }
 </style>
