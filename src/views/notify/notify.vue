@@ -103,7 +103,7 @@
               <div class="notifyBox__content">
                 <div>
                   <v-username type="username" :username="item.buildUsername"></v-username>
-                  {{ item.action == 'NEW_COMMENT' ? '评论' : '回复' }}了你的评论
+                  {{ item.action === 'NEW_COMMENT' ? '评论' : '回复' }}了你的{{ item.type === 'NOTE' ? '帖子' : '评论' }}
                 </div>
                 <!-- 原评论内容（引用框） -->
                 <div v-if="item.originalComment" class="original-comment">

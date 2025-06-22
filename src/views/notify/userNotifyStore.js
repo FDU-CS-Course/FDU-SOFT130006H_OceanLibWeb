@@ -61,55 +61,105 @@ export default {
                             break;
                         case "NEW_COMMENT":
                         case "NEW_REPLY":
-                            // 处理commentID，如果包含下划线则只取前面部分
-                            let replyCommentID = element.notifyEntity.commentID;
-                            if (replyCommentID && replyCommentID.includes('_')) {
-                                replyCommentID = replyCommentID.split('_')[0];
+                            if (element.notifyEntity.targetType === "NOTE") {
+                                let replyNoteID = element.notifyEntity.targetID;
+                                await self.$Axios({
+                                    method: 'post',
+                                    url: '/noteService/getNoteCommentById',
+                                    params: {
+                                        commentID: element.notifyEntity.commentID,
+                                    },
+                                }).then((response) => {
+                                    let originalComment = '';
+                                    let replyContent = element.notifyEntity.content;
+
+                                    if (response.data.msg) {
+                                        // 获取原评论内容
+                                        originalComment = response.data.msg.content;
+                                    }
+
+                                    userNotifyList.commentList.push({
+                                        buildUsername: element.notifyEntity.buildUsername,
+                                        action: element.notifyEntity.action,
+                                        buildDate: element.notifyEntity.buildDate,
+                                        originalComment: originalComment.length > 20
+                                            ? originalComment.substring(0, 20) + '...'
+                                            : originalComment,
+                                        replyContent: replyContent.length > 100
+                                            ? replyContent.substring(0, 100) + '...'
+                                            : replyContent,
+                                        isRead: element.isRead,
+                                        type: "NOTE"
+                                    });
+                                }).catch((error) => {
+                                    console.log('获取评论内容失败:', error);
+                                    // 如果获取失败，仍然推送通知但不显示原评论内容
+                                    userNotifyList.commentList.push({
+                                        buildUsername: element.notifyEntity.buildUsername,
+                                        action: element.notifyEntity.action,
+                                        buildDate: element.notifyEntity.buildDate,
+                                        originalComment: '',
+                                        replyContent: element.notifyEntity.content.length > 100
+                                            ? element.notifyEntity.content.substring(0, 100) + '...'
+                                            : element.notifyEntity.content,
+                                        isRead: element.isRead,
+                                        type: "NOTE"
+                                    });
+                                });
                             }
-                            // 获取原评论内容
-                            await self.$Axios({
-                                method: 'get',
-                                url: '/comment/getCommentById',
-                                params: {
-                                    bindID: element.notifyEntity.targetID,
-                                    mainType: 'DOCUMENT',
-                                    commentID: replyCommentID
-                                },
-                            }).then((response) => {
-                                let originalComment = '';
-                                let replyContent = element.notifyEntity.content;
-
-                                if (response.data.msg) {
-                                    // 获取原评论内容
-                                    originalComment = response.data.msg.commentContent;
+                            else {
+                                // 处理commentID，如果包含下划线则只取前面部分
+                                let replyCommentID = element.notifyEntity.commentID;
+                                if (replyCommentID && replyCommentID.includes('_')) {
+                                    replyCommentID = replyCommentID.split('_')[0];
                                 }
+                                // 获取原评论内容
+                                await self.$Axios({
+                                    method: 'get',
+                                    url: '/comment/getCommentById',
+                                    params: {
+                                        bindID: element.notifyEntity.targetID,
+                                        mainType: 'DOCUMENT',
+                                        commentID: replyCommentID
+                                    },
+                                }).then((response) => {
+                                    let originalComment = '';
+                                    let replyContent = element.notifyEntity.content;
 
-                                userNotifyList.commentList.push({
-                                    buildUsername: element.notifyEntity.buildUsername,
-                                    action: element.notifyEntity.action,
-                                    buildDate: element.notifyEntity.buildDate,
-                                    originalComment: originalComment.length > 20
-                                        ? originalComment.substring(0, 20) + '...'
-                                        : originalComment,
-                                    replyContent: replyContent.length > 100
-                                        ? replyContent.substring(0, 100) + '...'
-                                        : replyContent,
-                                    isRead: element.isRead
+                                    if (response.data.msg) {
+                                        // 获取原评论内容
+                                        originalComment = response.data.msg.commentContent;
+                                    }
+
+                                    userNotifyList.commentList.push({
+                                        buildUsername: element.notifyEntity.buildUsername,
+                                        action: element.notifyEntity.action,
+                                        buildDate: element.notifyEntity.buildDate,
+                                        originalComment: originalComment.length > 20
+                                            ? originalComment.substring(0, 20) + '...'
+                                            : originalComment,
+                                        replyContent: replyContent.length > 100
+                                            ? replyContent.substring(0, 100) + '...'
+                                            : replyContent,
+                                        isRead: element.isRead,
+                                        type: "DOCUMENT"
+                                    });
+                                }).catch((error) => {
+                                    console.log('获取评论内容失败:', error);
+                                    // 如果获取失败，仍然推送通知但不显示原评论内容
+                                    userNotifyList.commentList.push({
+                                        buildUsername: element.notifyEntity.buildUsername,
+                                        action: element.notifyEntity.action,
+                                        buildDate: element.notifyEntity.buildDate,
+                                        originalComment: '',
+                                        replyContent: element.notifyEntity.content.length > 100
+                                            ? element.notifyEntity.content.substring(0, 100) + '...'
+                                            : element.notifyEntity.content,
+                                        isRead: element.isRead,
+                                        type: "DOCUMENT"
+                                    });
                                 });
-                            }).catch((error) => {
-                                console.log('获取评论内容失败:', error);
-                                // 如果获取失败，仍然推送通知但不显示原评论内容
-                                userNotifyList.commentList.push({
-                                    buildUsername: element.notifyEntity.buildUsername,
-                                    action: element.notifyEntity.action,
-                                    buildDate: element.notifyEntity.buildDate,
-                                    originalComment: '',
-                                    replyContent: element.notifyEntity.content.length > 100
-                                        ? element.notifyEntity.content.substring(0, 100) + '...'
-                                        : element.notifyEntity.content,
-                                    isRead: element.isRead
-                                });
-                            });
+                            }
                             break;
                         case "INVITATION":
                             userNotifyList.invitationList.push(element);

@@ -85,6 +85,7 @@ const submitComment = async () => {
   if (!commentContent.value.trim() || isSubmitting.value) return
 
   isSubmitting.value = true
+  console.log(route.query.replyToId);
   try {
     const res = await proxy.$Axios({
       method: 'post',
@@ -94,9 +95,9 @@ const submitComment = async () => {
       },
       params: {
         noteId: route.query.noteId,
-        commentContent: commentContent.value.trim(),
-        replyTo: route.query.replyToId,
-        replyToUsername: route.query.replyToUsername
+        content: commentContent.value.trim(),
+        replyId: route.query.replyToId,
+        replyUsername: route.query.replyToUsername
       }
     })
 

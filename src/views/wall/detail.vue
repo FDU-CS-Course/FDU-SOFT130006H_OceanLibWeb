@@ -222,6 +222,9 @@ const goToReplyPage = (replyToId, replyToUsername, replyToContent, isAnon) => {
     return;
   }
 
+  console.log(note.value.noteID)
+  console.log(replyToId)
+
   proxy.$router.push({
     path: '/replyNotePage',
     query: {
@@ -408,13 +411,13 @@ const fetchWallContentData = async (isLoadMore = false) => {
     if (res.data && res.data.code === "1") {
       const list = res.data.msg.list.map(note => ({
         noteId: note.noteId,
-        commentContent: note.commentContent,
+        commentContent: note.content,
         likeNum: note.likeNum || 0,
-        createTime: note.createTime,
-        noteCommentBuildUsername: note.noteCommentBuildUsername,
-        replyTo: note.replyTo,
-        id: note._id,
-        replyToUsername: note.replyToUsername
+        createTime: note.buildDate,
+        noteCommentBuildUsername: note.buildUsername,
+        replyTo: note.replyId,
+        id: note.id,
+        replyToUsername: note.replyUsername
       }));
 
       wallContentInfo.value = isLoadMore ? [...wallContentInfo.value, ...list] : [...list];
