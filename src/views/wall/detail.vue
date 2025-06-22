@@ -116,8 +116,19 @@
 
           <v-card-actions>
             <div class="d-flex align-center justify-space-between w-100">
+              <!-- 左侧：空 -->
               <div></div>
+
+              <!-- 右侧：点赞按钮 + 删除按钮 -->
               <div class="d-flex align-center">
+                <v-btn icon variant="text" @click.stop="toggleCommentLike(reply, index)" :disabled="reply.isLiking"
+                  :color="reply.isLikedByCurrentUser ? 'red' : 'grey'">
+                  <v-icon :color="reply.isLikedByCurrentUser ? 'red' : 'grey'">
+                    {{ reply.isLikedByCurrentUser ? 'mdi-heart' : 'mdi-heart-outline' }}
+                  </v-icon>
+                </v-btn>
+                <span class="text-caption ml-1 mr-2">{{ reply.likeNum || 0 }}</span>
+
                 <v-btn icon variant="text" @click.stop="deleteComment(reply.id)" color="red">
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
@@ -283,6 +294,62 @@ const toggleLike = async () => {
   }
 };
 
+
+
+/**
+ * 切换跟帖评论的点赞状态
+ * @param {Object} comment - 评论对象
+ * @param {Number} index - 评论索引
+ */
+const toggleCommentLike = async (comment, index) => {
+  // 防止重复点击
+  if (comment.isLiking) return;
+
+  try {
+    // 设置loading状态
+    comment.isLiking = true;
+
+    // 获取当前点赞状态
+    const isCurrentlyLiked = comment.isLikedByCurrentUser;
+    const newLikeStatus = !isCurrentlyLiked;
+
+    // 调用后端API
+    const res = await proxy.$Axios({
+      method: 'post',
+      url: '/noteService/likeNoteComment',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      params: {
+        commentId: comment.id,
+        isLike: newLikeStatus
+      }
+    });
+
+    if (res.data && res.data.code === "1") {
+      // 更新本地状态
+      comment.isLikedByCurrentUser = newLikeStatus;
+
+      // 更新点赞数
+      if (newLikeStatus) {
+        comment.likeNum = (comment.likeNum || 0) + 1;
+      } else {
+        comment.likeNum = Math.max((comment.likeNum || 0) - 1, 0);
+      }
+
+      showSnackbar(newLikeStatus ? '点赞成功' : '取消点赞成功', 'success');
+    } else {
+      showSnackbar('点赞操作失败，请重试', 'error');
+    }
+  } catch (err) {
+    console.error("点赞评论请求出错：", err);
+    showSnackbar('网络错误，请重试', 'error');
+  } finally {
+    // 清除loading状态
+    comment.isLiking = false;
+  }
+};
+
 // 日期格式化
 const formatDate = (timestamp) => {
   const date = new Date(timestamp);
@@ -417,7 +484,10 @@ const fetchWallContentData = async (isLoadMore = false) => {
         noteCommentBuildUsername: note.buildUsername,
         replyTo: note.replyId,
         id: note.id,
-        replyToUsername: note.replyUsername
+        replyToUsername: note.replyUsername,
+        // 添加点赞相关字段
+        isLikedByCurrentUser: note.isLikedByCurrentUser || false,
+        isLiking: false // 用于控制点赞按钮loading状态
       }));
 
       wallContentInfo.value = isLoadMore ? [...wallContentInfo.value, ...list] : [...list];

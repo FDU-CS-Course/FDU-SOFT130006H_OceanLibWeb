@@ -39,7 +39,7 @@ export default {
                                 method: 'get',
                                 url: '/comment/getCommentById',
                                 params: {
-                                    bindID: element.notifyEntity.targetID,
+                                    bindID: element.notifyEntity.targetId,
                                     mainType: 'DOCUMENT',
                                     commentID: likeCommentID
                                 },
@@ -118,7 +118,7 @@ export default {
                                     method: 'get',
                                     url: '/comment/getCommentById',
                                     params: {
-                                        bindID: element.notifyEntity.targetID,
+                                        bindID: element.notifyEntity.targetId,
                                         mainType: 'DOCUMENT',
                                         commentID: replyCommentID
                                     },

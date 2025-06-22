@@ -1,16 +1,16 @@
 <template>
   <span>
-    <v-avatar color="primary" :size="avatarSize" v-if="type=='avater' && userInfo!=null">
+    <v-avatar color="primary" :size="avatarSize" v-if="type == 'avater' && userInfo != null">
       <v-img :src="userInfo.avatar" alt="Avatar" v-if="userInfo.avatar != null && userInfo.avatar != ''" />
-      <span style="color:white" v-else-if="userInfo.nickname!=null">{{userInfo.nickname.substring(0, 1) }}</span>
+      <span style="color:white" v-else-if="userInfo.nickname != null">{{ userInfo.nickname.substring(0, 1) }}</span>
     </v-avatar>
 
-    <span v-if="type=='username'">
-      {{userInfo!=null?userInfo.nickname:username}}
+    <span v-if="type == 'username'">
+      {{ userInfo != null ? userInfo.nickname : username }}
     </span>
 
-    <van-tag type="primary" color="#2d8bf0" v-if="type=='level' && userInfo!=null && userInfo.level!=null">
-      {{userInfo.level}}
+    <van-tag type="primary" color="#2d8bf0" v-if="type == 'level' && userInfo != null && userInfo.level != null">
+      {{ userInfo.level }}
     </van-tag>
   </span>
 </template>
