@@ -23,14 +23,32 @@ export default {
                 username: sessionStorage.getItem("username"),
                 latestPullDate: lastPullDate,
             },
-        }).then((response) => {
+        }).then(async (response) => {
             let notifyList = response.data.msg;
-            notifyList.forEach(element => {
+            for (const element of notifyList) {
                 if (element.username !== element.notifyEntity.buildUsername) {
                     switch (element.notifyEntity.action) {
                         case "LIKE":
                         case "LIKE_COMMENT":
-                            userNotifyList.likeList.push(element);
+                            await self.$Axios({
+                                method: 'get',
+                                url: '/comment/getCommentById',
+                                params: {
+                                    bindID: element.notifyEntity.targetID,
+                                    mainType: 'DOCUMENT',
+                                    commentID: element.notifyEntity.commentID
+                                },
+                            }).then((response) => {
+                                userNotifyList.likeList.push({
+                                    buildUsername: element.notifyEntity.buildUsername,
+                                    action: element.notifyEntity.action,
+                                    buildDate: element.notifyEntity.buildDate,
+                                    comment: response.data.msg.commentContent.length > 20
+                                        ? response.data.msg.commentContent.substring(0, 20) + '...'
+                                        : response.data.msg.commentContent,
+                                    isRead: element.isRead
+                                });
+                            })
                             break;
                         case "DOWNLOAD":
                         case "SCORED":
@@ -47,7 +65,7 @@ export default {
                             break;
                     }
                 }
-            });
+            }
             localStorage.setItem("userNotifyList", JSON.stringify(userNotifyList));
             localStorage.setItem("notifyLastPullDate", new Date().toLocaleString());
             self.$Axios({

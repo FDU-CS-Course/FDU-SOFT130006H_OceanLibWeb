@@ -43,14 +43,15 @@
             <div class="notifyBox__top">
               <div class="notifyBox__top__avatar">
                 <v-username class="comment__avatar" type="avater" :avatarSize="28"
-                  :username="item.notifyEntity.buildUsername"></v-username>
+                  :username="item.buildUsername"></v-username>
               </div>
               <div>
                 <div>
-                  <v-username type="username" :username="item.notifyEntity.buildUsername"></v-username>
-                  点赞了你的{{ item.notifyEntity.action == 'LIKE_COMMENT' ? '评论' : '文章' }}
+                  <v-username type="username" :username="item.buildUsername"></v-username>
+                  点赞了你的{{ item.action == 'LIKE_COMMENT' ? '评论' : '文章' }}
                 </div>
-                <div class="notifyBox__top__date">{{ item.notifyEntity.buildDate }}</div>
+                <div style="font-size: 14px;">{{ item.comment }}</div>
+                <div class="notifyBox__top__date">{{ item.buildDate }}</div>
               </div>
               <div v-if="item.isRead === 48" class="red_dot"></div>
             </div>
