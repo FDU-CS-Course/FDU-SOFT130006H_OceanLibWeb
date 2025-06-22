@@ -81,7 +81,7 @@
   </div>
 </template>
 <script>
-import * as axios from 'axios';
+import axios from 'axios';
 import qs from 'qs';
 import bitRegNotice from '@/components/univlogin/bit/bitRegNotice.vue';
 import { Notify } from '@vant/compat';
@@ -144,10 +144,7 @@ export default {
           this.$refs['bitRegNotice'].reg(this.doReg);
           break;
         default:
-          Notify({
-            type: 'danger',
-            message: '错误：不存在的高校，请联系管理员',
-          });
+          this.doReg();
       }
     },
     doReg() {
