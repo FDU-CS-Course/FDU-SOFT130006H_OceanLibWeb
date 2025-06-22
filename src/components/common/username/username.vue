@@ -66,9 +66,21 @@ export default {
         });
       }
     },
+    // 监听username prop的变化，如果变化了需要重新获取用户信息
+    username(newUsername, oldUsername) {
+      if (newUsername !== oldUsername && this.user == null) {
+        this.userInfo = null;
+        this.getUserInfo(newUsername);
+      }
+    },
   },
   methods: {
     getUserInfo(username) {
+      // 验证username有效性
+      if (!username || username.trim() === '') {
+        return;
+      }
+
       let hasFind = false;
       //检查store的userInfoArray中是否已经存在username对应的信息，存在则直接跳过请求
       this.userInfoArray.map((userInfo) => {
@@ -82,7 +94,7 @@ export default {
       }
 
       //没有这样的信息，添加占位，以阻止其他组件重复请求
-      this.userInfoArray.push({ username: username });
+      this.userInfoArray.push({ username: username, loading: true });
 
       //请求信息
       this.$Axios({
@@ -97,13 +109,24 @@ export default {
           action.setUserInfoArray(
             this.userInfoArray.map((userInfo) => {
               if (userInfo.username == username) {
-                return response.data.msg;
+                return { ...response.data.msg, loading: false };
               } else {
                 return userInfo;
               }
             })
           );
+        } else {
+          // 请求失败时，移除占位信息
+          action.setUserInfoArray(
+            this.userInfoArray.filter((userInfo) => userInfo.username !== username)
+          );
         }
+      }).catch((error) => {
+        console.error('获取用户信息失败:', error);
+        // 请求失败时，移除占位信息
+        action.setUserInfoArray(
+          this.userInfoArray.filter((userInfo) => userInfo.username !== username)
+        );
       });
     },
   },

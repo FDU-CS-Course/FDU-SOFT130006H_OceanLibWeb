@@ -481,7 +481,11 @@ const toggleMyNotes = async () => {
   showMyNotesOnly.value = !showMyNotesOnly.value;
 
   if (showMyNotesOnly.value) {
-    // 显示我的帖子
+    // 显示我的帖子 - 先清理用户信息缓存避免显示错误
+    // 导入用户名组件的action来清理缓存
+    const { action } = await import('@/components/common/username/store.js');
+    action.clearUserInfoArray();
+    
     await fetchMyNotes();
   } else {
     // 显示所有帖子
@@ -510,7 +514,15 @@ const fetchMyNotes = async () => {
     });
 
     if (res.data && res.data.code === "1") {
-      const list = res.data.msg.list.map(processNoteData);
+      // 获取当前用户名，确保我的帖子显示正确的作者
+      const currentUsername = sessionStorage.getItem('username');
+      
+      const list = res.data.msg.list.map(note => {
+        const processedNote = processNoteData(note);
+        // 确保我的帖子的作者信息是当前用户
+        processedNote.buildUsername = currentUsername;
+        return processedNote;
+      });
 
       originalWallInfo.value = [...list];
       wallInfo.value = [...list];
